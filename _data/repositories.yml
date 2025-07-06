@@ -4,6 +4,7 @@ github_users:
 repo_description_lines_max: 2
 
 github_repos:
-  - openPMD-beamphysics.jl
-  - SpaceCharge.jl
-  - bmad-benchmarking
+  - ndwang/openPMD-beamphysics.jl
+  - ndwang/SpaceCharge.jl
+  - bmad-sim/bmad-benchmarking
+  - bmad-sim/BeamTracking.jl
