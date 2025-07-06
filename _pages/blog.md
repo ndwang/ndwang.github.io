@@ -56,7 +56,7 @@ pagination:
   </div>
   {% endif %}
 
-{% assign featured_posts = site.posts | where: "featured", "true" %}
+{% assign featured_posts = site.posts | where: "featured", "true" | reject: "categories", "sample-posts" %}
 {% if featured_posts.size > 0 %}
 <br>
 
@@ -104,9 +104,9 @@ pagination:
   <ul class="post-list">
 
     {% if page.pagination.enabled %}
-      {% assign postlist = paginator.posts %}
+      {% assign postlist = paginator.posts | reject: "categories", "sample-posts" %}
     {% else %}
-      {% assign postlist = site.posts %}
+      {% assign postlist = site.posts | reject: "categories", "sample-posts" %}
     {% endif %}
 
     {% for post in postlist %}
