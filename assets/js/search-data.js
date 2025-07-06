@@ -160,13 +160,6 @@ ninja.data = [{
           window.open("https://inspirehep.net/authors/2137533", "_blank");
         },
       },{
-        id: 'social-rss',
-        title: 'RSS Feed',
-        section: 'Socials',
-        handler: () => {
-          window.open("/feed.xml", "_blank");
-        },
-      },{
         id: 'social-scholar',
         title: 'Google Scholar',
         section: 'Socials',
