@@ -56,7 +56,7 @@ pagination:
   </div>
   {% endif %}
 
-{% assign featured_posts = site.posts | where: "featured", "true" | where_exp: "post", "post.categories contains 'sample-posts'" == false %}
+{% assign featured_posts = site.posts %}
 {% if featured_posts.size > 0 %}
 <br>
 
@@ -104,9 +104,9 @@ pagination:
   <ul class="post-list">
 
     {% if page.pagination.enabled %}
-      {% assign postlist = paginator.posts | where_exp: "post", "post.categories contains 'sample-posts'" == false %}
+      {% assign postlist = paginator.posts %}
     {% else %}
-      {% assign postlist = site.posts | where_exp: "post", "post.categories contains 'sample-posts'" == false %}
+      {% assign postlist = site.posts %}
     {% endif %}
 
     {% for post in postlist %}
