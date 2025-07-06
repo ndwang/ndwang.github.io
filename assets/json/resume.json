@@ -1,137 +1,92 @@
 {
   "basics": {
-    "name": "Albert Einstein",
-    "label": "Scientist",
+    "name": "Ningdong Wang",
+    "label": "Physics PhD Student",
     "image": "",
-    "email": "albert@einstein.de",
-    "phone": "(912) 123-4567",
-    "url": "https://alshedivat.github.io/al-folio/",
-    "summary": "A German-born theoretical physicist, widely ranked among the greatest and most influential scientists of all time",
-    "location": {
-      "address": "2712 Broadway St",
-      "postalCode": "CA 94115",
-      "city": "San Francisco",
-      "countryCode": "US",
-      "region": "California"
-    },
-    "profiles": [
-      {
-        "network": "Twitter",
-        "username": "AlbertEinstein",
-        "url": "https://twitter.com/AlbertEinstein"
-      }
-    ]
+    "email": "nw285@cornell.edu",
+    "url": "https://ndwang.github.io/",
+    "summary": "A physicist, a programmer, and a researcher"
   },
-  "work": [
-    {
-      "name": "Institute for Advanced Study, Princeton University",
-      "position": "Professor of Theoretical Physics",
-      "url": "https://example.com",
-      "startDate": "1933-01-01",
-      "endDate": "1955-01-01",
-      "summary": "Teaching at Palmer Physical Laboratory (now 302 Frist Campus Center). While not a professor at Princeton, I associated with the physics professors and continued to give lectures on campus.",
-      "highlights": ["Relativity"]
-    }
-  ],
-  "volunteer": [
-    {
-      "organization": "People's Climate March",
-      "location": "Zurich, Switzerland",
-      "position": "Lead Organizer",
-      "url": "https://example.com",
-      "startDate": "2014-04-01",
-      "endDate": "2015-07-01",
-      "summary": "Lead organizer for the New York City branch of the People's Climate March, the largest climate march in history.",
-      "highlights": ["Awarded 'Climate Hero' award by Greenpeace for my efforts organizing the march.", "Men of the year 2014 by Time magazine"]
-    }
-  ],
   "education": [
     {
-      "institution": "University of Zurich, Zurich, Switzerland",
-      "location": "Zurich, Switzerland",
-      "url": "https://www.uzh.ch/",
-      "area": "Software Development",
+      "institution": "Cornell University",
+      "location": "Ithaca, NY",
+      "url": "https://www.cornell.edu/",
+      "area": "Physics",
       "studyType": "PhD",
-      "startDate": "1905-01-01",
-      "endDate": "1905-01-01",
-      "score": "10",
-      "courses": ["Theory of Relativity"]
+      "startDate": "2021-05",
+      "endDate": "present"
+    },
+    {
+      "institution": "University of Illinois at Urbana-Champaign",
+      "location": "Urbana, IL",
+      "url": "https://www.illinois.edu/",
+      "area": "Electrical Engineering and EngineeringPhysics",
+      "studyType": "BSc",
+      "startDate": "2016-08",
+      "endDate": "2020-05"
+    }
+  ],
+  "Experience": [
+    {
+      "name": "University of Illinois at Urbana-Champaign",
+      "position": "Research Assistant",
+      "startDate": "2018-08",
+      "endDate": "2020-05",
+      "summary": "Studied the electron spin polarization in Quantum Point Contact and its effect on the conductance under Dr. Jean-Pierre Leburton."
+    },
+    {
+      "name": "Argonne National Laboratory",
+      "position": "Lee Teng internship",
+      "startDate": "2019-06",
+      "endDate": "2019-08",
+      "summary": "Modeling and Optimization of a spin-rotator solenoid array for the electron storage ring of the SuperKEKB electron-positron collider. Supervised by Dr. Uli Wienands."
+    },
+    {
+      "name": "Cornell University",
+      "position": "Research Assistant",
+      "startDate": "2021-05",
+      "endDate": "present",
+      "summary": "Supervised by Georg Hoffstaetter de Torquat. Studied the cavity coupler effect on beam dynamics for the EIC cooler injector. Implemented cathode space charge particle tracking in Bmad."
+    },
+    {
+      "name": "Brookhaven National Laboratory",
+      "position": "Research Assistant",
+      "startDate": "2023-06",
+      "endDate": "present",
+      "summary": "Space charge simulation for the EIC Strong Hadron Cooler. Optimized the Strong Hadron Cooler lattice and laser shaping to improve emittance and energy spread."
     }
   ],
   "awards": [
     {
-      "title": "Nobel Prize in Physics",
-      "date": "1921-11-01",
-      "awarder": "Royal Swedish Academy of Sciences",
-      "url": "https://www.nobelprize.org/prizes/physics/1921/einstein/biographical/",
-      "summary": "The Nobel Prizes are five separate prizes that, according to Alfred Nobel's will of 1895, are awarded to 'those who, during the preceding year, have conferred the greatest benefit to humankind.'"
-    }
-  ],
-  "certificates": [
-    {
-      "name": "Machine Learning",
-      "date": "2018-01-01",
-      "issuer": "Stanford University",
-      "url": "https://example.com",
-      "icon": "fa-solid fa-location-dot"
-    },
-    {
-      "name": "Quantum Computing",
-      "date": "2018-01-01",
-      "issuer": "Stanford University",
-      "url": "https://example.com",
-      "icon": "fa-solid fa-tag"
-    },
-    {
-      "name": "Quantum Information",
-      "date": "2018-01-01",
-      "issuer": "Stanford University",
-      "url": "https://example.com",
-      "icon": "fa-solid fa-envelope"
-    },
-    {
-      "name": "Quantum Cryptography",
-      "date": "2018-01-01",
-      "issuer": "Stanford University",
-      "url": "https://example.com",
-      "icon": "fa-solid fa-hashtag"
-    },
-    {
-      "name": "Quantum Communication",
-      "date": "2018-01-01",
-      "issuer": "Stanford University",
-      "url": "https://example.com",
-      "icon": "fa-solid fa-calendar"
-    },
-    {
-      "name": "Quantum Teleportation",
-      "date": "2018-01-01",
-      "issuer": "Stanford University",
-      "url": "https://example.com",
-      "icon": "fa-solid fa-clipboard-check"
+      "title": "Office of Science Graduate Student Research (SCGSR) Program",
+      "date": "2023-06",
+      "awarder": "Department of Energy, Office of Science",
+      "url": "https://science.osti.gov/wdts/scgsr",
+      "summary": "The SCGSR program provides supplemental funds for U.S. graduate awardees to conduct part of their PhD thesis research at a host DOE laboratory/facility in collaboration with a DOE National Laboratory scientist within a defined award period. '"
     }
   ],
   "publications": [
     {
-      "name": "Zur Elektrody/namik bewegter Körper",
-      "publisher": "Annalen der Physik",
-      "releaseDate": "1905-06-30",
-      "url": "https://en.wikisource.org/wiki/Translation:On_the_Electrodynamics_of_Moving_Bodies",
-      "summary": "It concerned an interpretation of the Michelson–Morley experiment and the properties of light and time. Special relativity incorporates the principle that the speed of light is the same for all inertial observers regardless of the state of motion of the source."
+      "name": "Cathode Space Charge in Bmad",
+      "publisher": "13th International Particle Accelerator Conference",
+      "releaseDate": "2022",
+      "url": "doi:10.18429/JACoW-IPAC2022-WEPOMS055",
+      "summary": "We present an implementation of charged particle tracking with the cathode space charge effect included which is now openly available in the Bmad toolkit for charged particle simulations. Adaptive step size control is incorporated to improve the computational efficiency. We demonstrate its capability with a simulation of a DC gun and compare it with the well-established space charge code Impact-T."
     },
     {
-      "name": "Über einen die Erzeugung und Verwandlung des Lichtes betreffenden heuristischen Gesichtspunkt",
-      "publisher": "Annalen der Physik",
-      "releaseDate": "1905-03-18",
-      "url": "https://de.wikisource.org/wiki/Über_einen_die_Erzeugung_und_Verwandlung_des_Lichtes_betreffenden_heuristischen_Gesichtspunkt",
-      "summary": "In the second paper, he applied the quantum theory to light to explain the photoelectric effect. In particular, he used the idea of light quanta (photons) to explain experimental results, but stressed the importance of the experimental results. The importance of his work on the photoelectric effect earned him the Nobel Prize in Physics in 1921."
+      "name": "EIC cooler injector space charge benchmark",
+      "publisher": "14th International Particle Accelerator Conference",
+      "releaseDate": "2023",
+      "url": "doi:10.18429/JACoW-IPAC2023-TUPL157",
+      "summary": "In this paper, we present the benchmark results of Bmad space charge tracking on the Electron-Ion Collider cooler injector lattice. Bmad, GPT, and Impact-T are compared in terms of accuracy and performance. We highlight the importance of space charge algorithm and demonstrate that the adaptive step size control improves the performance of Bmad space charge tracking."
     },
     {
-      "name": "Die Grundlage der allgemeinen Relativitätstheorie",
-      "publisher": "Annalen der Physik",
-      "releaseDate": "1916-03-20",
-      "url": "https://de.wikisource.org/wiki/Die_Grundlage_der_allgemeinen_Relativitätstheorie",
-      "summary": "The publication of the theory of general relativity made him internationally famous. He was professor of physics at the universities of Zurich (1909–1911) and Prague (1911–1912), before he returned to ETH Zurich (1912–1914)."
+      "name": "Optimization of Cooling Distribution of the EIC SHC Cooler ERL",
+      "publisher": "15th International Particle Accelerator Conference",
+      "releaseDate": "2024",
+      "url": "doi:10.18429/JACoW-IPAC2024-TUPC43",
+      "summary": "The Electron-Ion Collider (EIC) Hadron Storage Ring (HSR) will use strong hadron cooling to maintain the beam brightness and high luminosity during long collision ex?periments. An Energy Recovery Linac is used to deliver the high-current high-brightness electron beam for cooling. For the best cooling effect, the electron beam requires low emittance, small energy spread, and uniform longitudinal distribution. In this work, we simulate and optimize the longitudinal laser-beam distribution shaping at the photo?cathode, modeling space charge forces accurately. Machine parameters such as RF cavity phases are optimized in con?junction with the beam distribution using a genetic optimizer. We demonstrate improvement of the cooling distribution in key parameters.."
     }
   ],
   "skills": [
@@ -140,18 +95,17 @@
       "level": "Master",
       "icon": "fa-solid fa-hashtag",
       "keywords": [
-        "Quantum Mechanics",
-        "Quantum Computing",
-        "Quantum Information",
-        "Quantum Cryptography",
-        "Quantum Communication",
-        "Quantum Teleportation"
+        "Accelerator Physics",
+        "Beam Dynamics",
+        "Particle Tracking Simulation",
+        "Space Charge",
+        "Collective Beam Effects"
       ]
     }
   ],
   "languages": [
     {
-      "language": "German",
+      "language": "Chinese",
       "fluency": "Native speaker",
       "icon": ""
     },
@@ -161,40 +115,13 @@
       "icon": ""
     }
   ],
-  "interests": [
+  "PhD Advisor": [
     {
-      "name": "Physics",
-      "icon": "fa-solid fa-tag",
-      "keywords": [
-        "Quantum Mechanics",
-        "Quantum Computing",
-        "Quantum Information",
-        "Quantum Cryptography",
-        "Quantum Communication",
-        "Quantum Teleportation"
-      ]
-    }
-  ],
-  "references": [
-    {
-      "name": "Professor John Doe",
-      "icon": "fa-solid fa-laptop",
-      "reference": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum, diam quis convallis euismod, arcu mi ullamcorper lorem, a vestibulum nunc magna at sem. Sed in risus ac felis varius blandit. D"
-    },
-    {
-      "name": "Professor John Doe",
+      "name": "Professor Georg Hoffstaetter",
       "icon": "fa-solid fa-thumbtack",
-      "reference": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum, diam quis convallis euismod, arcu mi ullamcorper lorem, a vestibulum nunc magna at sem. Sed in risus ac felis varius blandit. D"
+      "reference": ""
     }
   ],
   "projects": [
-    {
-      "name": "Quantum Computing",
-      "summary": "Quantum computing is the use of quantum-mechanical phenomena such as superposition and entanglement to perform computation. Computers that perform quantum computations are known as quantum computers.",
-      "highlights": ["Quantum Teleportation", "Quantum Cryptography"],
-      "startDate": "2018-01-01",
-      "endDate": "2018-01-01",
-      "url": "https://example.com"
-    }
   ]
 }
