@@ -22,7 +22,7 @@ Enter Bmad Bot - an AI assistant that makes the manual accessible through natura
 
 {% include figure.liquid loading="eager" path="assets/img/Bmad-bot-red.png" title="" class="rounded z-depth-1" width="300" max-width="600px" %}
 
-Bmad bot is an intelligent assistant that can provide instant access to Bmad and Tao manual through advanced AI-powered workflow. 
+Bmad bot is an intelligent assistant that can provide instant access to Bmad and Tao manual through advanced AI-powered workflow.
 
 Imagine having a knowledgeable colleague who's read every page of Bmad manual and can answer any question you have about particle accelerator physics. That's exactly what Bmad bot is trying to do. It's an AI assistant that lives in your Slack workspace and helps you navigate complex technical documentation through simple conversations. Instead of digging through hundreds of pages of Bmad manual, you can simply ask it questions in plain English:
 
@@ -45,10 +45,12 @@ Ready to try Bmad Bot for yourself? It's currently available on **Slack** and **
 As Bmad Bot is just getting started, there are some important limitations to keep in mind:
 
 ### Scope
+
 - **Bmad and Tao only**: The bot is specifically trained on Bmad and Tao documentation. It won't answer general accelerator physics questions or questions about other simulation tools.
 - **Manual content only**: It can only answer questions about what's documented in the Bmad Reference Manual and Tao documentation, so it cannot help you write a lattice.
 
 ### Current Performance
+
 Since this is a new project, the bot is still learning and improving:
 
 - **May miss information**: Sometimes the bot might not find the right information, even if it exists in the manual
@@ -56,6 +58,7 @@ Since this is a new project, the bot is still learning and improving:
 - **Check citations**: Always verify the information using the provided source citations
 
 ### What to Expect
+
 - The bot works best with specific, concrete questions
 - It's most effective for finding element definitions, parameter descriptions, and command syntax
 - **No multi-turn conversations yet**: Each question is treated independently, so the bot won't remember context from previous questions in the same conversation
@@ -69,7 +72,7 @@ After the bot provides an answer, it automatically reacts to its own message wit
 - ✅ for helpful answers
 - ❌ for answers that need improvement
 
-### Why I Collect Feedback
+### Why We Collect Feedback
 
 Your feedback is incredibly valuable because it helps us:
 
@@ -78,7 +81,7 @@ Your feedback is incredibly valuable because it helps us:
 - Spot problematic responses and coverage gaps
 - Train the system to provide better answers in the future
 
-Bmad bot will continue to improve to provide real productivity for Bmad users of all experience levels. Each piece of feedback contributes to making the Bmad Bot more accurate, helpful, and valuable for the entire community. 
+Bmad bot will continue to improve to provide real productivity for Bmad users of all experience levels. Each piece of feedback contributes to making the Bmad Bot more accurate, helpful, and valuable for the entire community.
 
 So next time you use the bot, please consider reacting to the answer. Your feedback, no matter how small, helps make the bot better for everyone who uses it.
 
@@ -86,31 +89,59 @@ So next time you use the bot, please consider reacting to the answer. Your feedb
 
 Here's what you should know about how your interactions with the Bmad bot are handled:
 
-### What We Collect and How We Use It
+Your privacy is important to us. This section explains how Bmad Bot handles your data and what rights you have regarding your information.
 
-#### Question/Answer Pairs for Improvement
+### What Data We Collect
 
-- We collect anonymized question/answer pairs to improve the bot's performance
-- All personal information (user names) is removed before storage
-- This data helps us understand common questions and pain points
+#### Question/Answer Interactions
 
-#### Answer Feedbacks
+- **Message content**: Your questions and our responses
+- **Timestamps**: When interactions occur
+- **Feedback data**: Your reactions to bot responses (✅ or ❌)
 
-- Your feedback is collected anonymously (no user information is stored)
-- This helps us understand answer quality to deliver targeted improvements
+#### Data Processing
 
-### Third-Party Considerations
+- All personal identifiers (usernames, display names) are removed before storage
+- Questions and answers are anonymized and used only for improving bot performance
+- No individual user profiles are created or maintained
 
-Bmad bot currently uses Google's Gemini models:
+### How We Use Your Data
+
+#### Primary Uses
+
+- **Service improvement**: Analyzing common questions to enhance bot responses
+- **Quality assurance**: Using feedback to identify and fix problematic answers
+- **Documentation gaps**: Understanding what information users struggle to find
+
+### Third-Party Services
+
+#### Google Gemini AI
+
+Bmad Bot uses Google's Gemini models for processing your questions:
 
 - Your questions are subject to [Google's privacy policy and terms of service](https://ai.google.dev/gemini-api/terms)
 - Google may use this data for AI model training and improvement
-- I recommend reviewing Google's privacy practices if you have concerns
+- We recommend reviewing Google's privacy practices if you have concerns
 
-### Your Control Over Data
+#### Communication Platforms
 
-- Currently there's no option to opt-out. If you ask Bmad bot questions, you agree to data collection mentioned above
-- Currently there's no option to request deletion of any stored data, because I do not store user information so there's literally no way to tell which ones are yours.
+- **Slack**: Your interactions are also subject to [Slack's privacy policy](https://slack.com/privacy-policy)
+- **Matrix**: Your interactions are also subject to the privacy policies of your Matrix server provider
+
+#### Current Limitations
+
+- **No data deletion**: Since we don't store personal identifiers, we cannot identify or delete specific user data
+- **No opt-out mechanism**: Currently there's no way to opt out of data collection while using the bot
+- **No individual data access**: We cannot provide copies of specific user interactions
+
+### Your Consent
+
+By using Bmad Bot, you consent to:
+
+- The collection and processing of your data as described above
+- The use of third-party services (Google Gemini, Slack/Matrix)
+
+You can stop using the bot at any time to prevent further data collection.
 
 ## Ready to Try?
 
