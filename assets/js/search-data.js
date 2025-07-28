@@ -49,6 +49,11 @@ ninja.data = [{
           description: "",
           section: "Books",handler: () => {
               window.location.href = "/books/the_godfather/";
+            },},{id: "projects-bmad-bot-joins-the-battle",
+          title: 'Bmad-bot joins the battle!',
+          description: "An AI-powered chatbot that answers your question about Bmad and Tao.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/Bmad-bot/";
             },},{id: "projects-spacecharge-jl",
           title: 'SpaceCharge.jl',
           description: "A high-performance Julia package for space charge field calculation with GPU acceleration.",
