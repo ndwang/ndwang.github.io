@@ -8,19 +8,21 @@ description: "An AI-powered chatbot that answers your question about Bmad and Ta
 importance: 1
 ---
 
-## The Challenge
+## Consider this scenario
 
 You're in the middle of designing an accelerator lattice, trying to figure out why your simulation isn't behaving as expected. The Bmad Reference Manual sits open on your screen - all 600+ pages of it. You know the answer is in there somewhere, but finding it means wading through dense technical documentation while your simulation runs in the background.
 
 Sound familiar?
 
-This is a common challenge for anyone working with **Bmad**, the powerful software ecosystem for accelerator simulation developed at Cornell University. Since the mid 1990s, Bmad has been the go-to tool for beam dynamics, lattice design, and particle tracking. The Bmad Reference Manual contains nearly every piece of information you need - from basic element definitions to advanced optimization techniques. But with over 600 pages of dense technical content, finding the right information when you need it can slow down your workflow significantly.
+This is a common challenge for anyone working with [Bmad](https://www.classe.cornell.edu/bmad/overview.html), the powerful software ecosystem for accelerator simulation developed at Cornell University. Since the mid 1990s, Bmad has been the go-to tool for beam dynamics, lattice design, and particle tracking. The Bmad Reference Manual contains nearly every piece of information you need - from basic element definitions to advanced optimization techniques. But with over 600 pages of dense technical content, finding the right information when you need it can slow down your workflow significantly.
 
 Enter Bmad Bot - an AI assistant that makes the manual accessible through natural conversation.
 
 ## Meet Bmad Bot 🤖
 
+<div style="text-align: center;">
 {% include figure.liquid loading="eager" path="assets/img/Bmad-bot-red.png" title="" class="rounded z-depth-1" width="300" max-width="600px" %}
+</div>
 
 Bmad bot is an intelligent assistant that can provide instant access to Bmad and Tao manual through advanced AI-powered workflow.
 
