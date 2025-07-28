@@ -24,7 +24,7 @@ Enter Bmad Bot - an AI assistant that makes the manual accessible through natura
 
 Bmad bot is an intelligent assistant that can provide instant access to Bmad and Tao manual through advanced AI-powered workflow.
 
-Imagine having a knowledgeable colleague who's read every page of Bmad manual and can answer any question you have about particle accelerator physics. That's exactly what Bmad bot is trying to do. It's an AI assistant that lives in your Slack workspace and helps you navigate complex technical documentation through simple conversations. Instead of digging through hundreds of pages of Bmad manual, you can simply ask it questions in plain English:
+Imagine having a knowledgeable colleague who's read every page of Bmad manual and can answer any question you have about particle accelerator physics. That's exactly what Bmad bot is trying to do. It's an AI assistant that lives in your digital workspace and helps you navigate complex technical documentation through simple conversations. Instead of digging through hundreds of pages of Bmad manual, you can simply ask it questions in plain English:
 
 - **What attributes does a quadrupole have?**
 - **How do I set up a lattice file?**
@@ -85,7 +85,7 @@ Bmad bot will continue to improve to provide real productivity for Bmad users of
 
 So next time you use the bot, please consider reacting to the answer. Your feedback, no matter how small, helps make the bot better for everyone who uses it.
 
-## Privacy and Data Usage
+## Privacy and Data Usage {#privacy}
 
 Here's what you should know about how your interactions with the Bmad bot are handled:
 
