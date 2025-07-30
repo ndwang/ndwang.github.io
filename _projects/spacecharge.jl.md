@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "SpaceCharge.jl"
-img: assets/img/12.jpg
+img: assets/img/space_charge.png
 category: research
 related_publications: false
 description: "A high-performance Julia package for space charge field calculation with GPU acceleration."
