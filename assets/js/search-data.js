@@ -44,7 +44,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "books-the-godfather",
+        },{id: "post-beyond-vibe-coding-1000x-faster-space-charge-with-ai",
+        
+          title: "Beyond Vibe Coding: 1000x Faster Space Charge with AI",
+        
+        description: "A case study on using AI with benchmarking-driven methodology to optimize GPU-accelerated space charge calculations",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/AI_space_charge/";
+          
+        },
+      },{id: "books-the-godfather",
           title: 'The Godfather',
           description: "",
           section: "Books",handler: () => {
