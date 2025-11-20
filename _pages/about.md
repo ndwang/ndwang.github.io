@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: <a href='https://physics.cornell.edu/'>Cornell University</a>. 4th year PhD student in Accelerator Physics. nw285@cornell.edu.
+subtitle: 5th year PhD student in Accelerator Physics at Cornell University. Reach me at nw285@cornell.edu.
 
 profile:
   align: right
@@ -24,4 +24,6 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-I’m a graduate researcher in accelerator physics, currently focused on space charge simulation and optimization for the Electron-Ion Collider (EIC). My research centers on understanding how intense charged particle beams evolve under collective interactions. I've developed and applied space charge simulation models to study beam dynamics in the EIC Strong Hadron Cooler (SHC) and Low Energy Cooler (LEC), where intense, low-emittance electron beams are essential for achieving efficient hadron cooling.
+I'm a graduate researcher in accelerator physics, focused on space charge simulation and optimization for the Electron-Ion Collider (EIC). My research centers on understanding how intense charged particle beams evolve under collective interactions, with applications to the EIC Strong Hadron Cooler (SHC) and Low Energy Cooler (LEC).
+
+Beyond my core research, I'm passionate about applying AI technologies to accelerator physics. I've developed Bmad-bot, an LLM-powered chatbot that helps researchers navigate the Bmad and Tao documentation through natural language conversations. I'm also developing new ML models, including fast surrogate models using transformers, VAEs, and diffusion models, to accelerate computationally intensive simulations. 
