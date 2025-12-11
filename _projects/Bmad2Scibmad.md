@@ -13,6 +13,11 @@ This tool runs the translation program in the Bmad distribution. You can find th
 
 Upload your Bmad lattice file (must be `.bmad`), and your translated lattice will be ready for download shortly.
 
+> ##### WARNING
+>
+> SciBmad and the translation program are both under active development. Not all features in Bmad are currently supported in SciBmad, and some lattice elements or configurations may not translate perfectly. Please use the tool with caution, carefully review the output, and consult the SciBmad developers if you need support.
+{: .block-warning }
+ 
 <div class="row justify-content-center mt-4 mb-4">
     <div class="col-sm-12">
         <!-- THE EMBEDDED TOOL -->
