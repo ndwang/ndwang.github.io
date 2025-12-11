@@ -65,6 +65,11 @@ ninja.data = [{
           description: "An AI-powered chatbot that answers your question about Bmad and Tao.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/Bmad-bot/";
+            },},{id: "projects-bmad-to-scibmad-lattice-translation",
+          title: 'Bmad to SciBmad Lattice Translation',
+          description: "A web-based tool for converting Bmad lattices to SciBmad.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/Bmad2Scibmad/";
             },},{id: "projects-spacecharge-jl",
           title: 'SpaceCharge.jl',
           description: "A high-performance Julia package for space charge field calculation with GPU acceleration.",
