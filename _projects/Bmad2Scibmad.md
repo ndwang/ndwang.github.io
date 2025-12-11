@@ -11,10 +11,7 @@ SciBmad is a next-generation open-source accelerator physics simulation software
 
 This tool runs the translation program in the Bmad distribution. You can find the source code [here](https://github.com/bmad-sim/bmad-ecosystem/blob/main/util_programs/bmad_to_scibmad/bmad_to_scibmad.f90). Because the whole Bmad distribution is large (4GB) and difficult to compile locally, I have hosted it here as a cloud service for the community.
 
-### usage
-
-1.  **Upload** your Bmad lattice file (must be `.bmad`).
-2.  Your translated lattice will be ready for download shortly.
+Upload your Bmad lattice file (must be `.bmad`), and your translated lattice will be ready for download shortly.
 
 <div class="row justify-content-center mt-4 mb-4">
     <div class="col-sm-12">
