@@ -2,7 +2,7 @@
 layout: page
 title: "Bmad-bot joins the battle!"
 img: assets/img/Bmad-bot-red.png
-category: AI
+category: tools
 related_publications: false
 description: "An AI-powered chatbot that answers your question about Bmad and Tao."
 importance: 1
