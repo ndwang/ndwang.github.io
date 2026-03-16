@@ -71,7 +71,11 @@ On its first turn, the sandworm adds six copies of a card called Frantic Escape 
 
 Any human would connect the dots. Yes, it kills you instantly.
 
-The AI's reasoning was glorious. It looked at the timer. It read the description. And it concluded: "What will happen when sandpit reaches 0? I do not know. For safety, I will _not_ play Frantic Escape and instead observe what happens when sandpit reaches 0." It then ended its turn to "save energy," even though energy doesn't carry over to the next turn anyway.
+The AI's reasoning was glorious. It looked at the timer. It read the description. And it concluded:
+
+<blockquote class="block-warning">
+<p><strong>Key question: what happens when sandpit reaches 0?</strong> I don't know. To be safe, I will <strong>not</strong> play Frantic Escape and instead observe what happens when sandpit decays to 0. Actually, I'll just end my turn to save energy (even though it doesn't carry over).</p>
+</blockquote>
 
 It died in four turns.
 
