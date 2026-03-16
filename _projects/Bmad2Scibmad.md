@@ -16,8 +16,8 @@ Upload your Bmad lattice file (must be `.bmad`), and your translated lattice wil
 > ##### WARNING
 >
 > SciBmad and the translation program are both under active development. Not all features in Bmad are currently supported in SciBmad, and some lattice elements or configurations may not translate perfectly. Please use the tool with caution, carefully review the output, and consult the SciBmad developers if you need support.
-{: .block-warning }
- 
+> {: .block-warning }
+
 <div class="row justify-content-center mt-4 mb-4">
     <div class="col-sm-12">
         <!-- THE EMBEDDED TOOL -->
