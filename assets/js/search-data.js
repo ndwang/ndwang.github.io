@@ -44,7 +44,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "post-beyond-vibe-coding-1000x-faster-space-charge-with-ai",
+        },{id: "post-claude-plays-slay-the-spire-2-and-what-it-says-about-ai-in-science",
+        
+          title: "Claude Plays Slay the Spire 2, and What It Says About AI in...",
+        
+        description: "What happens when you throw a LLM into a game it&#39;s never seen before",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/claude-plays-slay-the-spire/";
+          
+        },
+      },{id: "post-beyond-vibe-coding-1000x-faster-space-charge-with-ai",
         
           title: "Beyond Vibe Coding: 1000x Faster Space Charge with AI",
         
