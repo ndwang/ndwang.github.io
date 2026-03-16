@@ -50,6 +50,25 @@ d-article {
   }
   blockquote {
     border-left: 2px solid var(--global-theme-color) !important;
+
+    &.block-tip p,
+    &.block-tip li,
+    &.block-tip strong,
+    &.block-tip em {
+      color: var(--global-tip-block-text) !important;
+    }
+    &.block-warning p,
+    &.block-warning li,
+    &.block-warning strong,
+    &.block-warning em {
+      color: var(--global-warning-block-text) !important;
+    }
+    &.block-danger p,
+    &.block-danger li,
+    &.block-danger strong,
+    &.block-danger em {
+      color: var(--global-danger-block-text) !important;
+    }
   }
 
   // Style taken from code blocks
