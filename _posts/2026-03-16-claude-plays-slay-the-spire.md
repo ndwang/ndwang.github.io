@@ -39,7 +39,7 @@ So I built a mod that monitors for decision points where player input is needed.
 
 The agent polls for state, feeds it to Claude along with a system prompt describing the game's rules, and gets back actions through tool use. It also maintains two knowledge bases, one persistent across runs and one per-run, so the AI can record what it learns and carry insights forward.
 
-The engineering worked well. The AI navigated menus, played cards, made map choices, managed its deck, all without manual intervention. The repos are public: [sts2-remote](https://github.com/ndwang/sts2-remote) for the mod and [ClaudePlaysSTS2](https://github.com/ndwang/ClaudePlaysSTS2) for the agent. VODs (in Chinese): [part 1](https://www.bilibili.com/video/BV1GxwxzEEuK), [part 2](https://www.bilibili.com/video/BV1PkwxzqEa9).
+The engineering worked well. The AI navigated menus, played cards, made map choices, managed its deck, all without manual intervention. The repos are public: [sts2-ai-mod](https://github.com/ndwang/sts2-ai-mod) for the mod and [ClaudePlaysSTS2](https://github.com/ndwang/ClaudePlaysSTS2) for the agent. VODs (in Chinese): [part 1](https://www.bilibili.com/video/BV1GxwxzEEuK), [part 2](https://www.bilibili.com/video/BV1PkwxzqEa9).
 
 ## Gameplay
 
