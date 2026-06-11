@@ -1,15 +1,16 @@
 ---
 /*
-  The site's signature machine, scoped to the hero: a GPU particle field
-  (~40k points) of two counter-circulating bunched beams — ions (vermilion)
-  and electrons (periwinkle) — on intersecting tilted rings. The cursor
-  acts as a repulsor magnet on the field; bunch crossings at the
-  interaction point increment any [data-events] element.
+  The site's signature machine, scoped to the hero: a schematic collider
+  ring placed in the hero's negative space (center-right). Two thin
+  beampipes drawn as dashed blueprint lines with magnet ticks; tight
+  bunches — ions (vermilion) and electrons (periwinkle) — circulate
+  strictly on the pipes. When bunches cross at the marked interaction
+  point on the ring's right edge, a detector-style track burst fires.
 
-  It lives inside the hero section and scrolls away with it, so reading
-  the rest of the page is never contested by motion. Honors
-  prefers-reduced-motion with a single static frame, and pauses whenever
-  the hero is offscreen or the tab is hidden.
+  The cursor never touches the beam (you can't). It is an inspection
+  lamp: the lattice — pipes and magnet ticks — lights up locally as the
+  cursor traces it. Honors prefers-reduced-motion with a single static
+  frame, and pauses whenever the hero is offscreen or the tab is hidden.
 */
 ---
 
@@ -36,15 +37,27 @@
   import * as THREE from "three";
 
   const TAU = Math.PI * 2;
-  const RING_R = 2.6;
-  const RING_D = 1.45; // half-distance between ring centers; < R so they cross
+  const RING_R = 2.5; // pipe radius
+  const SEP = 0.16; // half-separation of the two pipe centers (vertical)
   const OMEGA = 0.55; // angular speed of circulation, rad/s
   const BUNCHES = 3;
-  // phase offset of the electron ring's bunches, chosen so that bunches from
-  // both rings arrive at the interaction point together (collisions happen)
-  const PHASE1 = Math.PI / 3;
+  const GROUP_X = 1.7; // ring sits in the hero's right-side negative space
+  const BURST_LIFE = 1.5; // seconds a collision burst lives
+  const TILT_C = 0.42261826; // cos/sin of the 65° tilt toward the camera
+  const TILT_S = 0.90630779;
+  // featured interaction point: the right-edge crossing of the two pipes
+  const IP = { x: Math.sqrt(RING_R ** 2 - SEP ** 2), y: 0 };
 
-  const vert = /* glsl */ `
+  const TILT_GLSL = /* glsl */ `
+    const mat3 TILT = mat3(
+      1.0, 0.0, 0.0,
+      0.0, ${TILT_C}, ${TILT_S},
+      0.0, ${-TILT_S}, ${TILT_C}
+    );
+  `;
+
+  // -- beams: tight bunches riding the pipes; the cursor cannot touch them --
+  const beamVert = /* glsl */ `
     attribute vec4 aRing;     // theta0, ringIx (0|1), radial offset, axial offset
     attribute vec4 aSeed;     // amp, freq, phase, brightness
     attribute float aSpecies;
@@ -52,18 +65,11 @@
     uniform float uTime;
     uniform float uPixelRatio;
     uniform float uSize;
-    uniform vec3 uMouse;
-    uniform float uMouseOn;
 
     varying float vSpecies;
     varying float vBright;
 
-    // tilt the collider plane toward the camera
-    const mat3 TILT = mat3(
-      1.0, 0.0, 0.0,
-      0.0, 0.42261826, 0.90630779,
-      0.0, -0.90630779, 0.42261826
-    );
+    ${TILT_GLSL}
 
     void main() {
       float dir = aRing.y * 2.0 - 1.0;
@@ -71,27 +77,25 @@
       float wobble = sin(uTime * aSeed.y + aSeed.z) * aSeed.x;
       float r = ${RING_R.toFixed(2)} + aRing.z + wobble;
       vec3 pos = TILT * vec3(
-        cos(theta) * r + dir * ${RING_D.toFixed(2)},
-        sin(theta) * r,
+        cos(theta) * r,
+        sin(theta) * r + dir * ${SEP.toFixed(2)},
         aRing.w + wobble * 0.6
       );
 
-      // cursor repulsor
-      vec3 away = pos - uMouse;
-      float d2 = dot(away, away);
-      pos += normalize(away + vec3(0.0001)) *
-        exp(-d2 * 1.4) * 0.85 * uMouseOn;
+      vec4 wp = modelMatrix * vec4(pos, 1.0);
+      // the arc passing behind the headline recedes into tunnel shadow
+      float shade = 0.12 + 0.88 * smoothstep(-0.9, 1.6, wp.x);
 
-      vec4 mv = modelViewMatrix * vec4(pos, 1.0);
+      vec4 mv = viewMatrix * wp;
       gl_Position = projectionMatrix * mv;
       gl_PointSize = uSize * (0.5 + aSeed.w) * uPixelRatio / max(-mv.z, 0.1);
 
       vSpecies = aSpecies;
-      vBright = 0.35 + aSeed.w * 0.65;
+      vBright = (0.35 + aSeed.w * 0.65) * shade;
     }
   `;
 
-  const frag = /* glsl */ `
+  const beamFrag = /* glsl */ `
     precision highp float;
 
     varying float vSpecies;
@@ -109,33 +113,149 @@
     }
   `;
 
+  // -- lattice schematic: pipes, magnet ticks, IP marker ---------------------
+  // the cursor is an inspection lamp; uMouse is in the collider plane's own
+  // coordinates and lights the drawing locally
+  const lineVert = /* glsl */ `
+    attribute vec2 aPlane;    // position in the collider plane, for lamp falloff
+    attribute float aParam;   // 0..1 along a pipe for dashes; -1 solid
+    attribute vec3 aTint;
+    attribute float aBase;    // resting alpha
+    attribute float aPulse;   // 1 on the IP marker: flashes on collision
+
+    uniform vec2 uMouse;
+    uniform float uMouseOn;
+
+    varying float vParam;
+    varying float vBase;
+    varying float vGlow;
+    varying float vPulse;
+    varying vec3 vTint;
+
+    void main() {
+      vec2 toLamp = aPlane - uMouse;
+      vGlow = exp(-dot(toLamp, toLamp) * 1.4) * uMouseOn;
+      vParam = aParam;
+      vBase = aBase;
+      vPulse = aPulse;
+      vTint = aTint;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `;
+
+  const lineFrag = /* glsl */ `
+    precision highp float;
+
+    uniform float uTime;
+    uniform float uBurstT0;
+
+    varying float vParam;
+    varying float vBase;
+    varying float vGlow;
+    varying float vPulse;
+    varying vec3 vTint;
+
+    const vec3 LAMP = vec3(1.0, 0.93, 0.8);
+
+    void main() {
+      float dash = vParam < 0.0
+        ? 1.0
+        : 0.45 + 0.55 * step(0.45, fract(vParam * 110.0));
+      float flash = vPulse * exp(-max(uTime - uBurstT0, 0.0) * 2.5);
+      float a = vBase * dash + vGlow * 0.7 + flash * 0.8;
+      vec3 col = mix(vTint, LAMP, min(vGlow, 1.0) * 0.8);
+      gl_FragColor = vec4(col, a);
+    }
+  `;
+
+  // -- collision burst: detector tracks fanning out from the IP --------------
+  const burstVert = /* glsl */ `
+    attribute vec3 aDir;
+    attribute vec4 aMisc;     // fraction along track, curvature, speed, brightness
+    attribute float aHue;
+
+    uniform float uTime;
+    uniform float uBurstT0;
+    uniform float uSeed;
+    uniform float uPixelRatio;
+
+    varying float vAlpha;
+    varying float vHue;
+
+    ${TILT_GLSL}
+
+    void main() {
+      float t = uTime - uBurstT0;
+      float live = step(0.0, t) * step(t, ${BURST_LIFE.toFixed(2)});
+      float prog = 1.0 - exp(-t * 2.6);
+      float reach = aMisc.z * prog * aMisc.x;
+
+      // each burst gets a fresh in-plane orientation from uSeed
+      float cs = cos(uSeed);
+      float sn = sin(uSeed);
+      vec3 d = vec3(cs * aDir.x - sn * aDir.y, sn * aDir.x + cs * aDir.y, aDir.z);
+      vec3 p = d * reach + vec3(-d.y, d.x, 0.0) * reach * reach * aMisc.y;
+      vec3 pos = TILT * (vec3(${IP.x.toFixed(4)}, ${IP.y.toFixed(4)}, 0.0) + p);
+
+      vec4 mv = modelViewMatrix * vec4(pos, 1.0);
+      gl_Position = projectionMatrix * mv;
+      gl_PointSize = 15.0 * (0.35 + 0.65 * aMisc.x) * live * uPixelRatio /
+        max(-mv.z, 0.1);
+
+      float fade = pow(max(1.0 - t / ${BURST_LIFE.toFixed(2)}, 0.0), 1.7);
+      vAlpha = live * fade * aMisc.w * (0.25 + 0.75 * aMisc.x);
+      vHue = aHue;
+    }
+  `;
+
+  const burstFrag = /* glsl */ `
+    precision highp float;
+
+    varying float vAlpha;
+    varying float vHue;
+
+    const vec3 ION = vec3(1.0, 0.42, 0.23);
+    const vec3 ELECTRON = vec3(0.62, 0.69, 1.0);
+
+    void main() {
+      float d = length(gl_PointCoord - 0.5);
+      if (d > 0.5) discard;
+      float a = pow(smoothstep(0.5, 0.0, d), 1.6);
+      vec3 col = mix(vec3(1.0, 0.97, 0.9), mix(ION, ELECTRON, vHue), 0.55);
+      gl_FragColor = vec4(col, a * vAlpha);
+    }
+  `;
+
   function gaussian() {
     return (
       (Math.random() + Math.random() + Math.random() + Math.random() - 2) / 2
     );
   }
 
-  function buildGeometry(count: number) {
+  function tilt(x: number, y: number, z: number): [number, number, number] {
+    return [x, TILT_C * y - TILT_S * z, TILT_S * y + TILT_C * z];
+  }
+
+  function buildBeams(count: number) {
     const ring = new Float32Array(count * 4);
     const seed = new Float32Array(count * 4);
     const species = new Float32Array(count);
 
     for (let i = 0; i < count; i++) {
       const sp = i % 2; // 0 ion, 1 electron
-      const halo = i % 5 === 4;
+      const halo = i % 6 === 5;
 
-      // bunched longitudinally, gaussian transverse
+      // bunched longitudinally, gaussian transverse — tight on the pipe
       const theta0 = halo
         ? Math.random() * TAU
         : (Math.floor(Math.random() * BUNCHES) / BUNCHES) * TAU +
-          sp * PHASE1 +
-          gaussian() * 0.42;
+          gaussian() * 0.3;
       ring[i * 4] = theta0;
       ring[i * 4 + 1] = sp;
-      ring[i * 4 + 2] = gaussian() * (halo ? 0.4 : 0.1);
-      ring[i * 4 + 3] = gaussian() * (halo ? 0.5 : 0.12);
+      ring[i * 4 + 2] = gaussian() * (halo ? 0.22 : 0.045);
+      ring[i * 4 + 3] = gaussian() * (halo ? 0.26 : 0.05);
 
-      seed[i * 4] = 0.02 + Math.random() * (halo ? 0.3 : 0.09);
+      seed[i * 4] = 0.01 + Math.random() * (halo ? 0.12 : 0.04);
       seed[i * 4 + 1] = 0.8 + Math.random() * 2.4;
       seed[i * 4 + 2] = Math.random() * TAU;
       seed[i * 4 + 3] = halo ? Math.random() * 0.3 : 0.25 + Math.random();
@@ -155,6 +275,152 @@
     return geo;
   }
 
+  function buildSchematic() {
+    const pos: number[] = [];
+    const plane: number[] = [];
+    const param: number[] = [];
+    const tint: number[] = [];
+    const base: number[] = [];
+    const pulse: number[] = [];
+
+    const push = (
+      x: number,
+      y: number,
+      t: number,
+      col: [number, number, number],
+      a: number,
+      pulsing = 0,
+    ) => {
+      pos.push(...tilt(x, y, 0));
+      plane.push(x, y);
+      param.push(t);
+      tint.push(...col);
+      base.push(a);
+      pulse.push(pulsing);
+    };
+
+    const INK: [number, number, number] = [0.7, 0.69, 0.66];
+    const WARM: [number, number, number] = [1.0, 0.42, 0.23];
+    const COOL: [number, number, number] = [0.62, 0.69, 1.0];
+
+    // two beampipes as dashed circles
+    const N = 256;
+    for (let ringIx = 0; ringIx < 2; ringIx++) {
+      const cy = (ringIx * 2 - 1) * SEP;
+      for (let i = 0; i < N; i++) {
+        for (const j of [i, i + 1]) {
+          const a = (j / N) * TAU;
+          push(Math.cos(a) * RING_R, Math.sin(a) * RING_R + cy, j / N, INK, 0.14);
+        }
+      }
+    }
+
+    // magnet ticks along the outer pipe: alternating dipole (long, warm)
+    // and quadrupole (short, cool), skipping the IP region
+    const ipAng = Math.atan2(IP.y + SEP, IP.x);
+    for (let i = 0; i < 64; i++) {
+      const a = (i / 64) * TAU;
+      let d = (a - ipAng) % TAU;
+      if (d > Math.PI) d -= TAU;
+      if (Math.abs(d) < 0.22) continue;
+      const dipole = i % 2 === 0;
+      const len = dipole ? 0.17 : 0.1;
+      const col = dipole ? WARM : COOL;
+      const cy = -SEP;
+      for (const r of [RING_R - len / 2, RING_R + len / 2]) {
+        push(Math.cos(a) * r, Math.sin(a) * r + cy, -1, col, 0.18);
+      }
+    }
+
+    // IP marker: a small diamond that flashes on every recorded collision
+    const s = 0.12;
+    const corners = [
+      [IP.x + s, IP.y],
+      [IP.x, IP.y + s],
+      [IP.x - s, IP.y],
+      [IP.x, IP.y - s],
+    ];
+    for (let i = 0; i < 4; i++) {
+      const [ax, ay] = corners[i];
+      const [bx, by] = corners[(i + 1) % 4];
+      push(ax, ay, -1, COOL, 0.3, 1);
+      push(bx, by, -1, COOL, 0.3, 1);
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute(
+      "position",
+      new THREE.BufferAttribute(new Float32Array(pos), 3),
+    );
+    geo.setAttribute(
+      "aPlane",
+      new THREE.BufferAttribute(new Float32Array(plane), 2),
+    );
+    geo.setAttribute(
+      "aParam",
+      new THREE.BufferAttribute(new Float32Array(param), 1),
+    );
+    geo.setAttribute(
+      "aTint",
+      new THREE.BufferAttribute(new Float32Array(tint), 3),
+    );
+    geo.setAttribute(
+      "aBase",
+      new THREE.BufferAttribute(new Float32Array(base), 1),
+    );
+    geo.setAttribute(
+      "aPulse",
+      new THREE.BufferAttribute(new Float32Array(pulse), 1),
+    );
+    geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 30);
+    return geo;
+  }
+
+  function buildBurst() {
+    const TRACKS = 70;
+    const PER = 8;
+    const count = TRACKS * PER;
+    const dir = new Float32Array(count * 3);
+    const misc = new Float32Array(count * 4);
+    const hue = new Float32Array(count);
+
+    for (let tr = 0; tr < TRACKS; tr++) {
+      // mostly in-plane, a few escaping tracks
+      const a = Math.random() * TAU;
+      const z = gaussian() * (Math.random() < 0.2 ? 0.9 : 0.25);
+      const inv = 1 / Math.hypot(Math.cos(a), Math.sin(a), z);
+      const dx = Math.cos(a) * inv;
+      const dy = Math.sin(a) * inv;
+      const dz = z * inv;
+      const speed = 0.7 + Math.random() * 1.5;
+      const curve = gaussian() * 0.5;
+      const bright = 0.5 + Math.random() * 0.5;
+      const h = Math.random();
+      for (let j = 0; j < PER; j++) {
+        const i = tr * PER + j;
+        dir[i * 3] = dx;
+        dir[i * 3 + 1] = dy;
+        dir[i * 3 + 2] = dz;
+        misc[i * 4] = (j + 1) / PER;
+        misc[i * 4 + 1] = curve;
+        misc[i * 4 + 2] = speed;
+        misc[i * 4 + 3] = bright;
+        hue[i] = h;
+      }
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("aDir", new THREE.BufferAttribute(dir, 3));
+    geo.setAttribute("aMisc", new THREE.BufferAttribute(misc, 4));
+    geo.setAttribute("aHue", new THREE.BufferAttribute(hue, 1));
+    geo.setAttribute(
+      "position",
+      new THREE.BufferAttribute(new Float32Array(count * 3), 3),
+    );
+    geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 30);
+    return geo;
+  }
+
   function init(): (() => void) | null {
     const canvas = document.querySelector(
       "[data-particle-field]",
@@ -163,7 +429,7 @@
     const stage = canvas.closest("[data-field-stage]") as HTMLElement;
 
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const count = window.innerWidth < 700 ? 14000 : 42000;
+    const count = window.innerWidth < 700 ? 9000 : 20000;
 
     let renderer: THREE.WebGLRenderer;
     try {
@@ -179,62 +445,106 @@
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 60);
-    camera.position.set(0, 0.4, 7.4);
+    camera.position.set(0, 0.35, 7.6);
 
-    const uniforms = {
+    const dpr = () => Math.min(window.devicePixelRatio || 1, 1.75);
+    const beamUniforms = {
       uTime: { value: 0 },
-      uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, 1.75) },
-      uSize: { value: 30 },
-      uMouse: { value: new THREE.Vector3(99, 99, 0) },
+      uPixelRatio: { value: dpr() },
+      uSize: { value: 26 },
+    };
+    const lineUniforms = {
+      uTime: { value: 0 },
+      uBurstT0: { value: -10 },
+      uMouse: { value: new THREE.Vector2(99, 99) },
       uMouseOn: { value: 0 },
     };
+    const burstUniforms = {
+      uTime: { value: 0 },
+      uBurstT0: { value: -10 },
+      uSeed: { value: 0 },
+      uPixelRatio: { value: dpr() },
+    };
 
-    const material = new THREE.ShaderMaterial({
-      vertexShader: vert,
-      fragmentShader: frag,
-      uniforms,
+    const beamMat = new THREE.ShaderMaterial({
+      vertexShader: beamVert,
+      fragmentShader: beamFrag,
+      uniforms: beamUniforms,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+    const lineMat = new THREE.ShaderMaterial({
+      vertexShader: lineVert,
+      fragmentShader: lineFrag,
+      uniforms: lineUniforms,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+    const burstMat = new THREE.ShaderMaterial({
+      vertexShader: burstVert,
+      fragmentShader: burstFrag,
+      uniforms: burstUniforms,
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
     });
 
-    const points = new THREE.Points(buildGeometry(count), material);
-    scene.add(points);
+    const group = new THREE.Group();
+    group.position.x = GROUP_X;
+    const beams = new THREE.Points(buildBeams(count), beamMat);
+    const schematic = new THREE.LineSegments(buildSchematic(), lineMat);
+    const burst = new THREE.Points(buildBurst(), burstMat);
+    group.add(beams, schematic, burst);
+    scene.add(group);
 
     function resize() {
       const rect = stage.getBoundingClientRect();
       const w = Math.max(rect.width, 1);
       const h = Math.max(rect.height, 1);
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
-      renderer.setPixelRatio(dpr);
+      renderer.setPixelRatio(dpr());
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      uniforms.uPixelRatio.value = dpr;
-      // pull back a bit on narrow screens so the rings fit
-      camera.position.z = w < 700 ? 9.6 : 7.4;
+      beamUniforms.uPixelRatio.value = dpr();
+      burstUniforms.uPixelRatio.value = dpr();
+      // pull back and recentre on narrow screens so the ring fits
+      camera.position.z = w < 700 ? 10.4 : 7.6;
+      group.position.x = w < 700 ? 0.9 : GROUP_X;
     }
     resize();
     const ro = new ResizeObserver(resize);
     ro.observe(stage);
 
     if (reduced) {
-      uniforms.uTime.value = 4.2;
+      beamUniforms.uTime.value = 4.2;
+      camera.lookAt(0.85, 0, 0);
       renderer.render(scene, camera);
       const roStatic = new ResizeObserver(() => renderer.render(scene, camera));
       roStatic.observe(stage);
       return () => {
         ro.disconnect();
         roStatic.disconnect();
-        points.geometry.dispose();
-        material.dispose();
+        beams.geometry.dispose();
+        schematic.geometry.dispose();
+        burst.geometry.dispose();
+        beamMat.dispose();
+        lineMat.dispose();
+        burstMat.dispose();
         renderer.dispose();
       };
     }
 
-    // -- cursor as magnet ----------------------------------------------------
+    // -- cursor as inspection lamp -----------------------------------------
+    // project the pointer onto the collider's plane and hand the line shader
+    // plane-local coordinates; the lamp lights the lattice, never the beam
     const raycaster = new THREE.Raycaster();
-    const planeZ = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    const tiltM = new THREE.Matrix4().makeRotationX(Math.acos(TILT_C));
+    const planeXf = new THREE.Matrix4();
+    const planeXfInv = new THREE.Matrix4();
+    const planeNormal = new THREE.Vector3();
+    const colliderPlane = new THREE.Plane();
     const ndc = new THREE.Vector2();
     const hit = new THREE.Vector3();
     let mouseTarget = 0;
@@ -247,11 +557,7 @@
         return;
       }
       ndc.set(x, y);
-      raycaster.setFromCamera(ndc, camera);
-      if (raycaster.ray.intersectPlane(planeZ, hit)) {
-        uniforms.uMouse.value.copy(hit);
-        mouseTarget = 1;
-      }
+      mouseTarget = 1;
     };
     const onPointerOut = () => {
       mouseTarget = 0;
@@ -259,13 +565,12 @@
     window.addEventListener("pointermove", onPointer);
     document.documentElement.addEventListener("pointerleave", onPointerOut);
 
-    // -- bunch-crossing event counter ----------------------------------------
-    const counters = document.querySelectorAll("[data-events]");
+    // -- bunch-crossing detection ----------------------------------------
+    // bunch angle (from each pipe's own center) at which it sits on the IP
     const ipAngle = [
-      Math.atan2(Math.sqrt(RING_R ** 2 - RING_D ** 2), RING_D),
-      Math.atan2(Math.sqrt(RING_R ** 2 - RING_D ** 2), -RING_D),
+      Math.atan2(IP.y + SEP, IP.x),
+      Math.atan2(IP.y - SEP, IP.x),
     ];
-    let events = 0;
     let lastBurst = -10;
     const angDiff = (a: number, b: number) => {
       let d = (a - b) % TAU;
@@ -275,20 +580,20 @@
     };
 
     function checkCollisions(t: number) {
-      if (t - lastBurst < 0.8) return;
+      if (t - lastBurst < BURST_LIFE + 0.6) return;
       const atIP = [0, 1].map((ringIx) => {
         const dir = ringIx * 2 - 1;
         for (let b = 0; b < BUNCHES; b++) {
-          const ang = (b * TAU) / BUNCHES + ringIx * PHASE1 + dir * OMEGA * t;
+          const ang = (b * TAU) / BUNCHES + dir * OMEGA * t;
           if (angDiff(ang, ipAngle[ringIx]) < 0.12) return true;
         }
         return false;
       });
       if (atIP[0] && atIP[1]) {
         lastBurst = t;
-        events++;
-        const label = String(events).padStart(4, "0");
-        counters.forEach((el) => (el.textContent = label));
+        burstUniforms.uBurstT0.value = t;
+        burstUniforms.uSeed.value = Math.random() * TAU;
+        lineUniforms.uBurstT0.value = t;
       }
     }
 
@@ -305,17 +610,36 @@
       prev = now;
       simT += dt;
 
-      uniforms.uTime.value = simT;
-      uniforms.uMouseOn.value += (mouseTarget - uniforms.uMouseOn.value) * 0.08;
+      beamUniforms.uTime.value = simT;
+      lineUniforms.uTime.value = simT;
+      burstUniforms.uTime.value = simT;
+      lineUniforms.uMouseOn.value +=
+        (mouseTarget - lineUniforms.uMouseOn.value) * 0.08;
 
       // gentle parallax: the camera leans with the cursor
-      camDrift.x += (ndc.x * 0.45 - camDrift.x) * 0.03;
-      camDrift.y += (ndc.y * 0.3 - camDrift.y) * 0.03;
+      camDrift.x += (ndc.x * 0.35 - camDrift.x) * 0.03;
+      camDrift.y += (ndc.y * 0.25 - camDrift.y) * 0.03;
       camera.position.x = camDrift.x;
-      camera.position.y = 0.4 + camDrift.y;
-      camera.lookAt(0, 0, 0);
+      camera.position.y = 0.35 + camDrift.y;
+      camera.lookAt(0.85, 0, 0);
 
-      points.rotation.y = simT * 0.02;
+      // the ring breathes rather than spins, so the composition holds
+      group.rotation.y = Math.sin(simT * 0.07) * 0.09;
+
+      if (mouseTarget > 0) {
+        planeXf
+          .makeRotationY(group.rotation.y)
+          .premultiply(planeXfInv.makeTranslation(group.position.x, 0, 0))
+          .multiply(tiltM);
+        planeNormal.set(0, 0, 1).transformDirection(planeXf);
+        colliderPlane.setFromNormalAndCoplanarPoint(planeNormal, group.position);
+        raycaster.setFromCamera(ndc, camera);
+        if (raycaster.ray.intersectPlane(colliderPlane, hit)) {
+          planeXfInv.copy(planeXf).invert();
+          hit.applyMatrix4(planeXfInv);
+          lineUniforms.uMouse.value.set(hit.x, hit.y);
+        }
+      }
 
       checkCollisions(simT);
       renderer.render(scene, camera);
@@ -354,8 +678,12 @@
         "pointerleave",
         onPointerOut,
       );
-      points.geometry.dispose();
-      material.dispose();
+      beams.geometry.dispose();
+      schematic.geometry.dispose();
+      burst.geometry.dispose();
+      beamMat.dispose();
+      lineMat.dispose();
+      burstMat.dispose();
       renderer.dispose();
     };
   }

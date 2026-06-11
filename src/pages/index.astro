@@ -45,8 +45,7 @@ const stats = [
     <ParticleField />
     <div class="wrap hero-content">
       <p class="kicker" data-hero-fade>
-        <span class="kicker-hot">Cornell University</span> · PhD Candidate · Brookhaven
-        National Lab
+        <span class="kicker-hot">Cornell University</span> · PhD Candidate
       </p>
       <h1 class="hero-title" aria-label="Ningdong Wang">
         <span class="line" data-split>NINGDONG</span>
@@ -65,28 +64,21 @@ const stats = [
           >Get in touch</a
         >
       </div>
-      <p class="hero-hint" data-hero-fade>
-        The field is live — steer it with your cursor
-      </p>
     </div>
 
     <div class="wrap">
       <dl class="status" data-hero-fade>
         <div class="stat">
-          <dt>Machine</dt>
-          <dd>Electron-Ion Collider</dd>
+          <dt>Space charge</dt>
+          <dd>How intense beams behave in the EIC</dd>
         </div>
         <div class="stat">
-          <dt>Focus</dt>
-          <dd>Space-charge simulation &amp; optimization</dd>
+          <dt>AI for physics</dt>
+          <dd>Surrogate models for beam dynamics</dd>
         </div>
         <div class="stat">
-          <dt>Currently</dt>
-          <dd>LLM agents for accelerator physics</dd>
-        </div>
-        <div class="stat stat--live">
-          <dt><span class="live-dot"></span>Detector · IP-01</dt>
-          <dd><span class="ev" data-events>0000</span> events recorded</dd>
+          <dt>Agentic AI</dt>
+          <dd>LLM agents that operate accelerators</dd>
         </div>
       </dl>
     </div>
@@ -152,7 +144,6 @@ const stats = [
           width="380"
           loading="lazy"
         />
-        <figcaption>N. Wang — Ithaca, NY</figcaption>
       </figure>
     </div>
     <div class="stat-row" data-reveal>
@@ -169,23 +160,21 @@ const stats = [
     </div>
   </section>
 
-  <!-- ====================================================== publications -->
-  <section class="section section--pubs wrap" id="publications">
+  <!-- ====================================================== writing -->
+  <section class="section section--writing wrap" id="writing">
     <div class="section-head" data-reveal>
       <div>
-        <p class="label">
-          <span class="label-index">02</span> Selected publications
-        </p>
-        <h2 class="section-title">On the <em>record</em></h2>
+        <p class="label"><span class="label-index">02</span> Writing</p>
+        <h2 class="section-title">Notes from the <em>intersection</em></h2>
       </div>
-      <a href="/publications/" class="mlink">All publications</a>
+      <a href="/blog/" class="mlink">All posts</a>
       <span class="ghost-num">02</span>
     </div>
-    <div class="pub-list">
+    <div class="post-list">
       {
-        selectedPubs.map((pub, i) => (
+        posts.map((post, i) => (
           <div data-reveal style={`--reveal-delay: ${i * 70}ms`}>
-            <PubItem pub={pub} />
+            <PostRow post={post} />
           </div>
         ))
       }
@@ -217,21 +206,23 @@ const stats = [
     </div>
   </section>
 
-  <!-- ====================================================== writing -->
-  <section class="section section--writing wrap" id="writing">
+  <!-- ====================================================== publications -->
+  <section class="section section--pubs wrap" id="publications">
     <div class="section-head" data-reveal>
       <div>
-        <p class="label"><span class="label-index">04</span> Writing</p>
-        <h2 class="section-title">Notes from the <em>intersection</em></h2>
+        <p class="label">
+          <span class="label-index">04</span> Selected publications
+        </p>
+        <h2 class="section-title">On the <em>record</em></h2>
       </div>
-      <a href="/blog/" class="mlink">All posts</a>
+      <a href="/publications/" class="mlink">All publications</a>
       <span class="ghost-num">04</span>
     </div>
-    <div class="post-list">
+    <div class="pub-list">
       {
-        posts.map((post, i) => (
+        selectedPubs.map((pub, i) => (
           <div data-reveal style={`--reveal-delay: ${i * 70}ms`}>
-            <PostRow post={post} />
+            <PubItem pub={pub} />
           </div>
         ))
       }
@@ -331,31 +322,11 @@ const stats = [
     flex-wrap: wrap;
   }
 
-  .hero-hint {
-    font-family: var(--mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    margin-top: 2.6rem;
-  }
-
-  .hero-hint::before {
-    content: "↳ ";
-    color: var(--electron);
-  }
-
-  @media (hover: none) {
-    .hero-hint {
-      display: none;
-    }
-  }
-
   /* status strip ----------------------------------------------------- */
   .status {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     border-block: 1px solid var(--hairline);
     margin: 3.5rem 0 0;
     padding: 0;
@@ -390,34 +361,6 @@ const stats = [
     margin: 0;
     font-size: 0.9375rem;
     color: var(--ink-mute);
-  }
-
-  .stat--live dt {
-    color: var(--electron);
-  }
-
-  .stat--live .ev {
-    font-family: var(--mono);
-    font-size: 0.9375rem;
-    color: var(--electron-bright);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .live-dot {
-    width: 6px;
-    height: 6px;
-    background: var(--electron-bright);
-    animation: blink 2.2s ease-in-out infinite;
-  }
-
-  @keyframes blink {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.25;
-    }
   }
 
   /* scroll cue --------------------------------------------------------- */
@@ -641,16 +584,6 @@ const stats = [
   .portrait img {
     width: 100%;
     filter: saturate(0.88);
-  }
-
-  .portrait figcaption {
-    font-family: var(--mono);
-    font-size: 0.625rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    margin-top: 0.8rem;
-    text-align: right;
   }
 
   /* big counters -------------------------------------------------------- */

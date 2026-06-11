@@ -16,7 +16,7 @@ const isActive = (href: string) => path.startsWith(href);
         <span class="sq sq--ion"></span>
         <span class="sq sq--electron"></span>
       </span>
-      <span class="name">NW<span class="name-rest">— Ningdong Wang</span></span>
+      <span class="name">Ningdong Wang</span>
     </a>
     <nav aria-label="Primary">
       {
@@ -31,7 +31,6 @@ const isActive = (href: string) => path.startsWith(href);
         ))
       }
     </nav>
-    <span class="clock" data-clock aria-hidden="true">ITHACA --:--:--</span>
   </div>
 </header>
 
@@ -102,15 +101,6 @@ const isActive = (href: string) => path.startsWith(href);
     transform: translate(-6px, -50%) rotate(45deg);
   }
 
-  .name-rest {
-    color: var(--ink-faint);
-    transition: color 200ms ease;
-  }
-
-  .brand:hover .name-rest {
-    color: var(--ink-mute);
-  }
-
   nav {
     display: flex;
     gap: clamp(0.9rem, 2.5vw, 2.1rem);
@@ -169,45 +159,4 @@ const isActive = (href: string) => path.startsWith(href);
   .nav-link.active sup {
     color: var(--ion);
   }
-
-  .clock {
-    font-family: var(--mono);
-    font-size: 0.625rem;
-    letter-spacing: 0.16em;
-    color: var(--ink-faint);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-  }
-
-  @media (max-width: 900px) {
-    .clock {
-      display: none;
-    }
-  }
-
-  @media (max-width: 600px) {
-    .name-rest {
-      display: none;
-    }
-  }
 </style>
-
-<script>
-  let timer: ReturnType<typeof setInterval> | undefined;
-
-  function tick() {
-    const el = document.querySelector("[data-clock]");
-    if (!el) return;
-    const t = new Date().toLocaleTimeString("en-US", {
-      hour12: false,
-      timeZone: "America/New_York",
-    });
-    el.textContent = `ITHACA ${t}`;
-  }
-
-  document.addEventListener("astro:page-load", () => {
-    clearInterval(timer);
-    tick();
-    timer = setInterval(tick, 1000);
-  });
-</script>
