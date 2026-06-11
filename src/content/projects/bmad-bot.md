@@ -18,9 +18,7 @@ Enter Bmad Bot - an AI assistant that makes the manual accessible through natura
 
 ## Meet Bmad Bot
 
-<div style="text-align: center;">
-<figure><img src="/images/Bmad-bot-red.png" alt="" loading="lazy" /></figure>
-</div>
+<figure><img src="/images/Bmad-bot-red.png" alt="Bmad-bot logo" loading="lazy" style="max-width: 300px; margin-inline: auto;" /></figure>
 
 Bmad bot is an intelligent assistant that can provide instant access to Bmad and Tao manual through advanced AI-powered workflow.
 

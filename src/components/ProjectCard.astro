@@ -7,7 +7,7 @@ interface Props {
 
 const { project } = Astro.props;
 const { title, summary, category, github, link, image } = project.data;
-const href = `/projects/#${project.id}`;
+const href = `/projects/${project.id}/`;
 ---
 
 <article class="card">

@@ -1,0 +1,99 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { title, summary, category, github, link } = project.data;
+---
+
+<Base title={`${title} — Ningdong Wang`} description={summary}>
+  <article class="wrap page">
+    <header class="project-head">
+      <span class:list={["chip", category === "research" ? "chip--gold" : "chip--cyan"]}>
+        {category}
+      </span>
+      <h1>{title}</h1>
+      <p class="summary">{summary}</p>
+      <p class="links">
+        {
+          github && (
+            <a href={github} target="_blank" rel="noopener" class="mlink">
+              GitHub
+            </a>
+          )
+        }
+        {
+          link && (
+            <a href={link} target="_blank" rel="noopener" class="mlink">
+              Live
+            </a>
+          )
+        }
+      </p>
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <footer class="project-foot">
+      <a href="/projects/" class="mlink back">All projects</a>
+    </footer>
+  </article>
+</Base>
+
+<style>
+  .page {
+    padding-top: clamp(2.5rem, 6vh, 4.5rem);
+  }
+
+  .project-head {
+    max-width: var(--measure);
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    margin: 1rem 0 0.8rem;
+  }
+
+  .summary {
+    color: var(--ink-mute);
+    font-size: 1.25rem;
+    font-style: italic;
+    margin-bottom: 1.4rem;
+  }
+
+  .links {
+    display: flex;
+    gap: 2rem;
+    margin: 0;
+  }
+
+  .project-foot {
+    max-width: var(--measure);
+    margin-top: 4rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid var(--hairline);
+  }
+
+  .back::before {
+    content: "←";
+    margin-right: 0.5rem;
+  }
+
+  .back::after {
+    content: none;
+  }
+</style>

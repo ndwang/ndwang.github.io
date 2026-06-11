@@ -1,0 +1,61 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+
+const projects = (await getCollection("projects")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<Base
+  title="Projects — Ningdong Wang"
+  description="Research software and AI tools: SpaceCharge.jl, Bmad-bot, and the Bmad to SciBmad translator."
+>
+  <div class="wrap page">
+    <header class="page-head">
+      <p class="label"><span class="label-index">Build</span> Projects</p>
+      <h1>Things I've built</h1>
+      <p class="sub">
+        High-performance physics solvers, AI assistants, and tools for the
+        accelerator community.
+      </p>
+    </header>
+    <div class="project-grid">
+      {projects.map((project) => <ProjectCard project={project} />)}
+    </div>
+  </div>
+</Base>
+
+<style>
+  .page {
+    padding-top: clamp(2.5rem, 6vh, 4.5rem);
+  }
+
+  .page-head {
+    margin-bottom: 3rem;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    margin: 1.2rem 0 1rem;
+  }
+
+  .sub {
+    color: var(--ink-mute);
+    font-size: 1.125rem;
+    max-width: 36em;
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 900px) {
+    .project-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
