@@ -1,40 +1,51 @@
 /* ---------------------------------------------------------------------------
-   Design system — "Interaction Point"
-   Two beams: ion gold (physics) × electron cyan (AI), colliding on a
-   control-room dark ground. Technical-drawing hairlines, mono instrumentation
-   labels, scholarly serif for reading. The site behaves like a live machine:
-   beams circulate, events accumulate, panels respond to the operator.
+   Design system — "SUPERCOLLIDER"
+   A brutalist machine-terminal. Vacuum black, bone ink, and the EIC's real
+   duality: heavy ions run hot (vermilion), electrons run cold (periwinkle).
+   Bricolage Grotesque carries the display voice; IBM Plex Mono is the
+   instrumentation. Sharp corners, hairline rules, hazard accents. The page
+   is a beamline: particles circulate behind everything and reconfigure as
+   the operator scrolls.
 --------------------------------------------------------------------------- */
 
 :root {
   /* ground */
-  --bg: #080b10;
-  --bg-raised: #0e1219;
-  --bg-card: #0c1017;
+  --bg: #050608;
+  --bg-raised: #0c0e13;
+  --bg-card: #090b10;
 
   /* ink */
-  --ink: #ece7d9;
-  --ink-mute: #a8a193;
-  --ink-faint: #6e695e;
+  --ink: #f0ede6;
+  --ink-mute: #a39e92;
+  --ink-faint: #6a665c;
 
-  /* beams */
-  --gold: #d9a648;
-  --gold-bright: #f0c468;
-  --cyan: #58cfe3;
-  --cyan-bright: #8ce8f7;
+  /* beams: ion (hot) × electron (cold) */
+  --ion: #ff5c33;
+  --ion-bright: #ff8257;
+  --electron: #8fa7ff;
+  --electron-bright: #c0cdff;
+
+  /* legacy aliases — inner pages address the accents by these names */
+  --gold: var(--ion);
+  --gold-bright: var(--ion-bright);
+  --cyan: var(--electron);
+  --cyan-bright: var(--electron-bright);
 
   /* lines */
-  --hairline: rgba(233, 228, 214, 0.12);
-  --hairline-strong: rgba(233, 228, 214, 0.28);
+  --hairline: rgba(240, 237, 230, 0.11);
+  --hairline-strong: rgba(240, 237, 230, 0.26);
 
   /* type */
-  --serif: "Newsreader Variable", "Newsreader", Georgia, serif;
+  --display:
+    "Bricolage Grotesque Variable", "Bricolage Grotesque", Futura, "Segoe UI",
+    sans-serif;
+  --serif: var(--display); /* legacy alias */
   --mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", monospace;
 
   /* layout */
   --measure: 44rem;
-  --site-width: 76rem;
-  --pad: clamp(1.25rem, 4vw, 2.5rem);
+  --site-width: 80rem;
+  --pad: clamp(1.25rem, 4vw, 2.75rem);
 }
 
 *,
@@ -49,43 +60,33 @@ html {
 
 body {
   margin: 0;
-  background:
-    radial-gradient(
-      110rem 60rem at 85% -20%,
-      rgba(88, 207, 227, 0.05),
-      transparent 60%
-    ),
-    radial-gradient(
-      90rem 55rem at -10% 10%,
-      rgba(217, 166, 72, 0.05),
-      transparent 55%
-    ),
-    var(--bg);
+  background: var(--bg);
   color: var(--ink);
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: 1.0625rem;
+  font-weight: 380;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
 
-/* faint fixed grain so large dark areas don't band */
+/* fixed grain so large dark fields don't band */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 1;
-  opacity: 0.05;
+  z-index: 60;
+  opacity: 0.045;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
 }
 
 ::selection {
-  background: rgba(217, 166, 72, 0.35);
+  background: rgba(255, 92, 51, 0.4);
+  color: var(--ink);
 }
 
-/* slim instrument scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -95,17 +96,17 @@ body::before {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #232a35;
+  background: #1f232c;
   border: 3px solid var(--bg);
   border-radius: 8px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--gold);
+  background: var(--ion);
 }
 
 :focus-visible {
-  outline: 1px solid var(--gold);
+  outline: 1px solid var(--ion);
   outline-offset: 3px;
 }
 
@@ -113,10 +114,10 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--serif);
-  font-weight: 500;
-  line-height: 1.12;
-  letter-spacing: -0.015em;
+  font-family: var(--display);
+  font-weight: 560;
+  line-height: 1.06;
+  letter-spacing: -0.022em;
   color: var(--ink);
   margin: 0;
 }
@@ -145,12 +146,12 @@ video {
   padding-inline: var(--pad);
 }
 
-/* mono instrumentation label, e.g.  ── 02 · PROJECTS */
+/* mono instrumentation label, e.g.  ▪ 02 / PROJECTS */
 .label {
   font-family: var(--mono);
   font-size: 0.6875rem;
   font-weight: 500;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--ink-mute);
   display: flex;
@@ -160,13 +161,14 @@ video {
 
 .label::before {
   content: "";
-  width: 2rem;
-  height: 1px;
-  background: var(--gold);
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: none;
+  background: var(--ion);
 }
 
 .label .label-index {
-  color: var(--gold);
+  color: var(--ion-bright);
 }
 
 /* underlined text link */
@@ -181,8 +183,8 @@ video {
 }
 
 .tlink:hover {
-  color: var(--gold-bright);
-  text-decoration-color: var(--gold);
+  color: var(--ion-bright);
+  text-decoration-color: var(--ion);
 }
 
 /* mono arrow link, e.g.  ALL PUBLICATIONS → */
@@ -200,18 +202,18 @@ video {
 
 .mlink::after {
   content: "→";
-  transition: transform 150ms ease;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .mlink:hover {
-  color: var(--gold-bright);
+  color: var(--ion-bright);
 }
 
 .mlink:hover::after {
-  transform: translateX(4px);
+  transform: translateX(5px);
 }
 
-/* beam-fill pill button — gold sweep on hover */
+/* hard-edged terminal button — vertical shutter fill on hover */
 .btn {
   position: relative;
   isolation: isolate;
@@ -222,16 +224,15 @@ video {
   font-family: var(--mono);
   font-size: 0.75rem;
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  padding: 0.85em 1.7em;
-  border: 1px solid rgba(217, 166, 72, 0.55);
-  border-radius: 999px;
-  color: var(--gold-bright);
+  padding: 1em 1.9em;
+  border: 1px solid rgba(255, 92, 51, 0.6);
+  border-radius: 0;
+  color: var(--ion-bright);
   transition:
     color 250ms ease,
-    border-color 250ms ease,
-    transform 250ms ease;
+    border-color 250ms ease;
 }
 
 .btn::before {
@@ -239,18 +240,19 @@ video {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(100deg, var(--gold), var(--gold-bright));
-  transform: translateX(-101%);
-  transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+  background: var(--ion);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .btn:hover {
-  color: #14100a;
-  transform: translateY(-1px);
+  color: #120602;
+  border-color: var(--ion);
 }
 
 .btn:hover::before {
-  transform: translateX(0);
+  transform: scaleY(1);
 }
 
 .btn--ghost {
@@ -267,32 +269,41 @@ video {
   border-color: var(--ink);
 }
 
-/* beam-colored tag chips */
+/* tag chips — square, stamped */
 .chip {
   font-family: var(--mono);
   font-size: 0.625rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  padding: 0.3em 0.8em;
+  padding: 0.35em 0.85em;
   border: 1px solid var(--hairline-strong);
-  border-radius: 999px;
+  border-radius: 0;
   color: var(--ink-mute);
   white-space: nowrap;
 }
 
 .chip--gold {
-  border-color: rgba(217, 166, 72, 0.45);
-  color: var(--gold);
+  border-color: rgba(255, 92, 51, 0.5);
+  color: var(--ion-bright);
 }
 
 .chip--cyan {
-  border-color: rgba(88, 207, 227, 0.4);
-  color: var(--cyan);
+  border-color: rgba(143, 167, 255, 0.45);
+  color: var(--electron-bright);
+}
+
+/* hazard stripe — thin warning divider */
+.hazard {
+  height: 6px;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 92, 51, 0.55) 0 8px,
+    transparent 8px 20px
+  );
 }
 
 /* ---------------------------------------------------- section architecture */
 
-/* shared page/section header: ghost numeral behind a mono label + big title */
 .section-head {
   position: relative;
   display: flex;
@@ -300,37 +311,42 @@ video {
   justify-content: space-between;
   gap: 2rem;
   flex-wrap: wrap;
-  margin-bottom: clamp(2rem, 4vh, 3rem);
+  margin-bottom: clamp(2rem, 4vh, 3.5rem);
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--hairline-strong);
 }
 
 .section-head .label {
-  margin-bottom: 0.9rem;
+  margin-bottom: 1rem;
 }
 
 .section-title {
-  font-size: clamp(1.9rem, 3.4vw, 2.8rem);
-  font-weight: 460;
-  letter-spacing: -0.02em;
+  font-size: clamp(2.2rem, 4.6vw, 3.8rem);
+  font-weight: 620;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
 }
 
 .section-title em {
-  font-style: italic;
-  font-weight: 420;
-  color: var(--gold-bright);
+  font-style: normal;
+  font-weight: 620;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--ion-bright);
 }
 
 /* enormous outlined numeral floating behind the section head */
 .ghost-num {
   position: absolute;
   right: -0.05em;
-  bottom: -0.18em;
+  bottom: -0.14em;
   z-index: -1;
-  font-family: var(--mono);
-  font-size: clamp(6rem, 14vw, 11rem);
-  font-weight: 500;
+  font-family: var(--display);
+  font-size: clamp(6rem, 15vw, 12rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
   line-height: 1;
   color: transparent;
-  -webkit-text-stroke: 1px rgba(233, 228, 214, 0.1);
+  -webkit-text-stroke: 1px rgba(240, 237, 230, 0.09);
   pointer-events: none;
   user-select: none;
 }
@@ -339,9 +355,10 @@ video {
 
 .prose {
   max-width: var(--measure);
-  font-size: 1.1875rem;
-  line-height: 1.72;
-  color: rgba(233, 228, 214, 0.92);
+  font-size: 1.125rem;
+  font-weight: 380;
+  line-height: 1.75;
+  color: rgba(240, 237, 230, 0.92);
 }
 
 .prose p {
@@ -362,15 +379,15 @@ video {
 }
 
 .prose a {
-  color: var(--gold-bright);
+  color: var(--ion-bright);
   text-decoration: underline;
-  text-decoration-color: rgba(217, 166, 72, 0.4);
+  text-decoration-color: rgba(255, 92, 51, 0.4);
   text-underline-offset: 0.2em;
   text-decoration-thickness: 1px;
 }
 
 .prose a:hover {
-  text-decoration-color: var(--gold-bright);
+  text-decoration-color: var(--ion-bright);
 }
 
 .prose strong {
@@ -393,13 +410,13 @@ video {
 }
 
 .prose li::marker {
-  color: var(--gold);
+  color: var(--ion);
 }
 
 .prose blockquote {
   margin: 1.8em 0;
   padding: 0.2em 0 0.2em 1.4em;
-  border-left: 2px solid var(--gold);
+  border-left: 2px solid var(--ion);
   color: var(--ink-mute);
   font-style: italic;
   font-size: 1.0625em;
@@ -414,7 +431,7 @@ video {
 .prose img,
 .prose video {
   border: 1px solid var(--hairline);
-  border-radius: 4px;
+  border-radius: 0;
   margin: 2em auto;
 }
 
@@ -439,15 +456,15 @@ video {
 .prose :not(pre) > code {
   background: var(--bg-raised);
   border: 1px solid var(--hairline);
-  border-radius: 3px;
+  border-radius: 0;
   padding: 0.12em 0.4em;
-  color: var(--cyan-bright);
+  color: var(--electron-bright);
 }
 
 .prose pre {
-  background: #0c0f15 !important;
+  background: #0a0c11 !important;
   border: 1px solid var(--hairline);
-  border-radius: 6px;
+  border-radius: 0;
   padding: 1.2em 1.4em;
   overflow-x: auto;
   margin: 1.8em 0;
@@ -458,7 +475,7 @@ video {
 .prose iframe {
   width: 100%;
   border: 1px solid var(--hairline);
-  border-radius: 6px;
+  border-radius: 0;
   margin: 2em 0;
   background: var(--bg-raised);
 }
@@ -491,7 +508,7 @@ video {
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(18px);
   }
   to {
     opacity: 1;
@@ -507,7 +524,7 @@ video {
    never lost without it */
 html.js [data-reveal] {
   opacity: 0;
-  transform: translateY(22px);
+  transform: translateY(26px);
   transition:
     opacity 900ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -519,9 +536,62 @@ html.js [data-reveal].is-revealed {
   transform: none;
 }
 
+/* ------------------------------------------------------------ custom cursor */
+
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 80;
+  pointer-events: none;
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.cursor-dot {
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  background: var(--ion-bright);
+}
+
+.cursor-ring {
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1px solid rgba(240, 237, 230, 0.4);
+  transition:
+    width 250ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 250ms cubic-bezier(0.22, 1, 0.36, 1),
+    margin 250ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 250ms ease;
+}
+
+html.cursor-on .cursor-dot,
+html.cursor-on .cursor-ring {
+  opacity: 1;
+}
+
+html.cursor-hover .cursor-ring {
+  width: 58px;
+  height: 58px;
+  margin: -29px 0 0 -29px;
+  border-color: var(--ion);
+}
+
+@media (pointer: coarse) {
+  .cursor-dot,
+  .cursor-ring {
+    display: none;
+  }
+}
+
 @media print {
   .ghost-num,
-  .beamline {
+  .beamline,
+  .cursor-dot,
+  .cursor-ring {
     display: none;
   }
 }
@@ -540,5 +610,9 @@ html.js [data-reveal].is-revealed {
   html.js [data-reveal] {
     opacity: 1;
     transform: none;
+  }
+  .cursor-dot,
+  .cursor-ring {
+    display: none;
   }
 }

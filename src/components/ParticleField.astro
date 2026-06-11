@@ -1,0 +1,443 @@
+---
+/*
+  The site's signature machine: a GPU particle field of ~40k points that
+  lives behind the landing page and reconfigures itself as the visitor
+  scrolls — a real morphing simulation, not a looping video.
+
+    state 0 · COLLIDER   two counter-circulating bunched beams (ion ×
+                         electron) on intersecting tilted rings
+    state 1 · PHASE SPACE  the beam's phase-space portrait, filamenting
+                         into spiral arms
+    state 2 · LATTICE    a neural lattice — the surrogate model that
+                         learns the machine
+    beyond  · DISPERSAL  the beam is extracted; particles fly off
+
+  The cursor acts as a magnet (repulsor) on the field. Bunch crossings at
+  the interaction point increment any [data-events] element. Honors
+  prefers-reduced-motion with a single static frame.
+*/
+---
+
+<div class="field" aria-hidden="true">
+  <canvas data-particle-field></canvas>
+</div>
+
+<style>
+  .field {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .field canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  import * as THREE from "three";
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const TAU = Math.PI * 2;
+  const RING_R = 2.6;
+  const RING_D = 1.45; // half-distance between ring centers; < R so they cross
+  const OMEGA = 0.55; // angular speed of circulation, rad/s
+  const BUNCHES = 3;
+  // phase offset of the electron ring's bunches, chosen so that bunches from
+  // both rings arrive at the interaction point together (collisions happen)
+  const PHASE1 = Math.PI / 3;
+
+  const vert = /* glsl */ `
+    attribute vec4 aRing;     // theta0, ringIx (0|1), radial offset, axial offset
+    attribute vec3 aPhase;
+    attribute vec3 aLattice;
+    attribute vec4 aSeed;     // amp, freq, phase, brightness
+    attribute float aSpecies;
+
+    uniform float uTime;
+    uniform float uProgress;  // 0 ring → 1 phase space → 2 lattice → 2.7 gone
+    uniform float uPixelRatio;
+    uniform float uSize;
+    uniform vec3 uMouse;
+    uniform float uMouseOn;
+
+    varying float vSpecies;
+    varying float vBright;
+
+    // tilt the collider plane toward the camera
+    const mat3 TILT = mat3(
+      1.0, 0.0, 0.0,
+      0.0, 0.42261826, 0.90630779,
+      0.0, -0.90630779, 0.42261826
+    );
+
+    void main() {
+      // -- state 0: circulating collider rings ----------------------------
+      float dir = aRing.y * 2.0 - 1.0;
+      float theta = aRing.x + dir * uTime * ${OMEGA.toFixed(2)};
+      float wobble = sin(uTime * aSeed.y + aSeed.z) * aSeed.x;
+      float r = ${RING_R.toFixed(2)} + aRing.z + wobble;
+      vec3 ringPos = TILT * vec3(
+        cos(theta) * r + (aRing.y * 2.0 - 1.0) * ${RING_D.toFixed(2)},
+        sin(theta) * r,
+        aRing.w + wobble * 0.6
+      );
+
+      // -- state 1: phase-space portrait, slowly precessing ----------------
+      float spin = uTime * 0.07;
+      float cs = cos(spin), sn = sin(spin);
+      vec3 phasePos = vec3(
+        aPhase.x * cs - aPhase.y * sn,
+        aPhase.x * sn + aPhase.y * cs,
+        aPhase.z
+      );
+      phasePos.y += sin(uTime * aSeed.y * 0.5 + aSeed.z) * 0.04;
+
+      // -- state 2: neural lattice, breathing -------------------------------
+      vec3 latticePos = aLattice * (1.0 + 0.025 * sin(uTime * 0.6 + aSeed.z));
+
+      float t1 = smoothstep(0.0, 1.0, uProgress);
+      float t2 = smoothstep(1.0, 2.0, uProgress);
+      vec3 pos = mix(mix(ringPos, phasePos, t1), latticePos, t2);
+
+      // -- extraction: blow the field apart past the last section ----------
+      float boom = max(uProgress - 2.0, 0.0);
+      pos += normalize(pos + vec3(0.001)) * boom * boom * (2.0 + aSeed.w * 6.0);
+
+      // -- cursor repulsor ---------------------------------------------------
+      vec3 away = pos - uMouse;
+      float d2 = dot(away, away);
+      pos += normalize(away + vec3(0.0001)) *
+        exp(-d2 * 1.4) * 0.85 * uMouseOn;
+
+      vec4 mv = modelViewMatrix * vec4(pos, 1.0);
+      gl_Position = projectionMatrix * mv;
+      gl_PointSize = uSize * (0.5 + aSeed.w) * uPixelRatio / max(-mv.z, 0.1);
+
+      vSpecies = aSpecies;
+      vBright = 0.35 + aSeed.w * 0.65;
+    }
+  `;
+
+  const frag = /* glsl */ `
+    precision mediump float;
+
+    uniform float uDim;
+    varying float vSpecies;
+    varying float vBright;
+
+    const vec3 ION = vec3(1.0, 0.42, 0.23);
+    const vec3 ELECTRON = vec3(0.62, 0.69, 1.0);
+
+    void main() {
+      float d = length(gl_PointCoord - 0.5);
+      if (d > 0.5) discard;
+      float a = pow(smoothstep(0.5, 0.0, d), 1.7);
+      vec3 col = mix(ION, ELECTRON, vSpecies);
+      gl_FragColor = vec4(col, a * vBright * uDim);
+    }
+  `;
+
+  function gaussian() {
+    return (
+      (Math.random() + Math.random() + Math.random() + Math.random() - 2) / 2
+    );
+  }
+
+  function buildGeometry(count: number) {
+    const ring = new Float32Array(count * 4);
+    const phase = new Float32Array(count * 3);
+    const lattice = new Float32Array(count * 3);
+    const seed = new Float32Array(count * 4);
+    const species = new Float32Array(count);
+
+    // lattice nodes: a wide shallow grid, several particles per node
+    const NX = 15;
+    const NY = 9;
+    const NZ = 5;
+    const SPACING = 0.62;
+    const nodes = NX * NY * NZ;
+
+    for (let i = 0; i < count; i++) {
+      const sp = i % 2; // 0 ion, 1 electron
+      const halo = i % 5 === 4;
+
+      // ring: bunched longitudinally, gaussian transverse
+      const theta0 = halo
+        ? Math.random() * TAU
+        : (Math.floor(Math.random() * BUNCHES) / BUNCHES) * TAU +
+          sp * PHASE1 +
+          gaussian() * 0.42;
+      ring[i * 4] = theta0;
+      ring[i * 4 + 1] = sp;
+      ring[i * 4 + 2] = gaussian() * (halo ? 0.4 : 0.1);
+      ring[i * 4 + 3] = gaussian() * (halo ? 0.5 : 0.12);
+
+      // phase space: filamented spiral, elliptical, tilted by species
+      const u = Math.random();
+      const arm = i % 2 === 0 ? 0 : Math.PI;
+      const phi = u * 4.6 * Math.PI + arm;
+      const rr = 0.25 + 2.55 * Math.pow(u, 0.72) + gaussian() * 0.13;
+      phase[i * 3] = Math.cos(phi) * rr;
+      phase[i * 3 + 1] = Math.sin(phi) * rr * 0.58;
+      phase[i * 3 + 2] = gaussian() * 0.22;
+
+      // lattice: cluster particles tightly around grid nodes
+      const n = i % nodes;
+      const gx = n % NX;
+      const gy = Math.floor(n / NX) % NY;
+      const gz = Math.floor(n / (NX * NY));
+      lattice[i * 3] = (gx - (NX - 1) / 2) * SPACING + gaussian() * 0.045;
+      lattice[i * 3 + 1] = (gy - (NY - 1) / 2) * SPACING + gaussian() * 0.045;
+      lattice[i * 3 + 2] = (gz - (NZ - 1) / 2) * SPACING + gaussian() * 0.045;
+
+      seed[i * 4] = 0.02 + Math.random() * (halo ? 0.3 : 0.09);
+      seed[i * 4 + 1] = 0.8 + Math.random() * 2.4;
+      seed[i * 4 + 2] = Math.random() * TAU;
+      seed[i * 4 + 3] = halo ? Math.random() * 0.3 : 0.25 + Math.random();
+      species[i] = sp;
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("aRing", new THREE.BufferAttribute(ring, 4));
+    geo.setAttribute("aPhase", new THREE.BufferAttribute(phase, 3));
+    geo.setAttribute("aLattice", new THREE.BufferAttribute(lattice, 3));
+    geo.setAttribute("aSeed", new THREE.BufferAttribute(seed, 4));
+    geo.setAttribute("aSpecies", new THREE.BufferAttribute(species, 1));
+    // position attr is required by three even though the shader ignores it
+    geo.setAttribute(
+      "position",
+      new THREE.BufferAttribute(new Float32Array(count * 3), 3),
+    );
+    geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 30);
+    return geo;
+  }
+
+  function init(): (() => void) | null {
+    const canvas = document.querySelector(
+      "[data-particle-field]",
+    ) as HTMLCanvasElement | null;
+    if (!canvas) return null;
+
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const count = window.innerWidth < 700 ? 14000 : 42000;
+
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: false,
+        alpha: true,
+        powerPreference: "high-performance",
+      });
+    } catch {
+      return null; // no WebGL — the dark ground stands alone
+    }
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 60);
+    camera.position.set(0, 0.4, 7.4);
+
+    const uniforms = {
+      uTime: { value: 0 },
+      uProgress: { value: 0 },
+      uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, 1.75) },
+      uSize: { value: 30 },
+      uMouse: { value: new THREE.Vector3(99, 99, 0) },
+      uMouseOn: { value: 0 },
+      uDim: { value: 1 },
+    };
+
+    const material = new THREE.ShaderMaterial({
+      vertexShader: vert,
+      fragmentShader: frag,
+      uniforms,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+
+    const points = new THREE.Points(buildGeometry(count), material);
+    scene.add(points);
+
+    function resize() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+      renderer.setPixelRatio(dpr);
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      uniforms.uPixelRatio.value = dpr;
+      // pull back a bit on narrow screens so the rings fit
+      camera.position.z = w < 700 ? 9.6 : 7.4;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    if (reduced) {
+      uniforms.uTime.value = 4.2;
+      renderer.render(scene, camera);
+      const onResize = () => renderer.render(scene, camera);
+      window.addEventListener("resize", onResize);
+      return () => {
+        window.removeEventListener("resize", resize);
+        window.removeEventListener("resize", onResize);
+        renderer.dispose();
+        points.geometry.dispose();
+        material.dispose();
+      };
+    }
+
+    // -- scroll: morph the field through its states -------------------------
+    const drive = { progress: 0 };
+    const trigger = ScrollTrigger.create({
+      start: 0,
+      end: () => document.documentElement.scrollHeight - window.innerHeight,
+      scrub: 0.9,
+      onUpdate(self) {
+        drive.progress = self.progress;
+      },
+    });
+
+    // -- cursor as magnet ----------------------------------------------------
+    const raycaster = new THREE.Raycaster();
+    const planeZ = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    const ndc = new THREE.Vector2();
+    const hit = new THREE.Vector3();
+    let mouseTarget = 0;
+    const onPointer = (e: PointerEvent) => {
+      ndc.set(
+        (e.clientX / window.innerWidth) * 2 - 1,
+        -(e.clientY / window.innerHeight) * 2 + 1,
+      );
+      raycaster.setFromCamera(ndc, camera);
+      if (raycaster.ray.intersectPlane(planeZ, hit)) {
+        uniforms.uMouse.value.copy(hit);
+        mouseTarget = 1;
+      }
+    };
+    const onPointerOut = () => {
+      mouseTarget = 0;
+    };
+    window.addEventListener("pointermove", onPointer);
+    document.documentElement.addEventListener("pointerleave", onPointerOut);
+
+    // -- bunch-crossing event counter ----------------------------------------
+    const counters = document.querySelectorAll("[data-events]");
+    const ipAngle = [
+      Math.atan2(Math.sqrt(RING_R ** 2 - RING_D ** 2), RING_D),
+      Math.atan2(Math.sqrt(RING_R ** 2 - RING_D ** 2), -RING_D),
+    ];
+    let events = 0;
+    let lastBurst = -10;
+    const angDiff = (a: number, b: number) => {
+      let d = (a - b) % TAU;
+      if (d > Math.PI) d -= TAU;
+      if (d < -Math.PI) d += TAU;
+      return Math.abs(d);
+    };
+
+    function checkCollisions(t: number) {
+      if (t - lastBurst < 0.8 || drive.progress > 0.3) return;
+      const atIP = [0, 1].map((ringIx) => {
+        const dir = ringIx * 2 - 1;
+        for (let b = 0; b < BUNCHES; b++) {
+          const ang = (b * TAU) / BUNCHES + ringIx * PHASE1 + dir * OMEGA * t;
+          if (angDiff(ang, ipAngle[ringIx]) < 0.12) return true;
+        }
+        return false;
+      });
+      if (atIP[0] && atIP[1]) {
+        lastBurst = t;
+        events++;
+        const label = String(events).padStart(4, "0");
+        counters.forEach((el) => (el.textContent = label));
+      }
+    }
+
+    // -- main loop -------------------------------------------------------------
+    let raf = 0;
+    let running = true;
+    let simT = 0;
+    let prev = performance.now();
+    const camDrift = { x: 0, y: 0 };
+
+    function loop(now: number) {
+      const dt = Math.min((now - prev) / 1000, 0.05);
+      prev = now;
+      simT += dt;
+
+      uniforms.uTime.value = simT;
+      uniforms.uProgress.value +=
+        (drive.progress * 2.7 - uniforms.uProgress.value) * 0.06;
+      uniforms.uMouseOn.value += (mouseTarget - uniforms.uMouseOn.value) * 0.08;
+
+      // dim the field while reading, re-arm toward the footer
+      const p = drive.progress;
+      const dim =
+        1 - 0.62 * Math.min(p / 0.18, 1) + 0.5 * Math.max((p - 0.82) / 0.18, 0);
+      uniforms.uDim.value += (dim - uniforms.uDim.value) * 0.08;
+
+      // gentle parallax: the camera leans with the cursor
+      camDrift.x += (ndc.x * 0.45 - camDrift.x) * 0.03;
+      camDrift.y += (ndc.y * 0.3 - camDrift.y) * 0.03;
+      camera.position.x = camDrift.x;
+      camera.position.y = 0.4 + camDrift.y;
+      camera.lookAt(0, 0, 0);
+
+      // the whole structure slowly precesses as you descend
+      points.rotation.y = p * 1.9 + simT * 0.02;
+
+      checkCollisions(simT);
+      renderer.render(scene, camera);
+      raf = requestAnimationFrame(loop);
+    }
+
+    function setRunning(on: boolean) {
+      if (on === running) return;
+      running = on;
+      if (on) {
+        prev = performance.now();
+        raf = requestAnimationFrame(loop);
+      } else {
+        cancelAnimationFrame(raf);
+      }
+    }
+    const onVis = () => setRunning(!document.hidden);
+    document.addEventListener("visibilitychange", onVis);
+
+    raf = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      trigger.kill();
+      document.removeEventListener("visibilitychange", onVis);
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("pointermove", onPointer);
+      document.documentElement.removeEventListener(
+        "pointerleave",
+        onPointerOut,
+      );
+      points.geometry.dispose();
+      material.dispose();
+      renderer.dispose();
+    };
+  }
+
+  let cleanup: (() => void) | null = null;
+  document.addEventListener("astro:page-load", () => {
+    cleanup?.();
+    cleanup = init();
+  });
+  document.addEventListener("astro:before-swap", () => {
+    cleanup?.();
+    cleanup = null;
+  });
+</script>

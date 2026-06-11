@@ -81,11 +81,7 @@ function isNingdongWang(name: string): boolean {
 
   if (last.toLowerCase() !== "wang") return false;
 
-  return (
-    first.toLowerCase() === "ningdong" ||
-    first === "N." ||
-    first === "N"
-  );
+  return first.toLowerCase() === "ningdong" || first === "N." || first === "N";
 }
 
 // ---------------------------------------------------------------------------
@@ -96,7 +92,10 @@ function isNingdongWang(name: string): boolean {
  * Extract the content of a balanced brace group starting at src[pos]
  * where src[pos] === '{'. Returns the inner content (without outer braces).
  */
-function extractBraceGroup(src: string, pos: number): { content: string; end: number } {
+function extractBraceGroup(
+  src: string,
+  pos: number,
+): { content: string; end: number } {
   let depth = 0;
   let start = pos;
   for (let i = pos; i < src.length; i++) {
@@ -138,7 +137,13 @@ function parseFields(body: string): Map<string, string> {
     }
 
     // Skip whitespace then expect '='
-    while (i < body.length && body[i] === " " || body[i] === "\t" || body[i] === "\r" || body[i] === "\n") i++;
+    while (
+      (i < body.length && body[i] === " ") ||
+      body[i] === "\t" ||
+      body[i] === "\r" ||
+      body[i] === "\n"
+    )
+      i++;
     if (i >= body.length || body[i] !== "=") {
       // Malformed — skip
       continue;
@@ -171,7 +176,13 @@ function parseFields(body: string): Map<string, string> {
     } else {
       // Bare value (number or identifier)
       let j = i;
-      while (j < body.length && body[j] !== "," && body[j] !== "}" && body[j] !== "\n") j++;
+      while (
+        j < body.length &&
+        body[j] !== "," &&
+        body[j] !== "}" &&
+        body[j] !== "\n"
+      )
+        j++;
       rawValue = `{${body.slice(i, j).trim()}}`;
       i = j;
     }
@@ -219,7 +230,12 @@ export function parseBibtex(src: string): Publication[] {
     let j = 0;
     while (j < entryContent.length && /\s/.test(entryContent[j])) j++;
     let keyStart = j;
-    while (j < entryContent.length && entryContent[j] !== "," && entryContent[j] !== " ") j++;
+    while (
+      j < entryContent.length &&
+      entryContent[j] !== "," &&
+      entryContent[j] !== " "
+    )
+      j++;
     const key = entryContent.slice(keyStart, j).trim();
     if (!key) continue;
 
@@ -245,7 +261,10 @@ export function parseBibtex(src: string): Publication[] {
     // Authors
     const authorRaw = get("author");
     const authorTokens = authorRaw
-      ? authorRaw.split(/\s+and\s+/i).map((s) => s.trim()).filter(Boolean)
+      ? authorRaw
+          .split(/\s+and\s+/i)
+          .map((s) => s.trim())
+          .filter(Boolean)
       : [];
 
     const authors = authorTokens.map((token) => {

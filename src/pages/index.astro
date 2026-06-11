@@ -1,13 +1,14 @@
 ---
 import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
-import BeamCanvas from "../components/BeamCanvas.astro";
+import ParticleField from "../components/ParticleField.astro";
 import PubItem from "../components/PubItem.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import PostRow from "../components/PostRow.astro";
-import { getSelectedPublications } from "../lib/publications";
+import { getPublications, getSelectedPublications } from "../lib/publications";
 
 const selectedPubs = getSelectedPublications();
+const pubCount = getPublications().length;
 
 const projects = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
@@ -16,39 +17,62 @@ const projects = (await getCollection("projects")).sort(
 const posts = (await getCollection("posts", ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 4);
+
+const marquee = [
+  "Space charge",
+  "Beam cooling",
+  "LLM agents",
+  "Surrogate models",
+  "Electron-Ion Collider",
+  "Julia",
+  "GPU computing",
+  "Bmad",
+  "Phase space",
+  "Energy-recovery linacs",
+];
+
+const stats = [
+  { n: pubCount, suffix: "", label: "Publications" },
+  { n: 7, suffix: "", label: "DOE facilities running Osprey" },
+  { n: 2, suffix: "", label: "DOE fellowships" },
+  { n: 2027, suffix: "", label: "PhD expected" },
+];
 ---
 
 <Base title="Ningdong Wang — Accelerator Physics × AI">
+  <ParticleField />
+
   <!-- ====================================================== hero -->
-  <section class="hero" data-beam-host>
-    <BeamCanvas />
+  <section class="hero">
     <div class="wrap hero-content">
-      <div class="hero-text">
-        <p class="label rise" style="animation-delay: 80ms">
-          <span class="label-index">Cornell University</span> · PhD Candidate
-        </p>
-        <h1 class="rise" style="animation-delay: 180ms">
-          Particle <em class="g">beams</em>,<br />
-          meet <em class="c">machine intelligence</em>.
-        </h1>
-        <p class="lede rise" style="animation-delay: 300ms">
-          I'm Ningdong Wang. I study how intense charged-particle beams behave
-          inside the <strong>Electron-Ion Collider</strong> — the next great collider
-          in the US — and I build AI tools that make that work faster.
-        </p>
-        <div class="hero-cta rise" style="animation-delay: 420ms">
-          <a href="/projects/" class="btn">See the work</a>
-          <a href="mailto:nw285@cornell.edu" class="btn btn--ghost"
-            >Get in touch</a
-          >
-        </div>
-        <p class="hero-hint rise" style="animation-delay: 560ms">
-          The beams are live — steer them with your cursor.
-        </p>
+      <p class="kicker" data-hero-fade>
+        <span class="kicker-hot">Cornell University</span> · PhD Candidate · Brookhaven
+        National Lab
+      </p>
+      <h1 class="hero-title" aria-label="Ningdong Wang">
+        <span class="line" data-split>NINGDONG</span>
+        <span class="line line--outline" data-split
+          >WANG<span class="period" aria-hidden="true"></span></span
+        >
+      </h1>
+      <p class="lede" data-hero-fade>
+        I study how intense particle beams behave inside the
+        <strong>Electron-Ion Collider</strong> — the next great collider in the US
+        — and I build AI that makes that work faster.
+      </p>
+      <div class="hero-cta" data-hero-fade>
+        <a href="/projects/" class="btn" data-magnetic>Enter the beamline</a>
+        <a href="mailto:nw285@cornell.edu" class="btn btn--ghost" data-magnetic
+          >Get in touch</a
+        >
       </div>
+      <p class="hero-hint" data-hero-fade>
+        The field is live — steer it with your cursor
+      </p>
     </div>
+
     <div class="wrap">
-      <dl class="status rise" style="animation-delay: 600ms">
+      <dl class="status" data-hero-fade>
         <div class="stat">
           <dt>Machine</dt>
           <dd>Electron-Ion Collider</dd>
@@ -67,7 +91,30 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
         </div>
       </dl>
     </div>
+
+    <div class="scroll-cue" data-hero-fade aria-hidden="true">
+      <span>Scroll to inject</span>
+      <span class="cue-line"></span>
+    </div>
   </section>
+
+  <!-- ====================================================== marquee -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      {
+        [0, 1].map(() => (
+          <span class="marquee-set">
+            {marquee.map((m) => (
+              <span class="marquee-item">
+                {m}
+                <span class="tick" />
+              </span>
+            ))}
+          </span>
+        ))
+      }
+    </div>
+  </div>
 
   <!-- ====================================================== about -->
   <section class="section wrap" id="about">
@@ -91,12 +138,12 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
         </p>
         <p>
           The other half of my work is teaching machines to do accelerator
-          physics: <a href="/projects/beam-vae/">surrogate models</a> that
-          propagate whole beam distributions in milliseconds, and
-          <a href="/projects/accelerator-agents/">LLM agents</a> that operate
-          simulation and control systems — including
-          <a href="/projects/bmad-bot/">Bmad-bot</a> and the multi-lab Osprey
-          framework deployed across seven DOE facilities.
+          physics: <a href="/projects/beam-vae/">surrogate models</a> that propagate
+          whole beam distributions in milliseconds, and
+          <a href="/projects/accelerator-agents/">LLM agents</a> that operate simulation
+          and control systems — including
+          <a href="/projects/bmad-bot/">Bmad-bot</a> and the multi-lab Osprey framework
+          deployed across seven DOE facilities.
         </p>
       </div>
       <figure class="portrait" data-reveal style="--reveal-delay: 120ms">
@@ -109,6 +156,18 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
         <figcaption>N. Wang — Ithaca, NY</figcaption>
       </figure>
     </div>
+    <div class="stat-row" data-reveal>
+      {
+        stats.map((s) => (
+          <div class="big-stat">
+            <span class="big-num" data-count={s.n}>
+              0
+            </span>
+            <span class="big-label">{s.label}</span>
+          </div>
+        ))
+      }
+    </div>
   </section>
 
   <!-- ====================================================== publications -->
@@ -118,7 +177,7 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
         <p class="label">
           <span class="label-index">02</span> Selected publications
         </p>
-        <h2 class="section-title">On the record</h2>
+        <h2 class="section-title">On the <em>record</em></h2>
       </div>
       <a href="/publications/" class="mlink">All publications</a>
       <span class="ghost-num">02</span>
@@ -139,7 +198,7 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
     <div class="section-head" data-reveal>
       <div>
         <p class="label"><span class="label-index">03</span> Projects</p>
-        <h2 class="section-title">Built to be used</h2>
+        <h2 class="section-title">Built to be <em>used</em></h2>
       </div>
       <a href="/projects/" class="mlink">All projects</a>
       <span class="ghost-num">03</span>
@@ -164,7 +223,7 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
     <div class="section-head" data-reveal>
       <div>
         <p class="label"><span class="label-index">04</span> Writing</p>
-        <h2 class="section-title">Notes from the intersection</h2>
+        <h2 class="section-title">Notes from the <em>intersection</em></h2>
       </div>
       <a href="/blog/" class="mlink">All posts</a>
       <span class="ghost-num">04</span>
@@ -185,87 +244,91 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
   /* hero ------------------------------------------------------------ */
   .hero {
     position: relative;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: min(92vh, 58rem);
-    padding-block: clamp(3rem, 8vh, 6rem) 2.5rem;
+    min-height: calc(100vh - 3.75rem);
+    padding-block: clamp(2rem, 6vh, 4rem) 4.5rem;
   }
 
-  /* fine blueprint grid behind the hero only */
-  .hero::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-      linear-gradient(var(--hairline) 1px, transparent 1px),
-      linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
-    background-size: 64px 64px;
-    opacity: 0.3;
-    mask-image: radial-gradient(
-      ellipse 90% 80% at 60% 30%,
-      black 30%,
-      transparent 75%
-    );
-    -webkit-mask-image: radial-gradient(
-      ellipse 90% 80% at 60% 30%,
-      black 30%,
-      transparent 75%
-    );
-  }
-
+  /* soft dark pool behind the text so it reads over the beams */
   .hero-content {
     position: relative;
-    z-index: 2;
-    width: 100%;
-    flex: 1;
+  }
+
+  .hero-content::before {
+    content: "";
+    position: absolute;
+    inset: -8% -30% -12% -50%;
+    z-index: -1;
+    background: radial-gradient(
+      ellipse 60% 70% at 30% 45%,
+      rgba(5, 6, 8, 0.72),
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+
+  .kicker {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 0 0 1.8rem;
+  }
+
+  .kicker-hot {
+    color: var(--ion-bright);
+  }
+
+  .hero-title {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    font-size: clamp(3.4rem, 11.5vw, 9.5rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 0.92;
+    text-transform: uppercase;
+    margin: 0 0 2rem;
   }
 
-  .hero-text {
-    max-width: 38em;
+  .line {
+    display: block;
+    overflow: hidden;
   }
 
-  h1 {
-    font-size: clamp(2.8rem, 6.6vw, 5.2rem);
-    font-weight: 460;
-    line-height: 1.05;
-    margin: 1.5rem 0 1.8rem;
-    font-optical-sizing: auto;
+  .line--outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(240, 237, 230, 0.75);
   }
 
-  h1 em {
-    font-style: italic;
-    font-weight: 420;
-  }
-
-  h1 .g {
-    color: var(--gold-bright);
-  }
-
-  h1 .c {
-    color: var(--cyan-bright);
+  .period {
+    display: inline-block;
+    width: 0.14em;
+    height: 0.14em;
+    margin-left: 0.08em;
+    background: var(--ion);
+    -webkit-text-stroke: 0;
   }
 
   .lede {
     font-size: clamp(1.0625rem, 1.6vw, 1.3125rem);
-    line-height: 1.65;
+    font-weight: 400;
+    line-height: 1.6;
     color: var(--ink-mute);
     max-width: 30em;
-    margin-bottom: 2.2rem;
+    margin-bottom: 2.4rem;
   }
 
   .lede strong {
     color: var(--ink);
-    font-weight: 500;
+    font-weight: 560;
   }
 
   .hero-cta {
     display: flex;
-    gap: 1rem;
+    gap: 1.1rem;
     flex-wrap: wrap;
   }
 
@@ -275,12 +338,12 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--ink-faint);
-    margin-top: 2.4rem;
+    margin-top: 2.6rem;
   }
 
   .hero-hint::before {
     content: "↳ ";
-    color: var(--cyan);
+    color: var(--electron);
   }
 
   @media (hover: none) {
@@ -292,13 +355,12 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
   /* status strip ----------------------------------------------------- */
   .status {
     position: relative;
-    z-index: 2;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     border-block: 1px solid var(--hairline);
-    margin: 3rem 0 0;
+    margin: 3.5rem 0 0;
     padding: 0;
-    background: rgba(8, 11, 16, 0.55);
+    background: rgba(5, 6, 8, 0.55);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
   }
@@ -318,7 +380,7 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
     font-size: 0.625rem;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--ion);
     margin-bottom: 0.35rem;
     display: flex;
     align-items: center;
@@ -327,26 +389,25 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
 
   .stat dd {
     margin: 0;
-    font-size: 1rem;
+    font-size: 0.9375rem;
     color: var(--ink-mute);
   }
 
   .stat--live dt {
-    color: var(--cyan);
+    color: var(--electron);
   }
 
   .stat--live .ev {
     font-family: var(--mono);
     font-size: 0.9375rem;
-    color: var(--cyan-bright);
+    color: var(--electron-bright);
     font-variant-numeric: tabular-nums;
   }
 
   .live-dot {
     width: 6px;
     height: 6px;
-    border-radius: 50%;
-    background: var(--cyan-bright);
+    background: var(--electron-bright);
     animation: blink 2.2s ease-in-out infinite;
   }
 
@@ -360,9 +421,107 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
     }
   }
 
+  /* scroll cue --------------------------------------------------------- */
+  .scroll-cue {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: var(--mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .cue-line {
+    width: 1px;
+    height: 3.4rem;
+    background: var(--hairline-strong);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cue-line::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -40%;
+    width: 100%;
+    height: 40%;
+    background: var(--ion);
+    animation: cue-drop 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+
+  @keyframes cue-drop {
+    to {
+      top: 110%;
+    }
+  }
+
+  /* marquee ------------------------------------------------------------ */
+  .marquee {
+    position: relative;
+    overflow: hidden;
+    border-block: 1px solid var(--hairline);
+    padding-block: 0.95rem;
+    background: rgba(5, 6, 8, 0.65);
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-scroll 36s linear infinite;
+  }
+
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  .marquee-set {
+    display: flex;
+    flex: none;
+  }
+
+  .marquee-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 2.2rem;
+    padding-right: 2.2rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+
+  .marquee-item .tick {
+    width: 7px;
+    height: 7px;
+    background: rgba(255, 92, 51, 0.55);
+    transform: rotate(45deg);
+  }
+
+  @keyframes marquee-scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
+  }
+
   /* sections ---------------------------------------------------------- */
   .section {
-    padding-block: clamp(4rem, 9vh, 7rem) 0;
+    padding-block: clamp(4.5rem, 10vh, 8rem) 0;
   }
 
   /* about ------------------------------------------------------------- */
@@ -394,26 +553,26 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
   .portrait::before {
     top: 0;
     left: 0;
-    border-top: 1px solid var(--gold);
-    border-left: 1px solid var(--gold);
+    border-top: 1px solid var(--ion);
+    border-left: 1px solid var(--ion);
   }
 
   .portrait::after {
     bottom: 0;
     right: 0;
-    border-bottom: 1px solid var(--cyan);
-    border-right: 1px solid var(--cyan);
+    border-bottom: 1px solid var(--electron);
+    border-right: 1px solid var(--electron);
   }
 
   .portrait:hover::before,
   .portrait:hover::after {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
   }
 
   .portrait img {
     width: 100%;
-    filter: saturate(0.9);
+    filter: saturate(0.88);
   }
 
   .portrait figcaption {
@@ -424,6 +583,45 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
     color: var(--ink-faint);
     margin-top: 0.8rem;
     text-align: right;
+  }
+
+  /* big counters -------------------------------------------------------- */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: clamp(2.5rem, 6vh, 4rem);
+    border: 1px solid var(--hairline);
+    background: rgba(9, 11, 16, 0.6);
+  }
+
+  .big-stat {
+    padding: 1.6rem 1.5rem 1.4rem;
+    border-left: 1px solid var(--hairline);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .big-stat:first-child {
+    border-left: 0;
+  }
+
+  .big-num {
+    font-family: var(--display);
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .big-label {
+    font-family: var(--mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
   }
 
   /* lists ------------------------------------------------------------- */
@@ -446,11 +644,7 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
   @media (max-width: 880px) {
     .hero {
       min-height: 0;
-      padding-top: 30rem;
-    }
-
-    .hero-text {
-      max-width: 100%;
+      padding-top: 4rem;
     }
 
     .about-grid {
@@ -465,18 +659,140 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
       grid-template-columns: 1fr;
     }
 
-    .status {
-      grid-template-columns: 1fr;
+    .status,
+    .stat-row {
+      grid-template-columns: 1fr 1fr;
     }
 
     .stat {
       border-left: 0;
       border-top: 1px solid var(--hairline);
-      padding-inline: 0;
+      padding-inline: 0 1rem;
+    }
+
+    .stat:nth-child(-n + 2) {
+      border-top: 0;
+    }
+
+    .big-stat:nth-child(odd) {
+      border-left: 0;
+    }
+
+    .big-stat:nth-child(n + 3) {
+      border-top: 1px solid var(--hairline);
+    }
+
+    .scroll-cue {
+      display: none;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .status,
+    .stat-row {
+      grid-template-columns: 1fr;
+    }
+
+    .stat:nth-child(-n + 2) {
+      border-top: 1px solid var(--hairline);
     }
 
     .stat:first-child {
       border-top: 0;
     }
+
+    .big-stat {
+      border-top: 1px solid var(--hairline);
+    }
+
+    .big-stat:first-child {
+      border-top: 0;
+    }
   }
 </style>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { SplitText } from "gsap/SplitText";
+
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+
+  let ctx: gsap.Context | null = null;
+
+  function initHome() {
+    if (!document.querySelector(".hero-title")) return;
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return; // everything is visible by default — no choreography
+
+    ctx = gsap.context(() => {
+      // -- hero entrance: characters rise out of a mask -------------------
+      const splits = SplitText.create("[data-split]", {
+        type: "chars",
+        charsClass: "split-char",
+      });
+      const tl = gsap.timeline({
+        defaults: { ease: "power4.out" },
+      });
+      tl.from(splits.chars, {
+        yPercent: 118,
+        rotation: 4,
+        duration: 1.1,
+        stagger: 0.035,
+        delay: 0.15,
+      }).from(
+        "[data-hero-fade]",
+        {
+          opacity: 0,
+          y: 26,
+          duration: 0.9,
+          stagger: 0.09,
+          ease: "power3.out",
+        },
+        "-=0.7",
+      );
+
+      // characters need their own boxes for the mask reveal
+      gsap.set(".split-char", { display: "inline-block" });
+
+      // -- big counters ----------------------------------------------------
+      document.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => {
+        const target = Number(el.dataset.count ?? "0");
+        const state = { v: 0 };
+        gsap.to(state, {
+          v: target,
+          duration: 1.6,
+          ease: "power2.out",
+          scrollTrigger: { trigger: el, start: "top 88%", once: true },
+          onUpdate() {
+            el.textContent = String(Math.round(state.v));
+          },
+        });
+      });
+
+      // -- ghost numerals drift slower than the page (parallax) ------------
+      document.querySelectorAll<HTMLElement>(".ghost-num").forEach((el) => {
+        gsap.fromTo(
+          el,
+          { yPercent: 30 },
+          {
+            yPercent: -30,
+            ease: "none",
+            scrollTrigger: {
+              trigger: el.parentElement,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 0.6,
+            },
+          },
+        );
+      });
+    });
+  }
+
+  document.addEventListener("astro:page-load", initHome);
+  document.addEventListener("astro:before-swap", () => {
+    ctx?.revert();
+    ctx = null;
+  });
+</script>

@@ -11,12 +11,14 @@
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.3",
-    "@fontsource-variable/newsreader": "^5.2.5",
+    "@fontsource-variable/bricolage-grotesque": "^5.2.10",
     "@fontsource/ibm-plex-mono": "^5.2.5",
     "astro": "^5.7.0",
+    "gsap": "^3.15.0",
     "katex": "^0.17.0",
     "rehype-katex": "^7.0.1",
-    "remark-math": "^6.0.0"
+    "remark-math": "^6.0.0",
+    "three": "^0.184.0"
   },
   "devDependencies": {
     "prettier": "^3.1.1",
