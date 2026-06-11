@@ -13,3 +13,6 @@ node_modules/
 .DS_Store
 .idea
 .claude/
+
+# private reference material (contains personal contact info)
+Ningdong_Wang_Complete_Portfolio.docx

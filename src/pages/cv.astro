@@ -2,14 +2,9 @@
 import Base from "../layouts/Base.astro";
 import { getPublications } from "../lib/publications";
 
-const pubCount = getPublications().length;
-
-/*
-  NOTE FOR NINGDONG: the data below was assembled from the site's own content
-  (publications, projects, about). Fill in the items marked TODO — undergrad
-  institution, PhD start/expected dates, awards, talks — then delete the
-  comments.
-*/
+const pubs = getPublications();
+const pubCount = pubs.length;
+const firstAuthorCount = pubs.filter((p) => p.authors[0]?.isMe).length;
 
 const sections = [
   {
@@ -17,39 +12,82 @@ const sections = [
     label: "Education",
     entries: [
       {
-        title: "PhD, Accelerator Physics",
+        title: "PhD, Physics",
         where: "Cornell University — Ithaca, NY",
-        when: "in progress", // TODO: e.g. "2021 — 2026 (expected)"
+        when: "expected May 2027",
         bullets: [
-          "Research: space charge simulation and optimization for the Electron-Ion Collider (Strong Hadron Cooler and Low Energy Cooler).",
-          "Advised within the Bmad/SciBmad accelerator simulation group.",
+          "Focus: scientific machine learning, physics-informed neural networks, GPU acceleration, accelerator physics.",
+          "Research on space charge simulation, high-dimensional optimization, and next-generation accelerator simulation software for the Electron-Ion Collider (EIC).",
+          "Awards: DOE Office of Science SCGSR Program (2023) · DOE Tigner Traineeship (2025).",
         ],
       },
-      // TODO: add undergraduate degree
+      {
+        title: "B.S., Electrical Engineering & Engineering Physics",
+        where: "University of Illinois at Urbana–Champaign — Urbana, IL",
+        when: "May 2020",
+        bullets: ["Dual degree in Electrical Engineering and Engineering Physics."],
+      },
+    ],
+  },
+  {
+    id: "experience",
+    label: "Experience",
+    entries: [
+      {
+        title: "Research Assistant",
+        where: "Brookhaven National Laboratory — Upton, NY & remote",
+        when: "June 2023 — present",
+        bullets: [
+          "Developed space charge modeling tools for the Electron-Ion Collider design, the next major U.S. nuclear physics facility.",
+          "Engineered large-scale parallel Monte Carlo simulations on HPC clusters to model non-linear collective effects in many-body systems.",
+          "Applied multi-objective evolutionary algorithms (NSGA-II) to optimize a 20+-dimensional parameter space, reducing energy spread by 85% and improving normalized emittance by 62%.",
+          "Collaborated with multi-disciplinary teams across BNL, Cornell, and JLab; awarded the DOE SCGSR fellowship for outstanding graduate research.",
+        ],
+      },
+      {
+        title: "Research Assistant",
+        where: "Cornell University — Ithaca, NY",
+        when: "May 2021 — present",
+        bullets: [
+          "Implemented cathode space-charge tracking in the Bmad accelerator simulation toolkit (Fortran), improving prediction accuracy for non-linear beam behavior.",
+          "Investigated RF cavity coupler effects on beam quality in the EIC cooler injector.",
+          "Architecting next-generation GPU-accelerated accelerator simulation software in Julia (SpaceCharge.jl, BeamTracking.jl), achieving 30–100× performance improvements over legacy Fortran solvers.",
+          "Developed generative AI models (VAE + causal transformer) and physics-informed neural network surrogates for computationally intensive simulations.",
+        ],
+      },
     ],
   },
   {
     id: "research",
-    label: "Research",
+    label: "AI × Physics research",
     entries: [
       {
-        title: "Space charge & beam cooling for the EIC",
-        where: "Cornell University / EIC collaboration",
-        when: "ongoing",
+        title: "Learning beam dynamics in the latent space of beam distributions",
+        where: "Cornell University",
+        when: "2025 — present",
         bullets: [
-          "Multi-objective optimization of the Strong Hadron Cooler ERL injector (NAPAC'25).",
-          "Optimization of cooling distribution of the EIC SHC cooler ERL (IPAC'24).",
-          "EIC cooler injector space charge benchmark (IPAC'23).",
-          "Cathode space charge modeling in Bmad (IPAC'22).",
+          "VAE encodes the 15 pairwise 2D projections of the 6D phase space into a 256-dimensional latent vector, reconstructing beam sizes and centroids with R² ≥ 0.9995 across all six coordinates.",
+          "GPT-style causal transformer propagates the latent beam state element-by-element with explicit lattice tokenization — lattice-agnostic by construction.",
+          "End-to-end inference in ≈67 ms per 32-element trajectory on a single GPU: real-time-capable for online control.",
         ],
       },
       {
-        title: "AI for accelerator physics",
+        title: "Physics-informed 3D U-Net for space charge field prediction",
         where: "Cornell University",
-        when: "ongoing",
+        when: "2025 — present",
         bullets: [
-          "LLM agents and assistants for accelerator simulation workflows (Bmad-bot).",
-          "Fast ML surrogate models — transformers, VAEs, diffusion — for computationally intensive beam simulations.",
+          "Surrogate model predicting electric fields from particle-density grids, replacing expensive iterative Poisson solvers.",
+          "Physics-constrained loss incorporating Poisson's equation so model outputs obey physical laws.",
+        ],
+      },
+      {
+        title: "AI agents for accelerator operations",
+        where: "Cornell University / BNL / LBNL (Osprey, MOAT)",
+        when: "2025 — present",
+        bullets: [
+          "Designed autonomous agents integrating with simulation software and control systems; built MCP servers to query live systems and execute multi-step workflows.",
+          "Developed an agent evaluation framework (AcceleratorGym) benchmarking correctness and reliability on realistic operational scenarios; pushing for deployment on a real accelerator at BNL.",
+          "Contributing to Osprey, a multi-institution agentic-AI framework for accelerator control deployed across seven DOE facilities under the Genesis Mission MOAT seed effort.",
         ],
       },
     ],
@@ -63,7 +101,15 @@ const sections = [
         where: "github.com/bmad-sim/SpaceCharge.jl",
         when: "",
         bullets: [
-          "GPU-accelerated Julia package for space charge field calculation; 10–100× speedups over the reference Fortran implementation.",
+          "GPU-accelerated Julia package for space charge field calculation: PIC solver with Integrated Green's Functions and FFT convolutions, custom CUDA kernels, >1000× total speedup over the legacy Fortran reference via a systematic AI-assisted optimization methodology.",
+        ],
+      },
+      {
+        title: "BeamTracking.jl / SciBmad ecosystem",
+        where: "github.com/bmad-sim",
+        when: "",
+        bullets: [
+          "Contributor to the next-generation Julia accelerator simulation engine (automatic differentiation, GPU acceleration); integrated SpaceCharge.jl as its space charge engine. Also maintain BeamPhysics.jl (openPMD beam analysis) and AtomicAndPhysicalConstants.jl.",
         ],
       },
       {
@@ -71,7 +117,15 @@ const sections = [
         where: "Slack / Matrix",
         when: "",
         bullets: [
-          "LLM-powered assistant answering questions over 600+ pages of Bmad and Tao documentation, with retrieval and source citations.",
+          "RAG assistant answering questions over 600+ pages of Bmad and Tao documentation — hybrid FAISS vector + keyword retrieval, source citations, >80% retrieval accuracy in internal tests, privacy-conscious anonymized logging.",
+        ],
+      },
+      {
+        title: "Real-time voice agent framework",
+        where: "github.com/ndwang/voice_agent",
+        when: "",
+        bullets: [
+          "Microservices-based voice AI with <2 s end-to-end latency on local consumer hardware: Director–Speaker orchestration, concurrent ASR/LLM/TTS streaming pipelines, interrupt handling for natural conversation.",
         ],
       },
       {
@@ -79,8 +133,26 @@ const sections = [
         where: "bmad2scibmad.com",
         when: "",
         bullets: [
-          "Cloud service wrapping the Bmad distribution's lattice translation program for the SciBmad community.",
+          "Cloud service wrapping the Bmad distribution's lattice translation program (4 GB, hard to compile locally) for the SciBmad community.",
         ],
+      },
+    ],
+  },
+  {
+    id: "awards",
+    label: "Awards",
+    entries: [
+      {
+        title: "DOE Tigner Traineeship",
+        where: "U.S. Department of Energy",
+        when: "2025",
+        bullets: [],
+      },
+      {
+        title: "DOE Office of Science SCGSR Program",
+        where: "U.S. Department of Energy",
+        when: "2023",
+        bullets: [],
       },
     ],
   },
@@ -89,19 +161,35 @@ const sections = [
     label: "Skills",
     entries: [
       {
+        title: "ML / AI",
+        where: "",
+        when: "",
+        bullets: [
+          "PyTorch · transformers, VAEs, diffusion models, 3D U-Net · physics-informed neural networks (PINNs).",
+        ],
+      },
+      {
+        title: "Agentic AI",
+        where: "",
+        when: "",
+        bullets: [
+          "LLM agents & MCP · RAG (FAISS, ChromaDB) · ASR/TTS/VAD pipelines · FastAPI, asyncio, WebSockets.",
+        ],
+      },
+      {
         title: "Scientific computing",
         where: "",
         when: "",
         bullets: [
-          "Julia, Python, Fortran · GPU computing (CUDA) · PIC / FFT field solvers · Bmad, Tao, SciBmad.",
+          "Julia, Python, C/C++, CUDA, Fortran · MPI/OpenMP, Slurm, custom GPU kernels, NVIDIA Nsight · Bmad, Tao, SciBmad.",
         ],
       },
       {
-        title: "Machine learning",
+        title: "Optimization",
         where: "",
         when: "",
         bullets: [
-          "LLM agents & retrieval systems · surrogate modeling (transformers, VAEs, diffusion) · multi-objective optimization.",
+          "NSGA-II & genetic algorithms · Bayesian optimization · numerical analysis, linear algebra.",
         ],
       },
     ],
@@ -114,11 +202,14 @@ const sections = [
   description="Curriculum vitae of Ningdong Wang — accelerator physicist at Cornell University."
 >
   <div class="wrap page">
-    <header class="page-head">
-      <p class="label"><span class="label-index">Dossier</span> Curriculum vitae</p>
+    <header class="page-head" data-reveal>
+      <p class="label">
+        <span class="label-index">Dossier</span> Curriculum vitae
+      </p>
       <h1>Ningdong Wang</h1>
+      <span class="ghost-num">CV</span>
       <p class="sub">
-        PhD candidate, accelerator physics · Cornell University ·
+        PhD candidate, physics · Cornell University ·
         <a class="tlink" href="mailto:nw285@cornell.edu">nw285@cornell.edu</a>
       </p>
     </header>
@@ -135,11 +226,13 @@ const sections = [
                   {e.when && <span class="when">{e.when}</span>}
                 </div>
                 {e.where && <p class="where">{e.where}</p>}
-                <ul>
-                  {e.bullets.map((b) => (
-                    <li>{b}</li>
-                  ))}
-                </ul>
+                {e.bullets.length > 0 && (
+                  <ul>
+                    {e.bullets.map((b) => (
+                      <li>{b}</li>
+                    ))}
+                  </ul>
+                )}
               </div>
             ))}
           </div>
@@ -152,7 +245,7 @@ const sections = [
       <div class="cv-entries">
         <div class="entry">
           <p class="where">
-            {pubCount} conference papers and reports (IPAC, NAPAC) —
+            {pubCount} conference papers and reports (IPAC, NAPAC), {firstAuthorCount} first-author —
             <a class="tlink" href="/publications/">full list</a>.
           </p>
         </div>
@@ -166,8 +259,13 @@ const sections = [
     padding-top: clamp(2.5rem, 6vh, 4.5rem);
   }
 
+  .page-head {
+    position: relative;
+  }
+
   h1 {
-    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    font-size: clamp(2.6rem, 5.5vw, 4rem);
+    font-weight: 460;
     margin: 1.2rem 0 1rem;
   }
 
