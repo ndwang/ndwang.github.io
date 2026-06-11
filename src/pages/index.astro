@@ -40,10 +40,9 @@ const stats = [
 ---
 
 <Base title="Ningdong Wang — Accelerator Physics × AI">
-  <ParticleField />
-
   <!-- ====================================================== hero -->
   <section class="hero">
+    <ParticleField />
     <div class="wrap hero-content">
       <p class="kicker" data-hero-fade>
         <span class="kicker-hot">Cornell University</span> · PhD Candidate · Brookhaven
@@ -117,7 +116,7 @@ const stats = [
   </div>
 
   <!-- ====================================================== about -->
-  <section class="section wrap" id="about">
+  <section class="section section--about wrap" id="about">
     <div class="section-head" data-reveal>
       <div>
         <p class="label"><span class="label-index">01</span> About</p>
@@ -171,7 +170,7 @@ const stats = [
   </section>
 
   <!-- ====================================================== publications -->
-  <section class="section wrap" id="publications">
+  <section class="section section--pubs wrap" id="publications">
     <div class="section-head" data-reveal>
       <div>
         <p class="label">
@@ -194,7 +193,7 @@ const stats = [
   </section>
 
   <!-- ====================================================== projects -->
-  <section class="section wrap" id="projects">
+  <section class="section section--projects wrap" id="projects">
     <div class="section-head" data-reveal>
       <div>
         <p class="label"><span class="label-index">03</span> Projects</p>
@@ -219,7 +218,7 @@ const stats = [
   </section>
 
   <!-- ====================================================== writing -->
-  <section class="section wrap" id="writing">
+  <section class="section section--writing wrap" id="writing">
     <div class="section-head" data-reveal>
       <div>
         <p class="label"><span class="label-index">04</span> Writing</p>
@@ -521,7 +520,76 @@ const stats = [
 
   /* sections ---------------------------------------------------------- */
   .section {
+    position: relative;
     padding-block: clamp(4.5rem, 10vh, 8rem) 0;
+  }
+
+  /* static, whisper-quiet backdrops — atmosphere without motion.
+     Each motif echoes a state of the machine; all are masked so they
+     fade out long before they reach the text. */
+  .section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* about: blueprint grid — the machine drawing */
+  .section--about::before {
+    background:
+      linear-gradient(var(--hairline) 1px, transparent 1px),
+      linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+    background-size: 64px 64px;
+    opacity: 0.4;
+    mask-image: radial-gradient(
+      ellipse 75% 85% at 78% 12%,
+      black 25%,
+      transparent 72%
+    );
+    -webkit-mask-image: radial-gradient(
+      ellipse 75% 85% at 78% 12%,
+      black 25%,
+      transparent 72%
+    );
+  }
+
+  /* publications: a cold electron wash off the top-right corner */
+  .section--pubs::before {
+    background: radial-gradient(
+      52rem 30rem at 88% -5%,
+      rgba(143, 167, 255, 0.06),
+      transparent 65%
+    );
+  }
+
+  /* projects: dot lattice — the surrogate model, standing still */
+  .section--projects::before {
+    background-image: radial-gradient(
+      rgba(240, 237, 230, 0.14) 1px,
+      transparent 1.5px
+    );
+    background-size: 30px 30px;
+    opacity: 0.5;
+    mask-image: radial-gradient(
+      ellipse 85% 75% at 50% 38%,
+      black 15%,
+      transparent 72%
+    );
+    -webkit-mask-image: radial-gradient(
+      ellipse 85% 75% at 50% 38%,
+      black 15%,
+      transparent 72%
+    );
+  }
+
+  /* writing: a warm ion wash rising from the bottom-left */
+  .section--writing::before {
+    background: radial-gradient(
+      48rem 28rem at 8% 105%,
+      rgba(255, 92, 51, 0.05),
+      transparent 65%
+    );
   }
 
   /* about ------------------------------------------------------------- */
