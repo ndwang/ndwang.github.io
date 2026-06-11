@@ -107,127 +107,146 @@ const stats = [
     </div>
   </div>
 
-  <!-- ====================================================== about -->
-  <section class="section section--about wrap" id="about">
-    <div class="section-head" data-reveal>
-      <div>
-        <p class="label"><span class="label-index">01</span> About</p>
-        <h2 class="section-title">Beam physics, <em>by day and by GPU</em></h2>
-      </div>
-      <span class="ghost-num">01</span>
+  <!-- the beam injected at the hero travels this route; a schematic spine
+       runs the left gutter on wide screens, station by station -->
+  <div class="beam-route">
+    <div class="spine" aria-hidden="true">
+      <span class="spine-bunch"></span>
+      <span class="spine-cap"></span>
     </div>
-    <div class="about-grid">
-      <div class="about-prose prose" data-reveal>
-        <p>
-          I'm a PhD candidate in physics at Cornell University and a research
-          assistant at Brookhaven National Laboratory, focused on space charge
-          simulation and optimization for the Electron-Ion Collider — work
-          recognized by a DOE SCGSR fellowship and a DOE Tigner Traineeship. My
-          research centers on how intense charged particle beams evolve under
-          collective interactions, with applications to the EIC Strong Hadron
-          Cooler and Low Energy Cooler.
-        </p>
-        <p>
-          The other half of my work is teaching machines to do accelerator
-          physics: <a href="/projects/beam-vae/">surrogate models</a> that propagate
-          whole beam distributions in milliseconds, and
-          <a href="/projects/accelerator-agents/">LLM agents</a> that operate simulation
-          and control systems — including
-          <a href="/projects/bmad-bot/">Bmad-bot</a> and the multi-lab Osprey framework
-          deployed across seven DOE facilities.
-        </p>
-      </div>
-      <figure class="portrait" data-reveal style="--reveal-delay: 120ms">
-        <img
-          src="/images/ningdong_wang_pic.jpg"
-          alt="Portrait of Ningdong Wang"
-          width="380"
-          loading="lazy"
-        />
-      </figure>
-    </div>
-    <div class="stat-row" data-reveal>
-      {
-        stats.map((s) => (
-          <div class="big-stat">
-            <span class="big-num" data-count={s.n}>
-              0
-            </span>
-            <span class="big-label">{s.label}</span>
-          </div>
-        ))
-      }
-    </div>
-  </section>
 
-  <!-- ====================================================== writing -->
-  <section class="section section--writing wrap" id="writing">
-    <div class="section-head" data-reveal>
-      <div>
-        <p class="label"><span class="label-index">02</span> Writing</p>
-        <h2 class="section-title">Notes from the <em>intersection</em></h2>
+    <!-- ====================================================== about -->
+    <section class="section section--about wrap" id="about">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="label"><span class="label-index">01</span> About</p>
+          <h2 class="section-title">
+            Beam physics, <em>by day and by GPU</em>
+          </h2>
+        </div>
+        <span class="ghost-num">01</span>
+        <span class="head-beam" aria-hidden="true"></span>
       </div>
-      <a href="/blog/" class="mlink">All posts</a>
-      <span class="ghost-num">02</span>
-    </div>
-    <div class="post-list">
-      {
-        posts.map((post, i) => (
-          <div data-reveal style={`--reveal-delay: ${i * 70}ms`}>
-            <PostRow post={post} />
-          </div>
-        ))
-      }
-    </div>
-  </section>
+      <div class="about-grid">
+        <div class="about-prose prose" data-reveal>
+          <p>
+            I'm a PhD candidate in physics at Cornell University and a research
+            assistant at Brookhaven National Laboratory, focused on space charge
+            simulation and optimization for the Electron-Ion Collider — work
+            recognized by a DOE SCGSR fellowship and a DOE Tigner Traineeship.
+            My research centers on how intense charged particle beams evolve
+            under collective interactions, with applications to the EIC Strong
+            Hadron Cooler and Low Energy Cooler.
+          </p>
+          <p>
+            The other half of my work is teaching machines to do accelerator
+            physics: <a href="/projects/beam-vae/">surrogate models</a> that propagate
+            whole beam distributions in milliseconds, and
+            <a href="/projects/accelerator-agents/">LLM agents</a> that operate simulation
+            and control systems — including
+            <a href="/projects/bmad-bot/">Bmad-bot</a> and the multi-lab Osprey framework
+            deployed across seven DOE facilities.
+          </p>
+        </div>
+        <figure class="portrait" data-reveal style="--reveal-delay: 120ms">
+          <img
+            src="/images/ningdong_wang_pic.jpg"
+            alt="Portrait of Ningdong Wang"
+            width="380"
+            loading="lazy"
+          />
+          <figcaption class="fig-cap" aria-hidden="true">
+            <span>Fig. 01 — Operator</span>
+            <span>Cornell · BNL</span>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="stat-row" data-reveal>
+        {
+          stats.map((s) => (
+            <div class="big-stat">
+              <span class="big-num" data-count={s.n}>
+                0
+              </span>
+              <span class="big-label">{s.label}</span>
+            </div>
+          ))
+        }
+      </div>
+    </section>
 
-  <!-- ====================================================== projects -->
-  <section class="section section--projects wrap" id="projects">
-    <div class="section-head" data-reveal>
-      <div>
-        <p class="label"><span class="label-index">03</span> Projects</p>
-        <h2 class="section-title">Built to be <em>used</em></h2>
+    <!-- ====================================================== writing -->
+    <section class="section section--writing wrap" id="writing">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="label"><span class="label-index">02</span> Writing</p>
+          <h2 class="section-title">Notes from the <em>intersection</em></h2>
+        </div>
+        <a href="/blog/" class="mlink">All posts</a>
+        <span class="ghost-num">02</span>
+        <span class="head-beam" aria-hidden="true"></span>
       </div>
-      <a href="/projects/" class="mlink">All projects</a>
-      <span class="ghost-num">03</span>
-    </div>
-    <div class="project-grid">
-      {
-        projects.slice(0, 3).map((project, i) => (
-          <div
-            class="project-cell"
-            data-reveal
-            style={`--reveal-delay: ${i * 90}ms`}
-          >
-            <ProjectCard project={project} />
-          </div>
-        ))
-      }
-    </div>
-  </section>
+      <div class="post-list">
+        {
+          posts.map((post, i) => (
+            <div data-reveal style={`--reveal-delay: ${i * 70}ms`}>
+              <PostRow post={post} index={i + 1} />
+            </div>
+          ))
+        }
+      </div>
+    </section>
 
-  <!-- ====================================================== publications -->
-  <section class="section section--pubs wrap" id="publications">
-    <div class="section-head" data-reveal>
-      <div>
-        <p class="label">
-          <span class="label-index">04</span> Selected publications
-        </p>
-        <h2 class="section-title">On the <em>record</em></h2>
+    <!-- ====================================================== projects -->
+    <section class="section section--projects wrap" id="projects">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="label"><span class="label-index">03</span> Projects</p>
+          <h2 class="section-title">Built to be <em>used</em></h2>
+        </div>
+        <a href="/projects/" class="mlink">All projects</a>
+        <span class="ghost-num">03</span>
+        <span class="head-beam" aria-hidden="true"></span>
       </div>
-      <a href="/publications/" class="mlink">All publications</a>
-      <span class="ghost-num">04</span>
-    </div>
-    <div class="pub-list">
-      {
-        selectedPubs.map((pub, i) => (
-          <div data-reveal style={`--reveal-delay: ${i * 70}ms`}>
-            <PubItem pub={pub} />
-          </div>
-        ))
-      }
-    </div>
-  </section>
+      <div class="project-grid">
+        {
+          projects.slice(0, 3).map((project, i) => (
+            <div
+              class="project-cell"
+              data-reveal
+              style={`--reveal-delay: ${i * 90}ms`}
+            >
+              <ProjectCard project={project} index={i + 1} />
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ====================================================== publications -->
+    <section class="section section--pubs wrap" id="publications">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="label">
+            <span class="label-index">04</span> Selected publications
+          </p>
+          <h2 class="section-title">On the <em>record</em></h2>
+        </div>
+        <a href="/publications/" class="mlink">All publications</a>
+        <span class="ghost-num">04</span>
+        <span class="head-beam" aria-hidden="true"></span>
+      </div>
+      <div class="pub-list">
+        {
+          selectedPubs.map((pub, i) => (
+            <div data-reveal style={`--reveal-delay: ${i * 70}ms`}>
+              <PubItem pub={pub} />
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </div>
 </Base>
 
 <style>
@@ -449,6 +468,11 @@ const stats = [
     transform: rotate(45deg);
   }
 
+  /* both species circulate: ion ticks alternate with electron ticks */
+  .marquee-item:nth-child(even) .tick {
+    background: rgba(143, 167, 255, 0.5);
+  }
+
   @keyframes marquee-scroll {
     to {
       transform: translateX(-50%);
@@ -459,6 +483,129 @@ const stats = [
     .marquee-track {
       animation: none;
     }
+  }
+
+  /* beam route ---------------------------------------------------------- */
+  /* a schematic beampipe runs the left gutter past every section: dashed
+     blueprint pipe, alternating dipole (warm) and quadrupole (cool) ticks,
+     a bunch that travels it as you scroll, and an IP diamond at the end.
+     Stations are appended by the script, one per section head. */
+  .beam-route {
+    position: relative;
+  }
+
+  .spine {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(50% - (var(--site-width) / 2) - 2.5rem);
+    width: 1px;
+    background: repeating-linear-gradient(
+      180deg,
+      var(--hairline-strong) 0 7px,
+      transparent 7px 16px
+    );
+    pointer-events: none;
+  }
+
+  .spine::before,
+  .spine::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 -4px;
+    width: 9px;
+  }
+
+  .spine::before {
+    background: repeating-linear-gradient(
+      180deg,
+      rgba(255, 92, 51, 0.5) 0 2px,
+      transparent 2px 224px
+    );
+  }
+
+  .spine::after {
+    background: repeating-linear-gradient(
+      180deg,
+      rgba(143, 167, 255, 0.45) 0 2px,
+      transparent 2px 224px
+    );
+    background-position: 0 112px;
+  }
+
+  .spine-bunch {
+    position: absolute;
+    top: 0;
+    left: -2.5px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ion-bright);
+    box-shadow: 0 0 12px 2px rgba(255, 92, 51, 0.6);
+    opacity: 0; /* armed by the script; stays hidden for reduced motion */
+  }
+
+  .spine-bunch::before {
+    content: "";
+    position: absolute;
+    left: 2.5px;
+    bottom: 100%;
+    width: 1px;
+    height: 64px;
+    background: linear-gradient(180deg, transparent, rgba(255, 130, 87, 0.7));
+  }
+
+  .spine-cap {
+    position: absolute;
+    bottom: -4px;
+    left: -4px;
+    width: 9px;
+    height: 9px;
+    transform: rotate(45deg);
+    border: 1px solid rgba(143, 167, 255, 0.55);
+  }
+
+  .spine :global(.spine-station) {
+    position: absolute;
+    left: -4px;
+    width: 8px;
+    height: 8px;
+    transform: rotate(45deg);
+    background: var(--bg);
+    border: 1px solid var(--ink-faint);
+    transition:
+      border-color 500ms ease,
+      box-shadow 500ms ease;
+  }
+
+  .spine :global(.spine-station.lit) {
+    border-color: var(--ion);
+    box-shadow: 0 0 10px rgba(255, 92, 51, 0.5);
+  }
+
+  /* the gutter clears the wrap by ~24px at 1408px; below that, hide */
+  @media (max-width: 1407px) {
+    .spine {
+      display: none;
+    }
+  }
+
+  /* a bunch glides along each section head's rule as the section passes */
+  .head-beam {
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 90px;
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--ion) 45%,
+      var(--ion-bright) 55%,
+      transparent
+    );
+    opacity: 0; /* armed by the script; stays hidden for reduced motion */
+    pointer-events: none;
   }
 
   /* sections ---------------------------------------------------------- */
@@ -478,12 +625,17 @@ const stats = [
     pointer-events: none;
   }
 
-  /* about: blueprint grid — the machine drawing */
+  /* about: blueprint grid — the machine drawing, with survey crosses
+     registered on every fourth intersection */
   .section--about::before {
     background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cpath d='M128 121v14M121 128h14' stroke='%23f0ede6' stroke-opacity='.45'/%3E%3C/svg%3E"),
       linear-gradient(var(--hairline) 1px, transparent 1px),
       linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
-    background-size: 64px 64px;
+    background-size:
+      256px 256px,
+      64px 64px,
+      64px 64px;
     opacity: 0.4;
     mask-image: radial-gradient(
       ellipse 75% 85% at 78% 12%,
@@ -526,13 +678,22 @@ const stats = [
     );
   }
 
-  /* writing: a warm ion wash rising from the bottom-left */
+  /* writing: ruled logbook lines over a warm ion wash, fading out
+     before they reach the reading column */
   .section--writing::before {
-    background: radial-gradient(
-      48rem 28rem at 8% 105%,
-      rgba(255, 92, 51, 0.05),
-      transparent 65%
-    );
+    background:
+      repeating-linear-gradient(
+        180deg,
+        var(--hairline) 0 1px,
+        transparent 1px 64px
+      ),
+      radial-gradient(
+        48rem 28rem at 8% 105%,
+        rgba(255, 92, 51, 0.06),
+        transparent 65%
+      );
+    mask-image: linear-gradient(105deg, black 18%, transparent 58%);
+    -webkit-mask-image: linear-gradient(105deg, black 18%, transparent 58%);
   }
 
   /* about ------------------------------------------------------------- */
@@ -584,15 +745,59 @@ const stats = [
   .portrait img {
     width: 100%;
     filter: saturate(0.88);
+    outline: 1px dashed var(--hairline-strong);
+    outline-offset: 6px;
+  }
+
+  /* drawing-title block under the figure */
+  .fig-cap {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.1rem;
+    font-family: var(--mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .fig-cap span:first-child {
+    color: var(--ink-mute);
   }
 
   /* big counters -------------------------------------------------------- */
   .stat-row {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     margin-top: clamp(2.5rem, 6vh, 4rem);
     border: 1px solid var(--hairline);
     background: rgba(9, 11, 16, 0.6);
+  }
+
+  /* instrument-panel corner brackets, same grammar as the portrait */
+  .stat-row::before,
+  .stat-row::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+  }
+
+  .stat-row::before {
+    top: -1px;
+    left: -1px;
+    border-top: 1px solid var(--ion);
+    border-left: 1px solid var(--ion);
+  }
+
+  .stat-row::after {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 1px solid var(--electron);
+    border-right: 1px solid var(--electron);
   }
 
   .big-stat {
@@ -615,6 +820,22 @@ const stats = [
     line-height: 1;
     color: var(--ink);
     font-variant-numeric: tabular-nums;
+  }
+
+  /* counters flash hot for a beat when they land on their value */
+  .big-num.lit {
+    animation: num-settle 1s ease-out both;
+  }
+
+  @keyframes num-settle {
+    from {
+      color: var(--ion-bright);
+      text-shadow: 0 0 26px rgba(255, 92, 51, 0.55);
+    }
+    to {
+      color: var(--ink);
+      text-shadow: 0 0 0 rgba(255, 92, 51, 0);
+    }
   }
 
   .big-label {
@@ -768,7 +989,79 @@ const stats = [
           onUpdate() {
             el.textContent = String(Math.round(state.v));
           },
+          onComplete() {
+            el.classList.add("lit");
+          },
         });
+      });
+
+      // -- the injected bunch travels the spine; stations light as it passes
+      const route = document.querySelector<HTMLElement>(".beam-route");
+      const spine = route?.querySelector<HTMLElement>(".spine");
+      if (route && spine) {
+        const heads = [...route.querySelectorAll<HTMLElement>(".section-head")];
+        const stations = heads.map((head) => {
+          const s = document.createElement("span");
+          s.className = "spine-station";
+          spine.appendChild(s);
+          ScrollTrigger.create({
+            trigger: head,
+            start: "top 78%",
+            once: true,
+            onEnter: () => s.classList.add("lit"),
+          });
+          return s;
+        });
+
+        // pin each station to its section head's rule
+        const placeStations = () => {
+          const routeTop = route.getBoundingClientRect().top;
+          heads.forEach((head, i) => {
+            const y = head.getBoundingClientRect().top - routeTop;
+            stations[i].style.top = `${y - 4}px`;
+          });
+        };
+        placeStations();
+        ScrollTrigger.create({ trigger: route, onRefresh: placeStations });
+
+        gsap.set(".spine-bunch", { opacity: 1 });
+        gsap.fromTo(
+          ".spine-bunch",
+          { y: 0 },
+          {
+            y: () => spine.offsetHeight - 6,
+            ease: "none",
+            scrollTrigger: {
+              trigger: route,
+              start: "top 75%",
+              end: "bottom 90%",
+              scrub: 0.6,
+              invalidateOnRefresh: true,
+            },
+          },
+        );
+      }
+
+      // -- a bunch glides along each section head's rule ---------------------
+      document.querySelectorAll<HTMLElement>(".head-beam").forEach((el) => {
+        const head = el.parentElement;
+        if (!head) return;
+        gsap.set(el, { opacity: 0.85 });
+        gsap.fromTo(
+          el,
+          { x: 0 },
+          {
+            x: () => head.offsetWidth - 90,
+            ease: "none",
+            scrollTrigger: {
+              trigger: head,
+              start: "top 92%",
+              end: "top 15%",
+              scrub: 0.5,
+              invalidateOnRefresh: true,
+            },
+          },
+        );
       });
 
       // -- ghost numerals drift slower than the page (parallax) ------------

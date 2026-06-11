@@ -316,6 +316,56 @@ video {
   border-top: 1px solid var(--hairline-strong);
 }
 
+/* station marker: a small IP diamond sitting on the head's rule… */
+.section-head::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  transform: translate(-1px, -50%) rotate(45deg);
+  background: var(--bg);
+  border: 1px solid var(--ink-faint);
+  transition:
+    border-color 500ms ease,
+    box-shadow 500ms ease;
+}
+
+.section-head.is-revealed::after {
+  border-color: var(--ion);
+  box-shadow: 0 0 10px rgba(255, 92, 51, 0.5);
+  animation: station-flash 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes station-flash {
+  from {
+    background: var(--ion-bright);
+    box-shadow: 0 0 20px rgba(255, 92, 51, 0.9);
+  }
+  to {
+    background: var(--bg);
+  }
+}
+
+/* …and a survey ruler hanging off the rule beside it */
+.section-head::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 1.3rem;
+  width: min(220px, 38%);
+  height: 7px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--hairline-strong) 0 1px,
+    transparent 1px 12px
+  );
+  mask-image: linear-gradient(90deg, black, transparent);
+  -webkit-mask-image: linear-gradient(90deg, black, transparent);
+  pointer-events: none;
+}
+
 .section-head .label {
   margin-bottom: 1rem;
 }

@@ -3,9 +3,11 @@ import type { CollectionEntry } from "astro:content";
 
 interface Props {
   post: CollectionEntry<"posts">;
+  /** optional log-entry numeral rendered in the left margin */
+  index?: number;
 }
 
-const { post } = Astro.props;
+const { post, index } = Astro.props;
 const { title, description, date, tags } = post.data;
 const url = `/blog/${date.getFullYear()}/${post.id}/`;
 const dateStr = date.toLocaleDateString("en-US", {
@@ -16,7 +18,14 @@ const dateStr = date.toLocaleDateString("en-US", {
 });
 ---
 
-<article class="row">
+<article class:list={["row", { "row--indexed": index !== undefined }]}>
+  {
+    index !== undefined && (
+      <span class="ix" aria-hidden="true">
+        {String(index).padStart(2, "0")}
+      </span>
+    )
+  }
   <time class="date" datetime={date.toISOString()}>{dateStr}</time>
   <div class="body">
     <h3 class="title"><a href={url}>{title}</a></h3>
@@ -43,6 +52,27 @@ const dateStr = date.toLocaleDateString("en-US", {
     padding-block: 1.6rem;
     border-bottom: 1px solid var(--hairline);
     position: relative;
+  }
+
+  .row--indexed {
+    grid-template-columns: 2.4rem 7rem 1fr auto;
+  }
+
+  .ix {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    transition: color 150ms ease;
+  }
+
+  .ix::after {
+    content: " /";
+    color: var(--hairline-strong);
+  }
+
+  .row:hover .ix {
+    color: var(--gold);
   }
 
   .date {
@@ -117,11 +147,13 @@ const dateStr = date.toLocaleDateString("en-US", {
   }
 
   @media (max-width: 560px) {
-    .row {
+    .row,
+    .row--indexed {
       grid-template-columns: 1fr;
       gap: 0.3rem;
     }
-    .arrow {
+    .arrow,
+    .ix {
       display: none;
     }
   }

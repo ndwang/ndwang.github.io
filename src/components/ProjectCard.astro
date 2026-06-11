@@ -3,9 +3,11 @@ import type { CollectionEntry } from "astro:content";
 
 interface Props {
   project: CollectionEntry<"projects">;
+  /** optional experiment numeral stamped in the card's top edge */
+  index?: number;
 }
 
-const { project } = Astro.props;
+const { project, index } = Astro.props;
 const { title, summary, category, github, link, image } = project.data;
 const href = `/projects/${project.id}/`;
 ---
@@ -20,7 +22,16 @@ const href = `/projects/${project.id}/`;
     >
       {category}
     </span>
-    <span class="corner" aria-hidden="true"></span>
+    <span class="top-right">
+      {
+        index !== undefined && (
+          <span class="stamp" aria-hidden="true">
+            EXP-{String(index).padStart(2, "0")}
+          </span>
+        )
+      }
+      <span class="corner" aria-hidden="true"></span>
+    </span>
   </div>
   {
     image && (
@@ -117,6 +128,24 @@ const href = `/projects/${project.id}/`;
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .top-right {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .stamp {
+    font-family: var(--mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.18em;
+    color: var(--ink-faint);
+    transition: color 300ms ease;
+  }
+
+  .card:hover .stamp {
+    color: var(--gold-bright);
   }
 
   .corner {

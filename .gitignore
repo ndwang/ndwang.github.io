@@ -9,6 +9,9 @@ node_modules/
 .env
 .env.production
 
+# dev screenshot output
+scripts/shots/
+
 # misc
 .DS_Store
 .idea
