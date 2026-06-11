@@ -1,0 +1,111 @@
+---
+import Base from "../layouts/Base.astro";
+import PubItem from "../components/PubItem.astro";
+import { getPublications } from "../lib/publications";
+
+const pubs = getPublications();
+const years = [...new Set(pubs.map((p) => p.year))].sort((a, b) => b - a);
+---
+
+<Base
+  title="Publications — Ningdong Wang"
+  description="Conference papers and reports on space charge, beam cooling, and the Electron-Ion Collider."
+>
+  <div class="wrap page">
+    <header class="page-head">
+      <p class="label"><span class="label-index">Record</span> Publications</p>
+      <h1>Published work</h1>
+      <p class="sub">
+        {pubs.length} papers on space charge, energy-recovery linacs, and beam
+        cooling for the Electron-Ion Collider. Also on
+        <a
+          class="tlink"
+          href="https://scholar.google.com/citations?user=bOLfUJQAAAAJ"
+          target="_blank"
+          rel="noopener">Google Scholar</a
+        > and
+        <a
+          class="tlink"
+          href="https://inspirehep.net/authors/2137533"
+          target="_blank"
+          rel="noopener">INSPIRE-HEP</a
+        >.
+      </p>
+    </header>
+
+    {
+      years.map((year) => (
+        <section class="year-block">
+          <h2 class="year-label">{year}</h2>
+          <div class="pub-list">
+            {pubs
+              .filter((p) => p.year === year)
+              .map((pub) => (
+                <div class:list={["pub-row", { selected: pub.selected }]}>
+                  <PubItem pub={pub} showYear={false} />
+                </div>
+              ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</Base>
+
+<style>
+  .page {
+    padding-top: clamp(2.5rem, 6vh, 4.5rem);
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    margin: 1.2rem 0 1rem;
+  }
+
+  .sub {
+    color: var(--ink-mute);
+    font-size: 1.125rem;
+    max-width: 38em;
+    margin-bottom: 3rem;
+  }
+
+  .year-block {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 2rem;
+    border-top: 1px solid var(--hairline);
+    padding-top: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .year-label {
+    font-family: var(--mono);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+  }
+
+  .pub-row.selected {
+    position: relative;
+  }
+
+  .pub-row.selected::before {
+    content: "★ selected";
+    position: absolute;
+    right: 0;
+    top: 1.6rem;
+    font-family: var(--mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  @media (max-width: 700px) {
+    .year-block {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+</style>

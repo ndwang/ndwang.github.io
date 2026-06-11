@@ -1,0 +1,114 @@
+---
+import type { Publication } from "../lib/publications";
+
+interface Props {
+  pub: Publication;
+  showYear?: boolean;
+}
+
+const { pub, showYear = true } = Astro.props;
+---
+
+<article class="pub">
+  {showYear && <span class="year">{pub.year}</span>}
+  <div class="body">
+    <h3 class="title">
+      {
+        pub.url ? (
+          <a href={pub.url} target="_blank" rel="noopener" class="tlink">
+            {pub.title}
+          </a>
+        ) : (
+          pub.title
+        )
+      }
+    </h3>
+    <p class="authors">
+      {
+        pub.authors.map((a, i) => (
+          <span class:list={{ me: a.isMe }}>
+            {a.name}{i < pub.authors.length - 1 ? ", " : ""}
+          </span>
+        ))
+      }
+    </p>
+    <p class="meta">
+      <span class="venue">{pub.venue}</span>
+      {pub.pages && <span class="pages">p. {pub.pages}</span>}
+      {
+        pub.doi && (
+          <a class="doi" href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener">
+            doi:{pub.doi}
+          </a>
+        )
+      }
+    </p>
+  </div>
+</article>
+
+<style>
+  .pub {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: 1.5rem;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .pub:has(.year:empty),
+  .pub:not(:has(.year)) {
+    grid-template-columns: 1fr;
+  }
+
+  .year {
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    color: var(--gold);
+    padding-top: 0.3rem;
+  }
+
+  .title {
+    font-size: 1.1875rem;
+    font-weight: 500;
+    line-height: 1.35;
+    margin-bottom: 0.45rem;
+  }
+
+  .authors {
+    font-size: 0.9375rem;
+    color: var(--ink-mute);
+    margin: 0 0 0.35rem;
+  }
+
+  .authors .me {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .meta {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.4rem;
+  }
+
+  .doi {
+    color: var(--cyan);
+    transition: color 150ms ease;
+  }
+
+  .doi:hover {
+    color: var(--cyan-bright);
+  }
+
+  @media (max-width: 560px) {
+    .pub {
+      grid-template-columns: 1fr;
+      gap: 0.4rem;
+    }
+  }
+</style>

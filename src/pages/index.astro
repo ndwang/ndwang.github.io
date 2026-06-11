@@ -1,0 +1,359 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import Collider from "../components/Collider.astro";
+import PubItem from "../components/PubItem.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import PostRow from "../components/PostRow.astro";
+import { getSelectedPublications } from "../lib/publications";
+
+const selectedPubs = getSelectedPublications();
+
+const projects = (await getCollection("projects")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const posts = (await getCollection("posts", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 4);
+---
+
+<Base title="Ningdong Wang — Accelerator Physics × AI">
+  <!-- ====================================================== hero -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-text">
+        <p class="label rise" style="animation-delay: 80ms">
+          <span class="label-index">Cornell University</span> · PhD Candidate
+        </p>
+        <h1 class="rise" style="animation-delay: 180ms">
+          Particle <em class="g">beams</em>, meet
+          <em class="c">machine intelligence</em>.
+        </h1>
+        <p class="lede rise" style="animation-delay: 300ms">
+          I'm Ningdong Wang. I study how intense charged-particle beams behave
+          inside the <strong>Electron-Ion Collider</strong> — the next great
+          collider in the US — and I build AI tools that make that work faster.
+        </p>
+        <div class="hero-cta rise" style="animation-delay: 420ms">
+          <a href="/projects/" class="mlink">See the work</a>
+          <a href="mailto:nw285@cornell.edu" class="mlink">Get in touch</a>
+        </div>
+      </div>
+      <div class="hero-art rise" style="animation-delay: 250ms">
+        <Collider />
+      </div>
+    </div>
+    <div class="wrap">
+      <dl class="status rise" style="animation-delay: 520ms">
+        <div class="stat">
+          <dt>Machine</dt>
+          <dd>Electron-Ion Collider</dd>
+        </div>
+        <div class="stat">
+          <dt>Focus</dt>
+          <dd>Space-charge simulation &amp; optimization</dd>
+        </div>
+        <div class="stat">
+          <dt>Currently</dt>
+          <dd>LLM agents for accelerator physics</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ====================================================== about -->
+  <section class="section wrap" id="about">
+    <p class="label"><span class="label-index">01</span> About</p>
+    <div class="about-grid">
+      <div class="about-prose prose">
+        <p>
+          I'm a graduate researcher in accelerator physics at Cornell
+          University, focused on space charge simulation and optimization for
+          the Electron-Ion Collider. My research centers on understanding how
+          intense charged particle beams evolve under collective interactions,
+          with applications to the EIC Strong Hadron Cooler and Low Energy
+          Cooler.
+        </p>
+        <p>
+          Beyond my core research, I'm passionate about applying AI to
+          accelerator physics. I built <a href="/projects/#bmad-bot">Bmad-bot</a>,
+          an LLM-powered assistant that helps researchers navigate the Bmad and
+          Tao documentation, and I develop fast surrogate models — transformers,
+          VAEs, diffusion models — to accelerate computationally intensive
+          simulations.
+        </p>
+      </div>
+      <figure class="portrait">
+        <img
+          src="/images/ningdong_wang_pic.jpg"
+          alt="Portrait of Ningdong Wang"
+          width="380"
+          loading="lazy"
+        />
+        <figcaption>N. Wang — Ithaca, NY</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ====================================================== publications -->
+  <section class="section wrap" id="publications">
+    <div class="section-head">
+      <p class="label"><span class="label-index">02</span> Selected publications</p>
+      <a href="/publications/" class="mlink">All publications</a>
+    </div>
+    <div class="pub-list">
+      {selectedPubs.map((pub) => <PubItem pub={pub} />)}
+    </div>
+  </section>
+
+  <!-- ====================================================== projects -->
+  <section class="section wrap" id="projects">
+    <div class="section-head">
+      <p class="label"><span class="label-index">03</span> Projects</p>
+      <a href="/projects/" class="mlink">All projects</a>
+    </div>
+    <div class="project-grid">
+      {projects.slice(0, 3).map((project) => <ProjectCard project={project} />)}
+    </div>
+  </section>
+
+  <!-- ====================================================== writing -->
+  <section class="section wrap" id="writing">
+    <div class="section-head">
+      <p class="label"><span class="label-index">04</span> Writing</p>
+      <a href="/blog/" class="mlink">All posts</a>
+    </div>
+    <div class="post-list">
+      {posts.map((post) => <PostRow post={post} />)}
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* hero ------------------------------------------------------------ */
+  .hero {
+    position: relative;
+    padding-block: clamp(3rem, 8vh, 6rem) 3rem;
+    overflow: hidden;
+  }
+
+  /* fine blueprint grid behind the hero only */
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(var(--hairline) 1px, transparent 1px),
+      linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+    background-size: 64px 64px;
+    opacity: 0.35;
+    mask-image: radial-gradient(ellipse 90% 80% at 60% 30%, black 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 60% 30%, black 30%, transparent 75%);
+  }
+
+  .hero-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+
+  h1 {
+    font-size: clamp(2.6rem, 6vw, 4.4rem);
+    font-weight: 460;
+    margin: 1.4rem 0 1.6rem;
+    max-width: 14em;
+  }
+
+  h1 em {
+    font-style: italic;
+    font-weight: 420;
+  }
+
+  h1 .g {
+    color: var(--gold-bright);
+  }
+
+  h1 .c {
+    color: var(--cyan-bright);
+  }
+
+  .lede {
+    font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+    line-height: 1.65;
+    color: var(--ink-mute);
+    max-width: 34em;
+    margin-bottom: 2rem;
+  }
+
+  .lede strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 2.4rem;
+  }
+
+  .hero-art {
+    min-width: 0;
+  }
+
+  /* status strip ----------------------------------------------------- */
+  .status {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-block: 1px solid var(--hairline);
+    margin: 3rem 0 0;
+    padding: 0;
+  }
+
+  .stat {
+    padding: 1.1rem 1.5rem;
+    border-left: 1px solid var(--hairline);
+  }
+
+  .stat:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .stat dt {
+    font-family: var(--mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.35rem;
+  }
+
+  .stat dd {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--ink-mute);
+  }
+
+  /* sections ---------------------------------------------------------- */
+  .section {
+    padding-block: clamp(3rem, 7vh, 5.5rem) 0;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .section .label {
+    margin-bottom: 2rem;
+  }
+
+  /* about ------------------------------------------------------------- */
+  .about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: start;
+  }
+
+  .portrait {
+    position: relative;
+    margin: 0;
+    padding: 0.9rem;
+  }
+
+  /* technical-drawing corner brackets around the portrait */
+  .portrait::before,
+  .portrait::after {
+    content: "";
+    position: absolute;
+    width: 22px;
+    height: 22px;
+  }
+
+  .portrait::before {
+    top: 0;
+    left: 0;
+    border-top: 1px solid var(--gold);
+    border-left: 1px solid var(--gold);
+  }
+
+  .portrait::after {
+    bottom: 0;
+    right: 0;
+    border-bottom: 1px solid var(--cyan);
+    border-right: 1px solid var(--cyan);
+  }
+
+  .portrait img {
+    width: 100%;
+    filter: saturate(0.9);
+  }
+
+  .portrait figcaption {
+    font-family: var(--mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-top: 0.8rem;
+    text-align: right;
+  }
+
+  /* lists ------------------------------------------------------------- */
+  .pub-list,
+  .post-list {
+    border-top: 1px solid var(--hairline);
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  /* responsive ---------------------------------------------------------- */
+  @media (max-width: 900px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-art {
+      max-width: 30rem;
+      margin-inline: auto;
+      order: -1;
+    }
+
+    .about-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .portrait {
+      max-width: 22rem;
+    }
+
+    .project-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .status {
+      grid-template-columns: 1fr;
+    }
+
+    .stat {
+      border-left: 0;
+      border-top: 1px solid var(--hairline);
+      padding-inline: 0;
+    }
+
+    .stat:first-child {
+      border-top: 0;
+    }
+  }
+</style>

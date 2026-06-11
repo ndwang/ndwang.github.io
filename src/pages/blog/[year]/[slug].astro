@@ -1,0 +1,199 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../../../layouts/Base.astro";
+import "katex/dist/katex.min.css";
+
+export async function getStaticPaths() {
+  const posts = await getCollection(
+    "posts",
+    ({ data }) => !data.draft || !import.meta.env.PROD,
+  );
+  return posts.map((post) => ({
+    params: { year: String(post.data.date.getFullYear()), slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const { title, description, date, tags, draft } = post.data;
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const dateStr = date.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  timeZone: "UTC",
+});
+---
+
+<Base title={`${title} — Ningdong Wang`} description={description}>
+  <article class="wrap post">
+    <header class="post-head">
+      <p class="meta">
+        <time datetime={date.toISOString()}>{dateStr}</time>
+        {draft && <span class="chip chip--gold">draft</span>}
+        {tags.map((t) => <span class="tag">{t}</span>)}
+      </p>
+      <h1>{title}</h1>
+      <p class="desc">{description}</p>
+    </header>
+
+    <div class="post-body">
+      {
+        toc.length > 1 && (
+          <nav class="toc" aria-label="Table of contents">
+            <p class="toc-label">Contents</p>
+            <ol>
+              {toc.map((h) => (
+                <li class:list={[`d${h.depth}`]}>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )
+      }
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+
+    <footer class="post-foot">
+      <a href="/blog/" class="mlink back">All posts</a>
+    </footer>
+  </article>
+</Base>
+
+<style>
+  .post {
+    padding-top: clamp(2.5rem, 6vh, 4.5rem);
+  }
+
+  .post-head {
+    max-width: var(--measure);
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.4rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 1.6rem;
+  }
+
+  .meta time {
+    color: var(--gold);
+  }
+
+  .tag::before {
+    content: "#";
+    color: var(--cyan);
+  }
+
+  h1 {
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    line-height: 1.12;
+    margin-bottom: 1rem;
+  }
+
+  .desc {
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--ink-mute);
+    margin: 0;
+  }
+
+  .post-body {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, var(--measure)) 1fr;
+    gap: 4rem;
+  }
+
+  .toc {
+    order: 2;
+    position: sticky;
+    top: 5.5rem;
+    align-self: start;
+    max-width: 16rem;
+    font-size: 0.875rem;
+  }
+
+  .toc-label {
+    font-family: var(--mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.9rem;
+  }
+
+  .toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 1px solid var(--hairline);
+  }
+
+  .toc li {
+    margin: 0;
+  }
+
+  .toc a {
+    display: block;
+    padding: 0.3rem 0 0.3rem 1rem;
+    color: var(--ink-faint);
+    line-height: 1.4;
+    border-left: 1px solid transparent;
+    margin-left: -1px;
+    transition: color 150ms ease, border-color 150ms ease;
+  }
+
+  .toc li.d3 a {
+    padding-left: 2rem;
+    font-size: 0.8125rem;
+  }
+
+  .toc a:hover {
+    color: var(--ink);
+    border-left-color: var(--gold);
+  }
+
+  .post-foot {
+    max-width: var(--measure);
+    margin-top: 4rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid var(--hairline);
+  }
+
+  .back::before {
+    content: "←";
+    margin-right: 0.5rem;
+  }
+
+  .back::after {
+    content: none;
+  }
+
+  @media (max-width: 1080px) {
+    .post-body {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .toc {
+      order: 0;
+      position: static;
+      max-width: none;
+      margin-bottom: 2.5rem;
+    }
+  }
+</style>

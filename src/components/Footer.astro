@@ -1,0 +1,72 @@
+---
+const year = new Date().getFullYear();
+const socials = [
+  { href: "mailto:nw285@cornell.edu", label: "Email" },
+  { href: "https://github.com/ndwang", label: "GitHub" },
+  { href: "https://scholar.google.com/citations?user=bOLfUJQAAAAJ", label: "Scholar" },
+  { href: "https://inspirehep.net/authors/2137533", label: "INSPIRE" },
+];
+---
+
+<footer class="site-footer">
+  <div class="wrap grid">
+    <div class="cell">
+      <span class="coords">42.4534° N, 76.4735° W</span>
+      <span class="place">Ithaca, New York</span>
+    </div>
+    <nav class="cell links" aria-label="Social links">
+      {
+        socials.map((s) => (
+          <a href={s.href} target={s.href.startsWith("http") ? "_blank" : undefined} rel="noopener">
+            {s.label}
+          </a>
+        ))
+      }
+    </nav>
+    <div class="cell sig">
+      <span>© {year} Ningdong Wang</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid var(--hairline);
+    margin-top: 6rem;
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem 3rem;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-block: 2rem;
+  }
+
+  .cell {
+    display: flex;
+    gap: 1.5rem;
+    align-items: baseline;
+  }
+
+  .coords {
+    color: var(--gold);
+  }
+
+  .links a {
+    color: var(--ink-mute);
+    transition: color 150ms ease;
+  }
+
+  .links a:hover {
+    color: var(--gold-bright);
+  }
+</style>

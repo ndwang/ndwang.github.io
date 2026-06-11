@@ -1,0 +1,175 @@
+---
+/*
+  Two counter-circulating beams — ion ring (gold) and electron ring (cyan) —
+  colliding at an interaction point. The site's signature mark.
+  Geometry: rings r=190 centered at (270,260) and (490,260); they intersect
+  at (380, 105) and (380, 415).
+*/
+---
+
+<svg
+  class="collider"
+  viewBox="0 0 760 520"
+  fill="none"
+  role="img"
+  aria-label="Schematic of two collider rings intersecting at an interaction point"
+>
+  <defs>
+    <filter id="beam-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5"></feGaussianBlur>
+    </filter>
+  </defs>
+
+  <!-- static rings -->
+  <circle cx="270" cy="260" r="190" class="ring ring--gold"></circle>
+  <circle cx="490" cy="260" r="190" class="ring ring--cyan"></circle>
+
+  <!-- instrument ticks along each ring -->
+  <circle cx="270" cy="260" r="196" class="ticks ticks--gold" pathLength="120"></circle>
+  <circle cx="490" cy="260" r="196" class="ticks ticks--cyan" pathLength="120"></circle>
+
+  <!-- circulating pulses: blurred underlay + crisp core -->
+  <circle cx="270" cy="260" r="190" class="pulse pulse--gold glow" pathLength="100" filter="url(#beam-glow)"></circle>
+  <circle cx="270" cy="260" r="190" class="pulse pulse--gold" pathLength="100"></circle>
+  <circle cx="490" cy="260" r="190" class="pulse pulse--cyan glow" pathLength="100" filter="url(#beam-glow)"></circle>
+  <circle cx="490" cy="260" r="190" class="pulse pulse--cyan" pathLength="100"></circle>
+
+  <!-- interaction point: crosshair + pulse -->
+  <g class="ip">
+    <line x1="380" y1="83" x2="380" y2="97" class="ch"></line>
+    <line x1="380" y1="113" x2="380" y2="127" class="ch"></line>
+    <line x1="358" y1="105" x2="372" y2="105" class="ch"></line>
+    <line x1="388" y1="105" x2="402" y2="105" class="ch"></line>
+    <circle cx="380" cy="105" r="3" class="ip-dot"></circle>
+    <circle cx="380" cy="105" r="10" class="ip-ring"></circle>
+  </g>
+
+  <!-- secondary crossing, marked faintly -->
+  <circle cx="380" cy="415" r="2.5" class="ip-dot ip-dot--faint"></circle>
+
+  <!-- annotations -->
+  <text x="62" y="150" class="ann ann--gold">p / A</text>
+  <text x="664" y="150" class="ann ann--cyan" text-anchor="end">e⁻</text>
+  <text x="412" y="78" class="ann ann--ip">IP — 01</text>
+</svg>
+
+<style>
+  .collider {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ring {
+    stroke-width: 1.2;
+  }
+
+  .ring--gold {
+    stroke: rgba(217, 166, 72, 0.4);
+  }
+
+  .ring--cyan {
+    stroke: rgba(88, 207, 227, 0.35);
+  }
+
+  .ticks {
+    stroke: var(--hairline);
+    stroke-width: 7;
+    stroke-dasharray: 0.18 9.82;
+    opacity: 0.7;
+  }
+
+  .pulse {
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-dasharray: 16 84;
+  }
+
+  .pulse.glow {
+    stroke-width: 7;
+    opacity: 0.7;
+  }
+
+  .pulse--gold {
+    stroke: var(--gold-bright);
+    animation: orbit-fwd 7.5s linear infinite;
+  }
+
+  .pulse--cyan {
+    stroke: var(--cyan-bright);
+    animation: orbit-rev 4.8s linear infinite;
+  }
+
+  @keyframes orbit-fwd {
+    to {
+      stroke-dashoffset: -100;
+    }
+  }
+
+  @keyframes orbit-rev {
+    to {
+      stroke-dashoffset: 100;
+    }
+  }
+
+  .ch {
+    stroke: var(--ink-mute);
+    stroke-width: 1;
+  }
+
+  .ip-dot {
+    fill: var(--ink);
+  }
+
+  .ip-dot--faint {
+    fill: var(--ink-faint);
+  }
+
+  .ip-ring {
+    stroke: var(--gold);
+    stroke-width: 1;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ip-pulse 2.8s ease-out infinite;
+  }
+
+  @keyframes ip-pulse {
+    0% {
+      transform: scale(0.4);
+      opacity: 0.9;
+    }
+    70% {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+  }
+
+  .ann {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    fill: var(--ink-faint);
+  }
+
+  .ann--gold {
+    fill: var(--gold);
+  }
+
+  .ann--cyan {
+    fill: var(--cyan);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pulse,
+    .ip-ring {
+      animation: none;
+    }
+    .ip-ring {
+      opacity: 0.5;
+    }
+  }
+</style>

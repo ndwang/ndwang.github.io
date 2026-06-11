@@ -1,0 +1,120 @@
+---
+const path = Astro.url.pathname;
+const items = [
+  { href: "/blog/", label: "Writing" },
+  { href: "/projects/", label: "Projects" },
+  { href: "/publications/", label: "Publications" },
+  { href: "/cv/", label: "CV" },
+];
+const isActive = (href: string) => path.startsWith(href);
+---
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a href="/" class="brand" aria-label="Home">
+      <span class="mark" aria-hidden="true">
+        <span class="dot dot--gold"></span>
+        <span class="dot dot--cyan"></span>
+      </span>
+      <span class="name">Ningdong&nbsp;Wang</span>
+    </a>
+    <nav aria-label="Primary">
+      {
+        items.map((it) => (
+          <a href={it.href} class:list={["nav-link", { active: isActive(it.href) }]}>
+            {it.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(10, 13, 18, 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 3.75rem;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .mark {
+    position: relative;
+    width: 18px;
+    height: 12px;
+    flex: none;
+  }
+
+  .dot {
+    position: absolute;
+    top: 50%;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    mix-blend-mode: screen;
+  }
+
+  .dot--gold {
+    left: 0;
+    background: var(--gold);
+  }
+
+  .dot--cyan {
+    right: 0;
+    background: var(--cyan);
+  }
+
+  nav {
+    display: flex;
+    gap: clamp(0.9rem, 2.5vw, 2rem);
+  }
+
+  .nav-link {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    padding: 0.4em 0;
+    border-bottom: 1px solid transparent;
+    transition: color 150ms ease, border-color 150ms ease;
+  }
+
+  .nav-link:hover {
+    color: var(--ink);
+  }
+
+  .nav-link.active {
+    color: var(--gold-bright);
+    border-bottom-color: var(--gold);
+  }
+
+  @media (max-width: 560px) {
+    .brand .name {
+      display: none;
+    }
+  }
+</style>

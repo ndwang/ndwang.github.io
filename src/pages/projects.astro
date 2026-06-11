@@ -1,0 +1,114 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../layouts/Base.astro";
+
+const projects = (await getCollection("projects")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const rendered = await Promise.all(
+  projects.map(async (project) => ({
+    project,
+    Content: (await render(project)).Content,
+  })),
+);
+---
+
+<Base
+  title="Projects — Ningdong Wang"
+  description="Research software and AI tools: SpaceCharge.jl, Bmad-bot, and the Bmad to SciBmad translator."
+>
+  <div class="wrap page">
+    <header class="page-head">
+      <p class="label"><span class="label-index">Build</span> Projects</p>
+      <h1>Things I've built</h1>
+      <p class="sub">
+        High-performance physics solvers, AI assistants, and tools for the
+        accelerator community.
+      </p>
+    </header>
+
+    {
+      rendered.map(({ project, Content }) => (
+        <section class="project" id={project.id}>
+          <header class="project-head">
+            <span
+              class:list={[
+                "chip",
+                project.data.category === "research" ? "chip--gold" : "chip--cyan",
+              ]}
+            >
+              {project.data.category}
+            </span>
+            <h2>{project.data.title}</h2>
+            <p class="summary">{project.data.summary}</p>
+            <p class="links">
+              {project.data.github && (
+                <a href={project.data.github} target="_blank" rel="noopener" class="mlink">
+                  GitHub
+                </a>
+              )}
+              {project.data.link && (
+                <a href={project.data.link} target="_blank" rel="noopener" class="mlink">
+                  Live
+                </a>
+              )}
+            </p>
+          </header>
+          <div class="prose">
+            <Content />
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</Base>
+
+<style>
+  .page {
+    padding-top: clamp(2.5rem, 6vh, 4.5rem);
+  }
+
+  .page-head {
+    margin-bottom: 2rem;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    margin: 1.2rem 0 1rem;
+  }
+
+  .sub {
+    color: var(--ink-mute);
+    font-size: 1.125rem;
+    max-width: 36em;
+  }
+
+  .project {
+    padding-block: 3.5rem;
+    border-top: 1px solid var(--hairline);
+    scroll-margin-top: 4.5rem;
+  }
+
+  .project-head {
+    max-width: var(--measure);
+    margin-bottom: 2rem;
+  }
+
+  .project-head h2 {
+    font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+    margin: 1rem 0 0.7rem;
+  }
+
+  .summary {
+    color: var(--ink-mute);
+    font-size: 1.125rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .links {
+    display: flex;
+    gap: 2rem;
+    margin: 0;
+  }
+</style>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The ReAct Loop</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg2: #f6f5f2;
+    --bg3: #eeecea;
+    --text: #1a1a18;
+    --text2: #5a5a56;
+    --text3: #9a9994;
+    --border: rgba(0,0,0,0.10);
+    --border2: rgba(0,0,0,0.18);
+    --purple-fill: #EEEDFE;
+    --purple-stroke: #534AB7;
+    --purple-text: #3C3489;
+    --teal-fill: #E1F5EE;
+    --teal-stroke: #0F6E56;
+    --teal-text: #085041;
+    --amber-fill: #FAEEDA;
+    --amber-stroke: #854F0B;
+    --amber-text: #633806;
+    --coral-fill: #FAECE7;
+    --coral-stroke: #993C1D;
+    --coral-text: #712B13;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --bg2: #252523;
+      --bg3: #2e2e2b;
+      --text: #e8e6df;
+      --text2: #a0a09a;
+      --text3: #606059;
+      --border: rgba(255,255,255,0.08);
+      --border2: rgba(255,255,255,0.15);
+      --purple-fill: #26215C;
+      --purple-stroke: #AFA9EC;
+      --purple-text: #CECBF6;
+      --teal-fill: #04342C;
+      --teal-stroke: #5DCAA5;
+      --teal-text: #9FE1CB;
+      --amber-fill: #412402;
+      --amber-stroke: #EF9F27;
+      --amber-text: #FAC775;
+      --coral-fill: #4A1B0C;
+      --coral-stroke: #F0997B;
+      --coral-text: #F5C4B3;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 2rem 1.5rem 3rem;
+    max-width: 780px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .diagram-header { margin-bottom: 1.75rem; }
+  .diagram-header h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 0.35rem;
+  }
+  .diagram-header p {
+    font-size: 0.875rem;
+    color: var(--text2);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .step-label {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-width: 64px;
+  }
+  .dots { display: flex; gap: 6px; }
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--border2);
+    cursor: pointer;
+    transition: background 0.2s;
+    border: none; padding: 0;
+  }
+  .dot.active { background: var(--text); }
+  .dot:hover { background: var(--text2); }
+  .nav-buttons { margin-left: auto; display: flex; gap: 8px; }
+  button.nav {
+    font-size: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--text2);
+    background: none;
+    border: 0.5px solid var(--border2);
+    border-radius: 5px;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  button.nav:hover { background: var(--bg2); color: var(--text); }
+  button.nav:disabled { opacity: 0.35; pointer-events: none; }
+
+  .step-panel { display: none; }
+  .step-panel.active { display: block; animation: fadeUp 0.2s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(5px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  svg { width: 100%; display: block; }
+
+  .caption {
+    font-size: 0.875rem;
+    color: var(--text2);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    margin-top: 0.85rem;
+    line-height: 1.65;
+    padding: 0 0.25rem;
+  }
+
+  .node { cursor: default; }
+  .c-purple rect { fill: var(--purple-fill); stroke: var(--purple-stroke); }
+  .c-purple .th  { fill: var(--purple-text); }
+  .c-purple .ts  { fill: var(--purple-stroke); }
+  .c-teal rect   { fill: var(--teal-fill);   stroke: var(--teal-stroke); }
+  .c-teal .th    { fill: var(--teal-text); }
+  .c-teal .ts    { fill: var(--teal-stroke); }
+  .c-amber rect  { fill: var(--amber-fill);  stroke: var(--amber-stroke); }
+  .c-amber .th   { fill: var(--amber-text); }
+  .c-amber .ts   { fill: var(--amber-stroke); }
+  .c-coral rect  { fill: var(--coral-fill);  stroke: var(--coral-stroke); }
+  .c-coral .th   { fill: var(--coral-text); }
+  .c-coral .ts   { fill: var(--coral-stroke); }
+  .box rect      { fill: var(--bg2); stroke: var(--border2); }
+  .box .th       { fill: var(--text); }
+  .box .ts       { fill: var(--text2); }
+
+  text.th { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; font-weight: 500; }
+  text.ts { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; fill: var(--text2); }
+  text.label-muted { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; font-style: italic; fill: var(--text3); }
+
+  line.arr, path.arr { stroke: var(--border2); stroke-width: 1; fill: none; }
+  line.dashed { stroke: var(--border2); stroke-width: 0.75; stroke-dasharray: 4 3; fill: none; }
+  .code-bg { fill: var(--bg2); stroke: var(--border); stroke-width: 0.5; }
+
+  /* trace lines highlight */
+  .trace-thought { fill: var(--purple-fill); stroke: var(--purple-stroke); stroke-width: 0.5; }
+  .trace-action  { fill: var(--amber-fill);  stroke: var(--amber-stroke);  stroke-width: 0.5; }
+  .trace-obs     { fill: var(--teal-fill);   stroke: var(--teal-stroke);   stroke-width: 0.5; }
+  .trace-answer  { fill: var(--coral-fill);  stroke: var(--coral-stroke);  stroke-width: 0.5; }
+
+  text.trace-thought-t { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; font-weight: 500; fill: var(--purple-text); }
+  text.trace-action-t  { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; font-weight: 500; fill: var(--amber-text); }
+  text.trace-obs-t     { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; font-weight: 500; fill: var(--teal-text); }
+  text.trace-answer-t  { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; font-weight: 500; fill: var(--coral-text); }
+  text.trace-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; fill: var(--text2); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+    .pulse { animation: pulse 1.6s ease-in-out infinite; }
+  }
+</style>
+</head>
+<body>
+
+<div class="diagram-header">
+  <h1>The ReAct loop</h1>
+  <p>How an agent reasons and acts — and why it was a breakthrough in 2022.</p>
+</div>
+
+<div class="controls">
+  <span class="step-label" id="step-label">Step 1 of 5</span>
+  <div class="dots" id="dots">
+    <button class="dot active" onclick="goTo(0)" aria-label="Overview"></button>
+    <button class="dot" onclick="goTo(1)" aria-label="Thought"></button>
+    <button class="dot" onclick="goTo(2)" aria-label="Action"></button>
+    <button class="dot" onclick="goTo(3)" aria-label="Observation"></button>
+    <button class="dot" onclick="goTo(4)" aria-label="Full trace"></button>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav" id="btn-prev" onclick="prev()" disabled>← Prev</button>
+    <button class="nav" id="btn-next" onclick="next()">Next →</button>
+  </div>
+</div>
+
+<div class="step-panels">
+
+  <!-- STEP 0: Overview — three boxes in a linear row with return arrow -->
+  <div class="step-panel active" id="panel-0">
+    <svg viewBox="0 0 680 240" role="img" aria-label="ReAct loop overview: Thought leads to Action, Action leads to Observation, Observation loops back to Thought">
+      <defs>
+        <marker id="a0" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+      <!-- Thought -->
+      <g class="node c-purple">
+        <rect x="60" y="80" width="150" height="60" rx="8" stroke-width="0.5"/>
+        <text class="th" x="135" y="104" text-anchor="middle" dominant-baseline="central">Thought</text>
+        <text class="ts" x="135" y="124" text-anchor="middle" dominant-baseline="central">Model reasons aloud</text>
+      </g>
+      <!-- Action -->
+      <g class="node c-amber">
+        <rect x="265" y="80" width="150" height="60" rx="8" stroke-width="0.5"/>
+        <text class="th" x="340" y="104" text-anchor="middle" dominant-baseline="central">Action</text>
+        <text class="ts" x="340" y="124" text-anchor="middle" dominant-baseline="central">Tool call emitted</text>
+      </g>
+      <!-- Observation -->
+      <g class="node c-teal">
+        <rect x="470" y="80" width="150" height="60" rx="8" stroke-width="0.5"/>
+        <text class="th" x="545" y="104" text-anchor="middle" dominant-baseline="central">Observation</text>
+        <text class="ts" x="545" y="124" text-anchor="middle" dominant-baseline="central">Tool result returned</text>
+      </g>
+      <!-- Forward arrows -->
+      <line x1="210" y1="110" x2="263" y2="110" class="arr" marker-end="url(#a0)" stroke="var(--border2)"/>
+      <line x1="415" y1="110" x2="468" y2="110" class="arr" marker-end="url(#a0)" stroke="var(--border2)"/>
+      <!-- Return arrow underneath -->
+      <path d="M545 140 L545 180 L135 180 L135 142" fill="none" stroke="var(--border2)" stroke-width="1" marker-end="url(#a0)" stroke-dasharray="5 3"/>
+      <text class="label-muted" x="340" y="198" text-anchor="middle">loops until the model decides it has enough to answer</text>
+    </svg>
+    <p class="caption">ReAct (Reasoning + Acting) was introduced in a 2022 paper and gave agents something they'd been missing: explicit reasoning steps interleaved with tool calls. Instead of jumping straight to an action, the model first writes out its thinking — which dramatically improved reliability and made agent behaviour interpretable.</p>
+  </div>
+
+  <!-- STEP 1: Thought -->
+  <div class="step-panel" id="panel-1">
+    <svg viewBox="0 0 680 250" role="img" aria-label="Thought step: the model writes out its reasoning before acting">
+      <defs>
+        <marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+      <g class="node c-purple pulse">
+        <rect x="40" y="90" width="150" height="60" rx="8" stroke-width="1"/>
+        <text class="th" x="115" y="114" text-anchor="middle" dominant-baseline="central">Thought</text>
+        <text class="ts" x="115" y="134" text-anchor="middle" dominant-baseline="central">Model reasons aloud</text>
+      </g>
+      <line x1="190" y1="120" x2="240" y2="120" class="arr" marker-end="url(#a1)" stroke="var(--border2)"/>
+      <!-- Thought output box -->
+      <rect x="242" y="62" width="398" height="116" rx="8" class="code-bg"/>
+      <text class="trace-thought-t" x="260" y="86" dominant-baseline="central">Thought:</text>
+      <text class="trace-body" x="260" y="106" dominant-baseline="central">The user wants today's weather in Paris.</text>
+      <text class="trace-body" x="260" y="124" dominant-baseline="central">I don't know the current weather, so I</text>
+      <text class="trace-body" x="260" y="142" dominant-baseline="central">should search for it before answering.</text>
+      <text class="label-muted" x="260" y="166" dominant-baseline="central">↑ written to context before any action is taken</text>
+      <!-- Dim next stages -->
+      <g class="node c-amber" style="opacity:0.3">
+        <rect x="40" y="185" width="120" height="44" rx="8" stroke-width="0.5"/>
+        <text class="th" x="100" y="207" text-anchor="middle" dominant-baseline="central">Action</text>
+      </g>
+      <g class="node c-teal" style="opacity:0.3">
+        <rect x="200" y="185" width="140" height="44" rx="8" stroke-width="0.5"/>
+        <text class="th" x="270" y="207" text-anchor="middle" dominant-baseline="central">Observation</text>
+      </g>
+      <text class="label-muted" x="200" y="245" text-anchor="middle">next →</text>
+    </svg>
+    <p class="caption">Before doing anything, the model writes a "Thought" — its reasoning about what it knows, what it needs, and what to do next. This step is the key innovation: it gives the model a scratchpad to plan, which reduces errors and lets you see exactly why it chose each action.</p>
+  </div>
+
+  <!-- STEP 2: Action -->
+  <div class="step-panel" id="panel-2">
+    <svg viewBox="0 0 680 250" role="img" aria-label="Action step: the model emits a tool call based on its reasoning">
+      <defs>
+        <marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+      <!-- Dim thought -->
+      <g class="node c-purple" style="opacity:0.3">
+        <rect x="40" y="30" width="120" height="44" rx="8" stroke-width="0.5"/>
+        <text class="th" x="100" y="52" text-anchor="middle" dominant-baseline="central">Thought ✓</text>
+      </g>
+      <line x1="160" y1="52" x2="198" y2="52" class="arr" marker-end="url(#a2)" stroke="var(--border2)" style="opacity:0.3"/>
+      <g class="node c-amber pulse">
+        <rect x="200" y="16" width="150" height="60" rx="8" stroke-width="1"/>
+        <text class="th" x="275" y="40" text-anchor="middle" dominant-baseline="central">Action</text>
+        <text class="ts" x="275" y="60" text-anchor="middle" dominant-baseline="central">Tool call emitted</text>
+      </g>
+      <line x1="350" y1="46" x2="398" y2="46" class="arr" marker-end="url(#a2)" stroke="var(--border2)"/>
+      <!-- Action output -->
+      <rect x="400" y="16" width="240" height="60" rx="8" class="code-bg"/>
+      <text class="trace-action-t" x="418" y="36" dominant-baseline="central">Action:</text>
+      <text class="trace-body" x="418" y="56" dominant-baseline="central">weather_search("Paris today")</text>
+      <!-- Obs box -->
+      <g class="node c-teal" style="opacity:0.3">
+        <rect x="40" y="110" width="150" height="60" rx="8" stroke-width="0.5"/>
+        <text class="th" x="115" y="134" text-anchor="middle" dominant-baseline="central">Observation</text>
+        <text class="ts" x="115" y="154" text-anchor="middle" dominant-baseline="central">next →</text>
+      </g>
+      <!-- Full trace so far -->
+      <rect x="40" y="190" width="600" height="46" rx="8" class="code-bg"/>
+      <text class="label-muted" x="58" y="208" dominant-baseline="central">Context so far:</text>
+      <text class="trace-thought-t" x="58" y="226" dominant-baseline="central">Thought: I don't know the weather…</text>
+      <text class="trace-action-t" x="310" y="226" dominant-baseline="central">Action: weather_search("Paris today")</text>
+    </svg>
+    <p class="caption">The Action is the tool call — chosen directly from the reasoning in the Thought step. Notice how both the thinking and the action are written into the context window. This is what makes the trace readable: you can follow exactly how the model got from the user's question to each tool call.</p>
+  </div>
+
+  <!-- STEP 3: Observation -->
+  <div class="step-panel" id="panel-3">
+    <svg viewBox="0 0 680 280" role="img" aria-label="Observation step: the tool result is returned and the model decides whether to loop again or answer">
+      <defs>
+        <marker id="a3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+      <!-- Dim earlier stages -->
+      <g style="opacity:0.3">
+        <g class="node c-purple"><rect x="40" y="30" width="100" height="36" rx="6" stroke-width="0.5"/><text class="th" x="90" y="48" text-anchor="middle" dominant-baseline="central">Thought ✓</text></g>
+        <g class="node c-amber"><rect x="180" y="30" width="100" height="36" rx="6" stroke-width="0.5"/><text class="th" x="230" y="48" text-anchor="middle" dominant-baseline="central">Action ✓</text></g>
+      </g>
+      <line x1="280" y1="48" x2="318" y2="48" class="arr" marker-end="url(#a3)" stroke="var(--border2)" style="opacity:0.3"/>
+      <g class="node c-teal pulse">
+        <rect x="320" y="16" width="160" height="60" rx="8" stroke-width="1"/>
+        <text class="th" x="400" y="40" text-anchor="middle" dominant-baseline="central">Observation</text>
+        <text class="ts" x="400" y="60" text-anchor="middle" dominant-baseline="central">Tool result returned</text>
+      </g>
+      <line x1="480" y1="46" x2="528" y2="46" class="arr" marker-end="url(#a3)" stroke="var(--border2)"/>
+      <rect x="530" y="16" width="120" height="60" rx="8" class="code-bg"/>
+      <text class="trace-obs-t" x="548" y="36" dominant-baseline="central">Observation:</text>
+      <text class="trace-body" x="548" y="56" dominant-baseline="central">"18°C, sunny"</text>
+
+      <!-- Decision fork -->
+      <text class="ts" x="340" y="110" dominant-baseline="central">Model reads observation, then decides:</text>
+      <g class="node c-purple">
+        <rect x="40" y="130" width="240" height="56" rx="8" stroke-width="0.5"/>
+        <text class="th" x="160" y="153" text-anchor="middle" dominant-baseline="central">Loop again</text>
+        <text class="ts" x="160" y="171" text-anchor="middle" dominant-baseline="central">emit another Thought → Action</text>
+      </g>
+      <g class="node c-coral">
+        <rect x="320" y="130" width="240" height="56" rx="8" stroke-width="0.5"/>
+        <text class="th" x="440" y="153" text-anchor="middle" dominant-baseline="central">Final answer</text>
+        <text class="ts" x="440" y="171" text-anchor="middle" dominant-baseline="central">enough info to respond</text>
+      </g>
+
+      <!-- Full trace -->
+      <rect x="40" y="210" width="600" height="56" rx="8" class="code-bg"/>
+      <text class="label-muted" x="58" y="228" dominant-baseline="central">Full trace so far:</text>
+      <text class="trace-thought-t" x="58" y="246" dominant-baseline="central">Thought</text>
+      <text class="trace-body" x="114" y="246" dominant-baseline="central">→</text>
+      <text class="trace-action-t" x="128" y="246" dominant-baseline="central">Action</text>
+      <text class="trace-body" x="184" y="246" dominant-baseline="central">→</text>
+      <text class="trace-obs-t" x="198" y="246" dominant-baseline="central">Observation</text>
+      <text class="trace-body" x="286" y="246" dominant-baseline="central">→ loop or answer</text>
+    </svg>
+    <p class="caption">The Observation is just the tool result, appended to the context. The model reads it and makes a decision: does it have enough to answer, or does it need to think and act again? This is the loop — it continues until the model decides it's done, then writes a final answer.</p>
+  </div>
+
+  <!-- STEP 4: Full concrete trace -->
+  <div class="step-panel" id="panel-4">
+    <svg viewBox="0 0 680 340" role="img" aria-label="A complete ReAct trace showing two loops before a final answer">
+      <defs>
+        <marker id="a4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+      <text class="ts" x="40" y="28" dominant-baseline="central">A complete trace — question: "Is it warmer in Paris or Rome today?"</text>
+
+      <!-- Loop 1 -->
+      <rect x="40" y="46" width="600" height="52" rx="6" class="trace-thought"/>
+      <text class="trace-thought-t" x="58" y="64" dominant-baseline="central">Thought 1:</text>
+      <text class="trace-body" x="136" y="64" dominant-baseline="central">I need today's temperature in Paris. I'll search for it.</text>
+      <text class="trace-body" x="58" y="83" dominant-baseline="central">Then I'll do the same for Rome and compare.</text>
+
+      <rect x="40" y="106" width="600" height="34" rx="6" class="trace-action"/>
+      <text class="trace-action-t" x="58" y="123" dominant-baseline="central">Action 1:</text>
+      <text class="trace-body" x="126" y="123" dominant-baseline="central">weather_search("Paris today")</text>
+
+      <rect x="40" y="148" width="600" height="34" rx="6" class="trace-obs"/>
+      <text class="trace-obs-t" x="58" y="165" dominant-baseline="central">Observation 1:</text>
+      <text class="trace-body" x="156" y="165" dominant-baseline="central">"Paris: 18°C, sunny"</text>
+
+      <!-- Loop 2 -->
+      <rect x="40" y="190" width="600" height="34" rx="6" class="trace-thought"/>
+      <text class="trace-thought-t" x="58" y="207" dominant-baseline="central">Thought 2:</text>
+      <text class="trace-body" x="136" y="207" dominant-baseline="central">Got Paris. Now I need Rome's temperature.</text>
+
+      <rect x="40" y="232" width="600" height="34" rx="6" class="trace-action"/>
+      <text class="trace-action-t" x="58" y="249" dominant-baseline="central">Action 2:</text>
+      <text class="trace-body" x="126" y="249" dominant-baseline="central">weather_search("Rome today")</text>
+
+      <rect x="40" y="274" width="600" height="34" rx="6" class="trace-obs"/>
+      <text class="trace-obs-t" x="58" y="291" dominant-baseline="central">Observation 2:</text>
+      <text class="trace-body" x="156" y="291" dominant-baseline="central">"Rome: 24°C, partly cloudy"</text>
+
+      <!-- Final answer -->
+      <rect x="40" y="316" width="600" height="18" rx="6" class="trace-answer"/>
+      <text class="trace-answer-t" x="58" y="325" dominant-baseline="central">Answer:</text>
+      <text class="trace-body" x="116" y="325" dominant-baseline="central">Rome is warmer today at 24°C vs Paris at 18°C.</text>
+    </svg>
+    <p class="caption">A complete ReAct trace: two Thought–Action–Observation loops before a final answer. Every step is visible in the context window — you can read exactly how the agent reasoned its way to the answer. This interpretability was a big part of why ReAct was influential: for the first time, you could audit an agent's reasoning, not just its output.</p>
+  </div>
+
+</div>
+
+<script>
+  let cur = 0;
+  const total = 5;
+  function goTo(n) {
+    document.getElementById('panel-' + cur).classList.remove('active');
+    document.querySelectorAll('.dot')[cur].classList.remove('active');
+    cur = n;
+    document.getElementById('panel-' + cur).classList.add('active');
+    document.querySelectorAll('.dot')[cur].classList.add('active');
+    document.getElementById('step-label').textContent = 'Step ' + (cur + 1) + ' of ' + total;
+    document.getElementById('btn-prev').disabled = cur === 0;
+    document.getElementById('btn-next').disabled = cur === total - 1;
+  }
+  function next() { if (cur < total - 1) goTo(cur + 1); }
+  function prev() { if (cur > 0) goTo(cur - 1); }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'ArrowLeft')  prev();
+  });
+</script>
+</body>
+</html>

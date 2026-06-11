@@ -1,0 +1,121 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+const { title, description, date, tags } = post.data;
+const url = `/blog/${date.getFullYear()}/${post.id}/`;
+const dateStr = date.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "short",
+  day: "2-digit",
+  timeZone: "UTC",
+});
+---
+
+<article class="row">
+  <time class="date" datetime={date.toISOString()}>{dateStr}</time>
+  <div class="body">
+    <h3 class="title"><a href={url}>{title}</a></h3>
+    <p class="desc">{description}</p>
+    {
+      tags.length > 0 && (
+        <p class="tags">
+          {tags.map((t) => (
+            <span class="tag">{t}</span>
+          ))}
+        </p>
+      )
+    }
+  </div>
+  <span class="arrow" aria-hidden="true">→</span>
+</article>
+
+<style>
+  .row {
+    display: grid;
+    grid-template-columns: 7rem 1fr auto;
+    gap: 1.5rem;
+    align-items: baseline;
+    padding-block: 1.6rem;
+    border-bottom: 1px solid var(--hairline);
+    position: relative;
+  }
+
+  .date {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+  }
+
+  .title {
+    font-size: 1.4375rem;
+    font-weight: 500;
+    line-height: 1.25;
+    margin-bottom: 0.4rem;
+  }
+
+  .title a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .title a {
+    transition: color 150ms ease;
+  }
+
+  .row:hover .title a {
+    color: var(--gold-bright);
+  }
+
+  .desc {
+    color: var(--ink-mute);
+    font-size: 0.975rem;
+    margin: 0 0 0.5rem;
+  }
+
+  .tags {
+    margin: 0;
+    display: flex;
+    gap: 0.9rem;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .tag::before {
+    content: "#";
+    color: var(--cyan);
+  }
+
+  .arrow {
+    color: var(--ink-faint);
+    font-family: var(--mono);
+    transition: color 150ms ease, transform 150ms ease;
+  }
+
+  .row:hover .arrow {
+    color: var(--gold-bright);
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 560px) {
+    .row {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+    .arrow {
+      display: none;
+    }
+  }
+</style>

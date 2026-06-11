@@ -1,0 +1,260 @@
+---
+import Base from "../layouts/Base.astro";
+import { getPublications } from "../lib/publications";
+
+const pubCount = getPublications().length;
+
+/*
+  NOTE FOR NINGDONG: the data below was assembled from the site's own content
+  (publications, projects, about). Fill in the items marked TODO — undergrad
+  institution, PhD start/expected dates, awards, talks — then delete the
+  comments.
+*/
+
+const sections = [
+  {
+    id: "education",
+    label: "Education",
+    entries: [
+      {
+        title: "PhD, Accelerator Physics",
+        where: "Cornell University — Ithaca, NY",
+        when: "in progress", // TODO: e.g. "2021 — 2026 (expected)"
+        bullets: [
+          "Research: space charge simulation and optimization for the Electron-Ion Collider (Strong Hadron Cooler and Low Energy Cooler).",
+          "Advised within the Bmad/SciBmad accelerator simulation group.",
+        ],
+      },
+      // TODO: add undergraduate degree
+    ],
+  },
+  {
+    id: "research",
+    label: "Research",
+    entries: [
+      {
+        title: "Space charge & beam cooling for the EIC",
+        where: "Cornell University / EIC collaboration",
+        when: "ongoing",
+        bullets: [
+          "Multi-objective optimization of the Strong Hadron Cooler ERL injector (NAPAC'25).",
+          "Optimization of cooling distribution of the EIC SHC cooler ERL (IPAC'24).",
+          "EIC cooler injector space charge benchmark (IPAC'23).",
+          "Cathode space charge modeling in Bmad (IPAC'22).",
+        ],
+      },
+      {
+        title: "AI for accelerator physics",
+        where: "Cornell University",
+        when: "ongoing",
+        bullets: [
+          "LLM agents and assistants for accelerator simulation workflows (Bmad-bot).",
+          "Fast ML surrogate models — transformers, VAEs, diffusion — for computationally intensive beam simulations.",
+        ],
+      },
+    ],
+  },
+  {
+    id: "software",
+    label: "Software",
+    entries: [
+      {
+        title: "SpaceCharge.jl",
+        where: "github.com/bmad-sim/SpaceCharge.jl",
+        when: "",
+        bullets: [
+          "GPU-accelerated Julia package for space charge field calculation; 10–100× speedups over the reference Fortran implementation.",
+        ],
+      },
+      {
+        title: "Bmad-bot",
+        where: "Slack / Matrix",
+        when: "",
+        bullets: [
+          "LLM-powered assistant answering questions over 600+ pages of Bmad and Tao documentation, with retrieval and source citations.",
+        ],
+      },
+      {
+        title: "Bmad → SciBmad translator",
+        where: "bmad2scibmad.com",
+        when: "",
+        bullets: [
+          "Cloud service wrapping the Bmad distribution's lattice translation program for the SciBmad community.",
+        ],
+      },
+    ],
+  },
+  {
+    id: "skills",
+    label: "Skills",
+    entries: [
+      {
+        title: "Scientific computing",
+        where: "",
+        when: "",
+        bullets: [
+          "Julia, Python, Fortran · GPU computing (CUDA) · PIC / FFT field solvers · Bmad, Tao, SciBmad.",
+        ],
+      },
+      {
+        title: "Machine learning",
+        where: "",
+        when: "",
+        bullets: [
+          "LLM agents & retrieval systems · surrogate modeling (transformers, VAEs, diffusion) · multi-objective optimization.",
+        ],
+      },
+    ],
+  },
+];
+---
+
+<Base
+  title="CV — Ningdong Wang"
+  description="Curriculum vitae of Ningdong Wang — accelerator physicist at Cornell University."
+>
+  <div class="wrap page">
+    <header class="page-head">
+      <p class="label"><span class="label-index">Dossier</span> Curriculum vitae</p>
+      <h1>Ningdong Wang</h1>
+      <p class="sub">
+        PhD candidate, accelerator physics · Cornell University ·
+        <a class="tlink" href="mailto:nw285@cornell.edu">nw285@cornell.edu</a>
+      </p>
+    </header>
+
+    {
+      sections.map((section) => (
+        <section class="cv-section" id={section.id}>
+          <h2 class="cv-label">{section.label}</h2>
+          <div class="cv-entries">
+            {section.entries.map((e) => (
+              <div class="entry">
+                <div class="entry-head">
+                  <h3>{e.title}</h3>
+                  {e.when && <span class="when">{e.when}</span>}
+                </div>
+                {e.where && <p class="where">{e.where}</p>}
+                <ul>
+                  {e.bullets.map((b) => (
+                    <li>{b}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <section class="cv-section" id="papers">
+      <h2 class="cv-label">Publications</h2>
+      <div class="cv-entries">
+        <div class="entry">
+          <p class="where">
+            {pubCount} conference papers and reports (IPAC, NAPAC) —
+            <a class="tlink" href="/publications/">full list</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .page {
+    padding-top: clamp(2.5rem, 6vh, 4.5rem);
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    margin: 1.2rem 0 1rem;
+  }
+
+  .sub {
+    color: var(--ink-mute);
+    font-size: 1.125rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .cv-section {
+    display: grid;
+    grid-template-columns: 11rem 1fr;
+    gap: 2rem;
+    border-top: 1px solid var(--hairline);
+    padding-block: 2.2rem;
+  }
+
+  .cv-label {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding-top: 0.4rem;
+  }
+
+  .entry {
+    margin-bottom: 2rem;
+  }
+
+  .entry:last-child {
+    margin-bottom: 0;
+  }
+
+  .entry-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 2rem;
+  }
+
+  .entry h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+
+  .when {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+
+  .where {
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    color: var(--ink-mute);
+    margin: 0.3rem 0 0.6rem;
+  }
+
+  .entry ul {
+    margin: 0.4rem 0 0;
+    padding-left: 1.2em;
+    color: rgba(233, 228, 214, 0.88);
+  }
+
+  .entry li {
+    margin-bottom: 0.4em;
+  }
+
+  .entry li::marker {
+    color: var(--gold);
+  }
+
+  @media (max-width: 700px) {
+    .cv-section {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+
+  @media print {
+    .cv-section {
+      break-inside: avoid;
+    }
+  }
+</style>
