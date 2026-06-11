@@ -50,6 +50,11 @@ const dateStr = date.toLocaleDateString("en-US", {
     font-size: 0.75rem;
     letter-spacing: 0.06em;
     color: var(--ink-faint);
+    transition: color 150ms ease;
+  }
+
+  .row:hover .date {
+    color: var(--cyan);
   }
 
   .title {
@@ -101,7 +106,9 @@ const dateStr = date.toLocaleDateString("en-US", {
   .arrow {
     color: var(--ink-faint);
     font-family: var(--mono);
-    transition: color 150ms ease, transform 150ms ease;
+    transition:
+      color 150ms ease,
+      transform 150ms ease;
   }
 
   .row:hover .arrow {

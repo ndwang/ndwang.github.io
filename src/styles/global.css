@@ -2,17 +2,18 @@
    Design system — "Interaction Point"
    Two beams: ion gold (physics) × electron cyan (AI), colliding on a
    control-room dark ground. Technical-drawing hairlines, mono instrumentation
-   labels, scholarly serif for reading.
+   labels, scholarly serif for reading. The site behaves like a live machine:
+   beams circulate, events accumulate, panels respond to the operator.
 --------------------------------------------------------------------------- */
 
 :root {
   /* ground */
-  --bg: #0a0d12;
+  --bg: #080b10;
   --bg-raised: #0e1219;
   --bg-card: #0c1017;
 
   /* ink */
-  --ink: #e9e4d6;
+  --ink: #ece7d9;
   --ink-mute: #a8a193;
   --ink-faint: #6e695e;
 
@@ -32,7 +33,7 @@
 
   /* layout */
   --measure: 44rem;
-  --site-width: 72rem;
+  --site-width: 76rem;
   --pad: clamp(1.25rem, 4vw, 2.5rem);
 }
 
@@ -48,13 +49,25 @@ html {
 
 body {
   margin: 0;
-  background: var(--bg);
+  background:
+    radial-gradient(
+      110rem 60rem at 85% -20%,
+      rgba(88, 207, 227, 0.05),
+      transparent 60%
+    ),
+    radial-gradient(
+      90rem 55rem at -10% 10%,
+      rgba(217, 166, 72, 0.05),
+      transparent 55%
+    ),
+    var(--bg);
   color: var(--ink);
   font-family: var(--serif);
   font-size: 1.0625rem;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 
 /* faint fixed grain so large dark areas don't band */
@@ -72,14 +85,38 @@ body::before {
   background: rgba(217, 166, 72, 0.35);
 }
 
+/* slim instrument scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #232a35;
+  border: 3px solid var(--bg);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+:focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: 3px;
+}
+
 h1,
 h2,
 h3,
 h4 {
   font-family: var(--serif);
   font-weight: 500;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
   color: var(--ink);
   margin: 0;
 }
@@ -138,7 +175,9 @@ video {
   text-decoration-color: var(--hairline-strong);
   text-underline-offset: 0.22em;
   text-decoration-thickness: 1px;
-  transition: text-decoration-color 150ms ease, color 150ms ease;
+  transition:
+    text-decoration-color 150ms ease,
+    color 150ms ease;
 }
 
 .tlink:hover {
@@ -172,6 +211,62 @@ video {
   transform: translateX(4px);
 }
 
+/* beam-fill pill button — gold sweep on hover */
+.btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.85em 1.7em;
+  border: 1px solid rgba(217, 166, 72, 0.55);
+  border-radius: 999px;
+  color: var(--gold-bright);
+  transition:
+    color 250ms ease,
+    border-color 250ms ease,
+    transform 250ms ease;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(100deg, var(--gold), var(--gold-bright));
+  transform: translateX(-101%);
+  transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn:hover {
+  color: #14100a;
+  transform: translateY(-1px);
+}
+
+.btn:hover::before {
+  transform: translateX(0);
+}
+
+.btn--ghost {
+  border-color: var(--hairline-strong);
+  color: var(--ink-mute);
+}
+
+.btn--ghost::before {
+  background: var(--ink);
+}
+
+.btn--ghost:hover {
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
 /* beam-colored tag chips */
 .chip {
   font-family: var(--mono);
@@ -193,6 +288,51 @@ video {
 .chip--cyan {
   border-color: rgba(88, 207, 227, 0.4);
   color: var(--cyan);
+}
+
+/* ---------------------------------------------------- section architecture */
+
+/* shared page/section header: ghost numeral behind a mono label + big title */
+.section-head {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: clamp(2rem, 4vh, 3rem);
+}
+
+.section-head .label {
+  margin-bottom: 0.9rem;
+}
+
+.section-title {
+  font-size: clamp(1.9rem, 3.4vw, 2.8rem);
+  font-weight: 460;
+  letter-spacing: -0.02em;
+}
+
+.section-title em {
+  font-style: italic;
+  font-weight: 420;
+  color: var(--gold-bright);
+}
+
+/* enormous outlined numeral floating behind the section head */
+.ghost-num {
+  position: absolute;
+  right: -0.05em;
+  bottom: -0.18em;
+  z-index: -1;
+  font-family: var(--mono);
+  font-size: clamp(6rem, 14vw, 11rem);
+  font-weight: 500;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(233, 228, 214, 0.1);
+  pointer-events: none;
+  user-select: none;
 }
 
 /* ------------------------------------------------------------- page prose */
@@ -351,7 +491,7 @@ video {
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -360,7 +500,30 @@ video {
 }
 
 .rise {
-  animation: rise 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: rise 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* scroll-triggered reveal — armed only when JS is present so content is
+   never lost without it */
+html.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+html.js [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media print {
+  .ghost-num,
+  .beamline {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -373,5 +536,9 @@ video {
   }
   html {
     scroll-behavior: auto;
+  }
+  html.js [data-reveal] {
+    opacity: 1;
+    transform: none;
   }
 }

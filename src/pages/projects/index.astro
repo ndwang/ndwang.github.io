@@ -13,16 +13,27 @@ const projects = (await getCollection("projects")).sort(
   description="Research software and AI tools: SpaceCharge.jl, Bmad-bot, and the Bmad to SciBmad translator."
 >
   <div class="wrap page">
-    <header class="page-head">
+    <header class="page-head" data-reveal>
       <p class="label"><span class="label-index">Build</span> Projects</p>
-      <h1>Things I've built</h1>
+      <h1>Things I've <em>built</em></h1>
       <p class="sub">
         High-performance physics solvers, AI assistants, and tools for the
         accelerator community.
       </p>
+      <span class="ghost-num">PRJ</span>
     </header>
     <div class="project-grid">
-      {projects.map((project) => <ProjectCard project={project} />)}
+      {
+        projects.map((project, i) => (
+          <div
+            class="project-cell"
+            data-reveal
+            style={`--reveal-delay: ${(i % 3) * 90}ms`}
+          >
+            <ProjectCard project={project} />
+          </div>
+        ))
+      }
     </div>
   </div>
 </Base>
@@ -33,12 +44,20 @@ const projects = (await getCollection("projects")).sort(
   }
 
   .page-head {
+    position: relative;
     margin-bottom: 3rem;
   }
 
   h1 {
-    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    font-size: clamp(2.6rem, 5.5vw, 4rem);
+    font-weight: 460;
     margin: 1.2rem 0 1rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    font-weight: 420;
+    color: var(--gold-bright);
   }
 
   .sub {
@@ -51,6 +70,10 @@ const projects = (await getCollection("projects")).sort(
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.25rem;
+  }
+
+  .project-cell {
+    display: grid;
   }
 
   @media (max-width: 900px) {

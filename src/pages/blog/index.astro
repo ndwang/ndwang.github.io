@@ -4,7 +4,10 @@ import Base from "../../layouts/Base.astro";
 import PostRow from "../../components/PostRow.astro";
 
 const posts = (
-  await getCollection("posts", ({ data }) => !data.draft || !import.meta.env.PROD)
+  await getCollection(
+    "posts",
+    ({ data }) => !data.draft || !import.meta.env.PROD,
+  )
 ).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
@@ -13,16 +16,23 @@ const posts = (
   description="Essays and experiments on accelerator physics, scientific computing, and AI agents."
 >
   <div class="wrap page">
-    <header class="page-head">
+    <header class="page-head" data-reveal>
       <p class="label"><span class="label-index">Log</span> Writing</p>
-      <h1>Beam time &amp; machine minds</h1>
+      <h1>Beam time &amp; <em>machine minds</em></h1>
       <p class="sub">
-        Notes from the intersection — accelerator physics, scientific
-        computing, and what AI can (and can't) do for science.
+        Notes from the intersection — accelerator physics, scientific computing,
+        and what AI can (and can't) do for science.
       </p>
+      <span class="ghost-num">LOG</span>
     </header>
     <div class="post-list">
-      {posts.map((post) => <PostRow post={post} />)}
+      {
+        posts.map((post, i) => (
+          <div data-reveal style={`--reveal-delay: ${Math.min(i, 5) * 70}ms`}>
+            <PostRow post={post} />
+          </div>
+        ))
+      }
     </div>
   </div>
 </Base>
@@ -33,12 +43,20 @@ const posts = (
   }
 
   .page-head {
+    position: relative;
     margin-bottom: 3rem;
   }
 
   h1 {
-    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    font-size: clamp(2.6rem, 5.5vw, 4rem);
+    font-weight: 460;
     margin: 1.2rem 0 1rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    font-weight: 420;
+    color: var(--cyan-bright);
   }
 
   .sub {

@@ -12,12 +12,13 @@ const years = [...new Set(pubs.map((p) => p.year))].sort((a, b) => b - a);
   description="Conference papers and reports on space charge, beam cooling, and the Electron-Ion Collider."
 >
   <div class="wrap page">
-    <header class="page-head">
+    <header class="page-head" data-reveal>
       <p class="label"><span class="label-index">Record</span> Publications</p>
-      <h1>Published work</h1>
+      <h1>Published <em>work</em></h1>
+      <span class="ghost-num">PUB</span>
       <p class="sub">
-        {pubs.length} papers on space charge, energy-recovery linacs, and beam
-        cooling for the Electron-Ion Collider. Also on
+        {pubs.length} papers on space charge, energy-recovery linacs, and beam cooling
+        for the Electron-Ion Collider. Also on
         <a
           class="tlink"
           href="https://scholar.google.com/citations?user=bOLfUJQAAAAJ"
@@ -35,7 +36,7 @@ const years = [...new Set(pubs.map((p) => p.year))].sort((a, b) => b - a);
 
     {
       years.map((year) => (
-        <section class="year-block">
+        <section class="year-block" data-reveal>
           <h2 class="year-label">{year}</h2>
           <div class="pub-list">
             {pubs
@@ -57,9 +58,20 @@ const years = [...new Set(pubs.map((p) => p.year))].sort((a, b) => b - a);
     padding-top: clamp(2.5rem, 6vh, 4.5rem);
   }
 
+  .page-head {
+    position: relative;
+  }
+
   h1 {
-    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    font-size: clamp(2.6rem, 5.5vw, 4rem);
+    font-weight: 460;
     margin: 1.2rem 0 1rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    font-weight: 420;
+    color: var(--gold-bright);
   }
 
   .sub {

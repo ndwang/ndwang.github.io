@@ -18,7 +18,12 @@ const { title, summary, category, github, link } = project.data;
 <Base title={`${title} — Ningdong Wang`} description={summary}>
   <article class="wrap page">
     <header class="project-head">
-      <span class:list={["chip", category === "research" ? "chip--gold" : "chip--cyan"]}>
+      <span
+        class:list={[
+          "chip",
+          category === "research" ? "chip--gold" : "chip--cyan",
+        ]}
+      >
         {category}
       </span>
       <h1>{title}</h1>

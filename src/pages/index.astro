@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
-import Collider from "../components/Collider.astro";
+import BeamCanvas from "../components/BeamCanvas.astro";
 import PubItem from "../components/PubItem.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import PostRow from "../components/PostRow.astro";
@@ -20,32 +20,35 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
 
 <Base title="Ningdong Wang — Accelerator Physics × AI">
   <!-- ====================================================== hero -->
-  <section class="hero">
-    <div class="wrap hero-grid">
+  <section class="hero" data-beam-host>
+    <BeamCanvas />
+    <div class="wrap hero-content">
       <div class="hero-text">
         <p class="label rise" style="animation-delay: 80ms">
           <span class="label-index">Cornell University</span> · PhD Candidate
         </p>
         <h1 class="rise" style="animation-delay: 180ms">
-          Particle <em class="g">beams</em>, meet
-          <em class="c">machine intelligence</em>.
+          Particle <em class="g">beams</em>,<br />
+          meet <em class="c">machine intelligence</em>.
         </h1>
         <p class="lede rise" style="animation-delay: 300ms">
           I'm Ningdong Wang. I study how intense charged-particle beams behave
-          inside the <strong>Electron-Ion Collider</strong> — the next great
-          collider in the US — and I build AI tools that make that work faster.
+          inside the <strong>Electron-Ion Collider</strong> — the next great collider
+          in the US — and I build AI tools that make that work faster.
         </p>
         <div class="hero-cta rise" style="animation-delay: 420ms">
-          <a href="/projects/" class="mlink">See the work</a>
-          <a href="mailto:nw285@cornell.edu" class="mlink">Get in touch</a>
+          <a href="/projects/" class="btn">See the work</a>
+          <a href="mailto:nw285@cornell.edu" class="btn btn--ghost"
+            >Get in touch</a
+          >
         </div>
-      </div>
-      <div class="hero-art rise" style="animation-delay: 250ms">
-        <Collider />
+        <p class="hero-hint rise" style="animation-delay: 560ms">
+          The beams are live — steer them with your cursor.
+        </p>
       </div>
     </div>
     <div class="wrap">
-      <dl class="status rise" style="animation-delay: 520ms">
+      <dl class="status rise" style="animation-delay: 600ms">
         <div class="stat">
           <dt>Machine</dt>
           <dd>Electron-Ion Collider</dd>
@@ -58,33 +61,45 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
           <dt>Currently</dt>
           <dd>LLM agents for accelerator physics</dd>
         </div>
+        <div class="stat stat--live">
+          <dt><span class="live-dot"></span>Detector · IP-01</dt>
+          <dd><span class="ev" data-events>0000</span> events recorded</dd>
+        </div>
       </dl>
     </div>
   </section>
 
   <!-- ====================================================== about -->
   <section class="section wrap" id="about">
-    <p class="label"><span class="label-index">01</span> About</p>
+    <div class="section-head" data-reveal>
+      <div>
+        <p class="label"><span class="label-index">01</span> About</p>
+        <h2 class="section-title">Beam physics, <em>by day and by GPU</em></h2>
+      </div>
+      <span class="ghost-num">01</span>
+    </div>
     <div class="about-grid">
-      <div class="about-prose prose">
+      <div class="about-prose prose" data-reveal>
         <p>
-          I'm a graduate researcher in accelerator physics at Cornell
-          University, focused on space charge simulation and optimization for
-          the Electron-Ion Collider. My research centers on understanding how
-          intense charged particle beams evolve under collective interactions,
-          with applications to the EIC Strong Hadron Cooler and Low Energy
-          Cooler.
+          I'm a PhD candidate in physics at Cornell University and a research
+          assistant at Brookhaven National Laboratory, focused on space charge
+          simulation and optimization for the Electron-Ion Collider — work
+          recognized by a DOE SCGSR fellowship and a DOE Tigner Traineeship. My
+          research centers on how intense charged particle beams evolve under
+          collective interactions, with applications to the EIC Strong Hadron
+          Cooler and Low Energy Cooler.
         </p>
         <p>
-          Beyond my core research, I'm passionate about applying AI to
-          accelerator physics. I built <a href="/projects/bmad-bot/">Bmad-bot</a>,
-          an LLM-powered assistant that helps researchers navigate the Bmad and
-          Tao documentation, and I develop fast surrogate models — transformers,
-          VAEs, diffusion models — to accelerate computationally intensive
-          simulations.
+          The other half of my work is teaching machines to do accelerator
+          physics: <a href="/projects/beam-vae/">surrogate models</a> that
+          propagate whole beam distributions in milliseconds, and
+          <a href="/projects/accelerator-agents/">LLM agents</a> that operate
+          simulation and control systems — including
+          <a href="/projects/bmad-bot/">Bmad-bot</a> and the multi-lab Osprey
+          framework deployed across seven DOE facilities.
         </p>
       </div>
-      <figure class="portrait">
+      <figure class="portrait" data-reveal style="--reveal-delay: 120ms">
         <img
           src="/images/ningdong_wang_pic.jpg"
           alt="Portrait of Ningdong Wang"
@@ -98,34 +113,70 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
 
   <!-- ====================================================== publications -->
   <section class="section wrap" id="publications">
-    <div class="section-head">
-      <p class="label"><span class="label-index">02</span> Selected publications</p>
+    <div class="section-head" data-reveal>
+      <div>
+        <p class="label">
+          <span class="label-index">02</span> Selected publications
+        </p>
+        <h2 class="section-title">On the record</h2>
+      </div>
       <a href="/publications/" class="mlink">All publications</a>
+      <span class="ghost-num">02</span>
     </div>
     <div class="pub-list">
-      {selectedPubs.map((pub) => <PubItem pub={pub} />)}
+      {
+        selectedPubs.map((pub, i) => (
+          <div data-reveal style={`--reveal-delay: ${i * 70}ms`}>
+            <PubItem pub={pub} />
+          </div>
+        ))
+      }
     </div>
   </section>
 
   <!-- ====================================================== projects -->
   <section class="section wrap" id="projects">
-    <div class="section-head">
-      <p class="label"><span class="label-index">03</span> Projects</p>
+    <div class="section-head" data-reveal>
+      <div>
+        <p class="label"><span class="label-index">03</span> Projects</p>
+        <h2 class="section-title">Built to be used</h2>
+      </div>
       <a href="/projects/" class="mlink">All projects</a>
+      <span class="ghost-num">03</span>
     </div>
     <div class="project-grid">
-      {projects.slice(0, 3).map((project) => <ProjectCard project={project} />)}
+      {
+        projects.slice(0, 3).map((project, i) => (
+          <div
+            class="project-cell"
+            data-reveal
+            style={`--reveal-delay: ${i * 90}ms`}
+          >
+            <ProjectCard project={project} />
+          </div>
+        ))
+      }
     </div>
   </section>
 
   <!-- ====================================================== writing -->
   <section class="section wrap" id="writing">
-    <div class="section-head">
-      <p class="label"><span class="label-index">04</span> Writing</p>
+    <div class="section-head" data-reveal>
+      <div>
+        <p class="label"><span class="label-index">04</span> Writing</p>
+        <h2 class="section-title">Notes from the intersection</h2>
+      </div>
       <a href="/blog/" class="mlink">All posts</a>
+      <span class="ghost-num">04</span>
     </div>
     <div class="post-list">
-      {posts.map((post) => <PostRow post={post} />)}
+      {
+        posts.map((post, i) => (
+          <div data-reveal style={`--reveal-delay: ${i * 70}ms`}>
+            <PostRow post={post} />
+          </div>
+        ))
+      }
     </div>
   </section>
 </Base>
@@ -134,8 +185,12 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
   /* hero ------------------------------------------------------------ */
   .hero {
     position: relative;
-    padding-block: clamp(3rem, 8vh, 6rem) 3rem;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: min(92vh, 58rem);
+    padding-block: clamp(3rem, 8vh, 6rem) 2.5rem;
   }
 
   /* fine blueprint grid behind the hero only */
@@ -148,24 +203,38 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
       linear-gradient(var(--hairline) 1px, transparent 1px),
       linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
     background-size: 64px 64px;
-    opacity: 0.35;
-    mask-image: radial-gradient(ellipse 90% 80% at 60% 30%, black 30%, transparent 75%);
-    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 60% 30%, black 30%, transparent 75%);
+    opacity: 0.3;
+    mask-image: radial-gradient(
+      ellipse 90% 80% at 60% 30%,
+      black 30%,
+      transparent 75%
+    );
+    -webkit-mask-image: radial-gradient(
+      ellipse 90% 80% at 60% 30%,
+      black 30%,
+      transparent 75%
+    );
   }
 
-  .hero-grid {
+  .hero-content {
     position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: clamp(2rem, 5vw, 4rem);
+    z-index: 2;
+    width: 100%;
+    flex: 1;
+    display: flex;
     align-items: center;
   }
 
+  .hero-text {
+    max-width: 38em;
+  }
+
   h1 {
-    font-size: clamp(2.6rem, 6vw, 4.4rem);
+    font-size: clamp(2.8rem, 6.6vw, 5.2rem);
     font-weight: 460;
-    margin: 1.4rem 0 1.6rem;
-    max-width: 14em;
+    line-height: 1.05;
+    margin: 1.5rem 0 1.8rem;
+    font-optical-sizing: auto;
   }
 
   h1 em {
@@ -182,11 +251,11 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
   }
 
   .lede {
-    font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+    font-size: clamp(1.0625rem, 1.6vw, 1.3125rem);
     line-height: 1.65;
     color: var(--ink-mute);
-    max-width: 34em;
-    margin-bottom: 2rem;
+    max-width: 30em;
+    margin-bottom: 2.2rem;
   }
 
   .lede strong {
@@ -196,20 +265,42 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
 
   .hero-cta {
     display: flex;
-    gap: 2.4rem;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
 
-  .hero-art {
-    min-width: 0;
+  .hero-hint {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-top: 2.4rem;
+  }
+
+  .hero-hint::before {
+    content: "↳ ";
+    color: var(--cyan);
+  }
+
+  @media (hover: none) {
+    .hero-hint {
+      display: none;
+    }
   }
 
   /* status strip ----------------------------------------------------- */
   .status {
+    position: relative;
+    z-index: 2;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     border-block: 1px solid var(--hairline);
     margin: 3rem 0 0;
     padding: 0;
+    background: rgba(8, 11, 16, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
 
   .stat {
@@ -229,6 +320,9 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
     text-transform: uppercase;
     color: var(--gold);
     margin-bottom: 0.35rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .stat dd {
@@ -237,21 +331,38 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
     color: var(--ink-mute);
   }
 
+  .stat--live dt {
+    color: var(--cyan);
+  }
+
+  .stat--live .ev {
+    font-family: var(--mono);
+    font-size: 0.9375rem;
+    color: var(--cyan-bright);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cyan-bright);
+    animation: blink 2.2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.25;
+    }
+  }
+
   /* sections ---------------------------------------------------------- */
   .section {
-    padding-block: clamp(3rem, 7vh, 5.5rem) 0;
-  }
-
-  .section-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 2rem;
-    flex-wrap: wrap;
-  }
-
-  .section .label {
-    margin-bottom: 2rem;
+    padding-block: clamp(4rem, 9vh, 7rem) 0;
   }
 
   /* about ------------------------------------------------------------- */
@@ -275,6 +386,9 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
     position: absolute;
     width: 22px;
     height: 22px;
+    transition:
+      width 300ms ease,
+      height 300ms ease;
   }
 
   .portrait::before {
@@ -289,6 +403,12 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
     right: 0;
     border-bottom: 1px solid var(--cyan);
     border-right: 1px solid var(--cyan);
+  }
+
+  .portrait:hover::before,
+  .portrait:hover::after {
+    width: 44px;
+    height: 44px;
   }
 
   .portrait img {
@@ -318,16 +438,19 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft))
     gap: 1.25rem;
   }
 
+  .project-cell {
+    display: grid;
+  }
+
   /* responsive ---------------------------------------------------------- */
-  @media (max-width: 900px) {
-    .hero-grid {
-      grid-template-columns: 1fr;
+  @media (max-width: 880px) {
+    .hero {
+      min-height: 0;
+      padding-top: 30rem;
     }
 
-    .hero-art {
-      max-width: 30rem;
-      margin-inline: auto;
-      order: -1;
+    .hero-text {
+      max-width: 100%;
     }
 
     .about-grid {

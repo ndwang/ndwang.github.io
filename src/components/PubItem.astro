@@ -27,7 +27,8 @@ const { pub, showYear = true } = Astro.props;
       {
         pub.authors.map((a, i) => (
           <span class:list={{ me: a.isMe }}>
-            {a.name}{i < pub.authors.length - 1 ? ", " : ""}
+            {a.name}
+            {i < pub.authors.length - 1 ? ", " : ""}
           </span>
         ))
       }
@@ -37,7 +38,12 @@ const { pub, showYear = true } = Astro.props;
       {pub.pages && <span class="pages">p. {pub.pages}</span>}
       {
         pub.doi && (
-          <a class="doi" href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener">
+          <a
+            class="doi"
+            href={`https://doi.org/${pub.doi}`}
+            target="_blank"
+            rel="noopener"
+          >
             doi:{pub.doi}
           </a>
         )
@@ -48,11 +54,34 @@ const { pub, showYear = true } = Astro.props;
 
 <style>
   .pub {
+    position: relative;
     display: grid;
     grid-template-columns: 4.5rem 1fr;
     gap: 1.5rem;
     padding-block: 1.5rem;
     border-bottom: 1px solid var(--hairline);
+  }
+
+  /* beam sweep on hover */
+  .pub::before {
+    content: "";
+    position: absolute;
+    left: calc(-1 * var(--pad, 1.5rem));
+    top: 0.9rem;
+    bottom: 0.9rem;
+    width: 2px;
+    background: linear-gradient(var(--gold), var(--cyan));
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .pub:hover::before {
+    transform: scaleY(1);
+  }
+
+  .pub:hover .title :global(a) {
+    color: var(--gold-bright);
   }
 
   .pub:has(.year:empty),

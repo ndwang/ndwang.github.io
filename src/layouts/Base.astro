@@ -3,6 +3,7 @@ import "@fontsource-variable/newsreader";
 import "@fontsource-variable/newsreader/wght-italic.css";
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
+import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
@@ -25,14 +26,21 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#080b10" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <script>
+      // arm JS-dependent styling (scroll reveals) as early as possible
+      document.documentElement.classList.add("js");
+    </script>
+    <ClientRouter />
   </head>
   <body>
+    <div class="beamline" aria-hidden="true"></div>
     <Header />
     <main>
       <slot />
@@ -47,4 +55,68 @@ const {
     z-index: 2;
     min-height: 70vh;
   }
+
+  /* scroll progress — a beam filling the pipe across the top of the viewport */
+  .beamline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    z-index: 50;
+    background: linear-gradient(
+      90deg,
+      var(--gold),
+      var(--gold-bright) 45%,
+      var(--cyan-bright) 55%,
+      var(--cyan)
+    );
+    transform: scaleX(var(--scroll-progress, 0));
+    transform-origin: left;
+    pointer-events: none;
+  }
 </style>
+
+<script>
+  function initPage() {
+    // -- scroll reveals -----------------------------------------------------
+    const revealEls = document.querySelectorAll(
+      "[data-reveal]:not(.is-revealed)",
+    );
+    if (revealEls.length) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-revealed");
+              io.unobserve(entry.target);
+            }
+          }
+        },
+        { rootMargin: "0px 0px -8% 0px", threshold: 0.05 },
+      );
+      revealEls.forEach((el) => io.observe(el));
+    }
+
+    // -- beamline scroll progress -------------------------------------------
+    const root = document.documentElement;
+    const onScroll = () => {
+      const max = root.scrollHeight - root.clientHeight;
+      root.style.setProperty(
+        "--scroll-progress",
+        max > 0 ? String(Math.min(1, window.scrollY / max)) : "0",
+      );
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener(
+      "astro:before-swap",
+      () => window.removeEventListener("scroll", onScroll),
+      {
+        once: true,
+      },
+    );
+  }
+
+  document.addEventListener("astro:page-load", initPage);
+</script>

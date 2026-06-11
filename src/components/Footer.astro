@@ -3,12 +3,22 @@ const year = new Date().getFullYear();
 const socials = [
   { href: "mailto:nw285@cornell.edu", label: "Email" },
   { href: "https://github.com/ndwang", label: "GitHub" },
-  { href: "https://scholar.google.com/citations?user=bOLfUJQAAAAJ", label: "Scholar" },
+  {
+    href: "https://scholar.google.com/citations?user=bOLfUJQAAAAJ",
+    label: "Scholar",
+  },
   { href: "https://inspirehep.net/authors/2137533", label: "INSPIRE" },
 ];
 ---
 
 <footer class="site-footer">
+  <div class="wrap outro">
+    <p class="label"><span class="label-index">End of beamline</span></p>
+    <p class="signoff">
+      Have a beam to tame or a model to train?
+      <a href="mailto:nw285@cornell.edu" class="tlink">Let's collide ideas.</a>
+    </p>
+  </div>
   <div class="wrap grid">
     <div class="cell">
       <span class="coords">42.4534° N, 76.4735° W</span>
@@ -17,7 +27,11 @@ const socials = [
     <nav class="cell links" aria-label="Social links">
       {
         socials.map((s) => (
-          <a href={s.href} target={s.href.startsWith("http") ? "_blank" : undefined} rel="noopener">
+          <a
+            href={s.href}
+            target={s.href.startsWith("http") ? "_blank" : undefined}
+            rel="noopener"
+          >
             {s.label}
           </a>
         ))
@@ -34,12 +48,35 @@ const socials = [
     position: relative;
     z-index: 2;
     border-top: 1px solid var(--hairline);
-    margin-top: 6rem;
-    font-family: var(--mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
+    margin-top: 7rem;
+    background:
+      radial-gradient(
+        60rem 22rem at 50% 130%,
+        rgba(217, 166, 72, 0.07),
+        transparent 70%
+      ),
+      transparent;
+  }
+
+  .outro {
+    padding-block: clamp(3rem, 7vh, 5rem) 2rem;
+  }
+
+  .signoff {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 3.4vw, 2.6rem);
+    font-weight: 440;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    max-width: 22em;
+    margin: 1.4rem 0 0;
+    color: var(--ink);
+  }
+
+  .signoff .tlink {
+    font-style: italic;
+    color: var(--gold-bright);
+    text-decoration-color: rgba(217, 166, 72, 0.4);
   }
 
   .grid {
@@ -48,7 +85,13 @@ const socials = [
     gap: 1.5rem 3rem;
     align-items: baseline;
     justify-content: space-between;
-    padding-block: 2rem;
+    padding-block: 1.6rem 2rem;
+    border-top: 1px solid var(--hairline);
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
   }
 
   .cell {
