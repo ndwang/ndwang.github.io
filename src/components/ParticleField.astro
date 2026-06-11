@@ -66,6 +66,7 @@
     uniform float uSize;
     uniform vec3 uMouse;
     uniform float uMouseOn;
+    uniform float uDim;
 
     varying float vSpecies;
     varying float vBright;
@@ -118,7 +119,10 @@
 
       vec4 mv = modelViewMatrix * vec4(pos, 1.0);
       gl_Position = projectionMatrix * mv;
-      gl_PointSize = uSize * (0.5 + aSeed.w) * uPixelRatio / max(-mv.z, 0.1);
+      // shrink points as the field recedes — additive blending sums dense
+      // regions back to full brightness if only alpha is dimmed
+      gl_PointSize = uSize * (0.5 + aSeed.w) * (0.55 + 0.45 * uDim) *
+        uPixelRatio / max(-mv.z, 0.1);
 
       vSpecies = aSpecies;
       vBright = 0.35 + aSeed.w * 0.65;
@@ -126,7 +130,9 @@
   `;
 
   const frag = /* glsl */ `
-    precision mediump float;
+    // highp to match the vertex stage — uDim is shared across both, and
+    // mismatched uniform precisions fail program validation
+    precision highp float;
 
     uniform float uDim;
     varying float vSpecies;
@@ -372,18 +378,22 @@
     function loop(now: number) {
       const dt = Math.min((now - prev) / 1000, 0.05);
       prev = now;
-      simT += dt;
+
+      // recede hard while reading — the field is texture, not foreground;
+      // re-arm only partially toward the footer
+      const p = drive.progress;
+      const calm = Math.min(p / 0.14, 1);
+      const dim = 1 - 0.88 * calm + 0.3 * Math.max((p - 0.86) / 0.14, 0);
+      uniforms.uDim.value += (dim - uniforms.uDim.value) * 0.08;
+
+      // and slow the simulation clock — it's the motion, not just the
+      // brightness, that pulls the eye away from the text
+      simT += dt * (1 - 0.65 * calm);
 
       uniforms.uTime.value = simT;
       uniforms.uProgress.value +=
         (drive.progress * 2.7 - uniforms.uProgress.value) * 0.06;
       uniforms.uMouseOn.value += (mouseTarget - uniforms.uMouseOn.value) * 0.08;
-
-      // dim the field while reading, re-arm toward the footer
-      const p = drive.progress;
-      const dim =
-        1 - 0.62 * Math.min(p / 0.18, 1) + 0.5 * Math.max((p - 0.82) / 0.18, 0);
-      uniforms.uDim.value += (dim - uniforms.uDim.value) * 0.08;
 
       // gentle parallax: the camera leans with the cursor
       camDrift.x += (ndc.x * 0.45 - camDrift.x) * 0.03;
