@@ -1,12 +1,16 @@
 ---
+import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import IdeaStudy from "../components/IdeaStudy.astro";
-import { getPosts, getPapers, formatDate } from "../lib/content.js";
+import PaperAuthors from "../components/PaperAuthors.astro";
+import spaceCharge from "../assets/editorial/projects-landscape.png";
+import theNextExperiment from "../assets/editorial/blog-landscape.png";
+import learningTheDynamics from "../assets/editorial/papers-landscape.png";
+import { getPosts, getPapers, isLeadAuthor, formatDate } from "../lib/content.js";
 const posts = await getPosts();
-const papers = getPapers();
-const latestPaper = papers.find((paper) => paper.author.startsWith("Wang, Ningdong and ")) || papers[0];
-const [familyName, givenNames] = latestPaper.author.split(" and ")[0].split(",");
-const leadAuthor = givenNames ? `${givenNames.trim()} ${familyName.trim()}` : familyName;
+const papers = getPapers()
+  .filter((paper) => isLeadAuthor(paper.author))
+  .slice(0, 3);
 ---
 
 <Base>
@@ -18,14 +22,11 @@ const leadAuthor = givenNames ? `${givenNames.trim()} ${familyName.trim()}` : fa
         <em>Wang</em>
       </h1>
       <p class="hero-description">
-        Researcher and programmer.
+        Researcher and builder.
         <br />
         PhD student at Cornell University.
       </p>
       <div class="hero-actions">
-        <a href="/projects/" class="text-link">
-          Projects
-        </a>
         <a href="/cv/" class="text-link">
           CV
         </a>
@@ -34,53 +35,20 @@ const leadAuthor = givenNames ? `${givenNames.trim()} ${familyName.trim()}` : fa
     <IdeaStudy />
   </section>
 
-  <section class="home-section" aria-labelledby="work-title">
-    <div class="section-heading">
-      <h2 id="work-title">
-        <a class="content-link" href="/projects/">
-          Projects
-        </a>
-      </h2>
-    </div>
-    <div class="work-grid">
-      <a class="featured-project" href="/projects/spacecharge.jl/" aria-labelledby="home-spacecharge-title">
-        <div class="project-art">
-          <svg viewBox="0 0 560 190" aria-hidden="true">
-            <g fill="none" stroke="currentColor" stroke-width=".8">
-              {Array.from({ length: 19 }, (_, i) => (
-                <path d={`M -20 ${20 + i * 8} C 150 ${-45 + i * 12}, 290 ${240 - i * 12}, 580 ${20 + i * 8}`} />
-              ))}
-            </g>
-            <circle cx="287" cy="98" r="6" class="art-point" />
-          </svg>
-        </div>
-        <div class="project-card-copy">
-          <h3 class="content-link" id="home-spacecharge-title">
-            SpaceCharge.jl
-          </h3>
-          <p>A GPU-accelerated Julia package for space charge calculations.</p>
-        </div>
-      </a>
-      <div class="work-aside">
-        <a class="compact-project" href="/projects/Bmad-bot/" aria-labelledby="home-bmad-bot-title">
-          <h3 class="content-link" id="home-bmad-bot-title">
-            Bmad-bot
-          </h3>
-          <p>An AI chatbot for Bmad and Tao documentation.</p>
-        </a>
-        <a class="compact-project" href="/projects/Bmad2Scibmad/" aria-labelledby="home-bmad-converter-title">
-          <h3 class="content-link" id="home-bmad-converter-title">
-            Bmad → SciBmad
-          </h3>
-          <p>A web tool for converting Bmad lattices to SciBmad.</p>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <section class="home-section" aria-labelledby="writing-title">
-    <div class="section-heading">
-      <h2 id="writing-title">
+  <section class="home-section home-blog" aria-labelledby="writing-title">
+    <div class="home-scene">
+      <Image
+        class="home-section-art"
+        src={theNextExperiment}
+        alt=""
+        aria-hidden="true"
+        width={1200}
+        widths={[480, 960, 1440]}
+        sizes="(max-width: 540px) calc(100vw - 40px), (max-width: 1100px) calc(100vw - 64px), (max-width: 1432px) calc(100vw - 112px), 1320px"
+        format="webp"
+        loading="lazy"
+      />
+      <h2 class="home-section-title" id="writing-title">
         <a class="content-link" href="/blog/">
           Blog
         </a>
@@ -101,29 +69,66 @@ const leadAuthor = givenNames ? `${givenNames.trim()} ${familyName.trim()}` : fa
     </div>
   </section>
 
+  <section class="home-section home-projects" aria-labelledby="work-title">
+    <div class="home-scene">
+      <Image
+        class="home-section-art"
+        src={spaceCharge}
+        alt=""
+        aria-hidden="true"
+        width={1200}
+        widths={[480, 960, 1440]}
+        sizes="(max-width: 540px) calc(100vw - 40px), (max-width: 1100px) calc(100vw - 64px), (max-width: 1432px) calc(100vw - 112px), 1320px"
+        format="webp"
+        loading="lazy"
+      />
+      <h2 class="home-section-title" id="work-title">
+        <a class="content-link" href="/projects/">
+          Projects
+        </a>
+      </h2>
+    </div>
+    <a class="featured-project" href="/projects/spacecharge.jl/" aria-labelledby="home-spacecharge-title">
+      <h3 class="content-link" id="home-spacecharge-title">
+        SpaceCharge.jl
+      </h3>
+      <p>A GPU-accelerated Julia package for space charge calculations.</p>
+    </a>
+  </section>
+
   <section class="home-section home-papers" aria-labelledby="papers-title">
-    <div class="section-heading">
-      <h2 id="papers-title">
+    <div class="home-scene">
+      <Image
+        class="home-section-art"
+        src={learningTheDynamics}
+        alt=""
+        aria-hidden="true"
+        width={1200}
+        widths={[480, 960, 1440]}
+        sizes="(max-width: 540px) calc(100vw - 40px), (max-width: 1100px) calc(100vw - 64px), (max-width: 1432px) calc(100vw - 112px), 1320px"
+        format="webp"
+        loading="lazy"
+      />
+      <h2 class="home-section-title" id="papers-title">
         <a href="/papers/" class="content-link">
           Papers
         </a>
       </h2>
     </div>
-    <a
-      class="paper-feature"
-      href={latestPaper.doi ? `https://doi.org/${latestPaper.doi}` : latestPaper.url || "/papers/"}
-      aria-labelledby="home-paper-title"
-    >
-      <span class="paper-feature-year">{latestPaper.year}</span>
-      <div>
-        <h3 class="content-link" id="home-paper-title">
-          {latestPaper.title}
-        </h3>
-        <p>
-          {leadAuthor}
-          {latestPaper.author.includes(" and ") ? " et al." : ""} · {latestPaper.booktitle}
-        </p>
-      </div>
-    </a>
+    <div class="home-paper-grid">
+      {papers.map((paper, index) => (
+        <a class="home-paper" href={paper.doi ? `https://doi.org/${paper.doi}` : paper.url || "/papers/"} aria-labelledby={`home-paper-${index}`}>
+          <time class="home-paper-year" datetime={String(paper.year)}>
+            {paper.year}
+          </time>
+          <h3 class="content-link" id={`home-paper-${index}`}>
+            {paper.title}
+          </h3>
+          <p>
+            <PaperAuthors author={paper.author} mla /> · {paper.booktitle}
+          </p>
+        </a>
+      ))}
+    </div>
   </section>
 </Base>

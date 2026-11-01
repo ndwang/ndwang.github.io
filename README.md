@@ -33,6 +33,7 @@ The build writes to `.site-output/`, which is ignored by Git. Astro serves `publ
 | Education, experience, awards, and skills | `src/data/resume.json`                        |
 | Biography and home copy                   | `src/pages/cv.astro`, `src/pages/index.astro` |
 | Images and videos                         | `public/assets/img/`, `public/assets/video/`  |
+| Home editorial artwork                    | `src/assets/editorial/`                       |
 
 CV content was checked against `Ningdong_Wang_Complete_Portfolio_September_2026_v2.docx`, including the Shizuku AI internship. The older portfolio DOCX is preserved locally under `docs/reference/`, excluded from Git, and is not the source for current CV wording. Earlier UIUC and Argonne roles remain part of the CV; publication records are verified separately against publisher sources in [publication sources](docs/publication-sources.md).
 
@@ -47,6 +48,8 @@ Posts use YAML frontmatter with `title`, `description`, `date`, and `tags`, foll
 Project write-ups also use a `date: "YYYY-MM-DD"` frontmatter field, displayed on the project card and page header. The three original project dates come from their first file-addition commits: SpaceCharge.jl on July 17, 2025 (`648c1dd`), Bmad-bot on July 28, 2025 (`5d6f7d2`), and Bmad to SciBmad on December 11, 2025 (`72a2e32`). These record page creation, not when development of the software began.
 
 The content loader in `src/lib/content.js` reads the original Markdown and BibTeX files at build time. It supports the existing Liquid video/figure includes, expandable details, and explicit heading anchors. New writing can use ordinary Markdown and HTML. Add support in the loader before introducing other Liquid constructs.
+
+Home artwork uses transparent `*-landscape.png` compositions in `src/assets/editorial/`, with live headings layered over them. These were generated from the full original posters and their complete original prompts, preserving each image's scientific relationships and ink palette. Original posters and earlier cutouts remain preserved; the SpaceCharge source is `public/assets/img/spacecharge-editorial.png`. Astro generates responsive WebP files during the build. The [landscape prompts](docs/editorial-landscape-prompts.md) include the source Page links and complete generation instructions; [cutout edit prompts](docs/editorial-cutout-prompts.md) document the earlier background and lettering removal.
 
 Existing posts, project write-ups, and personal media retain their original URLs. Files under `public/assets/` are served at `/assets/`. `/publications/` redirects to `/papers/`; `/about/` redirects to `/cv/`. The retired Jekyll build, template examples, and unused template assets have been removed. Historical personal biography and repository/social settings are preserved under `docs/reference/previous-site/`.
 
