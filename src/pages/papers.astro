@@ -1,0 +1,200 @@
+---
+import Base from "../layouts/Base.astro";
+import PaperAuthors from "../components/PaperAuthors.astro";
+import { getPaperGroups, isLeadAuthor } from "../lib/content.js";
+const paperGroups = getPaperGroups();
+---
+
+<Base title="Papers" description="Publications by Ningdong Wang on scientific computing, AI systems, and accelerator physics." section="papers">
+  <header class="page-intro">
+    <h1 class="display-title" id="papers-heading">
+      Papers
+    </h1>
+    <a class="text-link" href="https://scholar.google.com/citations?user=bOLfUJQAAAAJ">
+      Google Scholar
+    </a>
+  </header>
+  <section aria-labelledby="papers-heading">
+    <div class="filter-bar" id="paper-filters" hidden>
+      <div class="filter-options" role="group" aria-label="Filter papers by authorship">
+        <button class="filter-button" data-filter="all" aria-pressed="true">
+          All papers
+        </button>
+        <button class="filter-button" data-filter="lead" aria-pressed="false">
+          First author
+        </button>
+      </div>
+      <label class="search-field">
+        <span class="sr-only">Search publications</span>
+        <span aria-hidden="true">⌕</span>
+        <input type="search" id="paper-search" placeholder="Search papers…" />
+      </label>
+    </div>
+    <div class="paper-list">
+      {paperGroups.map((group) => (
+        <section class="paper-year-group" data-paper-group aria-labelledby={`papers-${group.year}`}>
+          <h2 class="paper-year" id={`papers-${group.year}`}>
+            {group.year}
+          </h2>
+          <div class="paper-year-papers">
+            {group.papers.map((paper) => (
+              <article
+                class="paper-row"
+                data-paper
+                data-lead={String(isLeadAuthor(paper.author))}
+                data-search={`${paper.title} ${paper.author} ${paper.year} ${paper.booktitle || ""}`.toLowerCase()}
+              >
+                <p class="eyebrow paper-venue">{paper.booktitle || paper.institution || paper.publisher || "Research report"}</p>
+                <h3 class="paper-title">
+                  {paper.doi || paper.url ? (
+                    <a class="content-link" href={paper.doi ? `https://doi.org/${paper.doi}` : paper.url}>
+                      {paper.title}
+                    </a>
+                  ) : (
+                    paper.title
+                  )}
+                </h3>
+                <p class="paper-authors">
+                  <PaperAuthors author={paper.author} />
+                </p>
+                <div class="paper-actions">
+                  <details class="citation">
+                    <summary>
+                      BibTeX <span aria-hidden="true">+</span>
+                    </summary>
+                    <pre><code>{paper.bibtex}</code></pre>
+                  </details>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+    <p id="paper-empty" class="empty-state" role="status" hidden>
+      No papers match this search. Try a different title, author, or year.
+    </p>
+    <p id="paper-results" class="sr-only" role="status" aria-live="polite"></p>
+  </section>
+</Base>
+<script>
+  const filters = document.querySelector<HTMLElement>("#paper-filters");
+  const search = document.querySelector<HTMLInputElement>("#paper-search");
+  const rows = [...document.querySelectorAll<HTMLElement>("[data-paper]")];
+  const groups = [...document.querySelectorAll<HTMLElement>("[data-paper-group]")];
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>("[data-filter]")];
+  let selected = "all";
+  function filterPapers() {
+    const query = search?.value.trim().toLowerCase() || "";
+    let count = 0;
+    rows.forEach((row) => {
+      const visible = (selected === "all" || row.dataset.lead === "true") && (row.dataset.search || "").includes(query);
+      row.hidden = !visible;
+      if (visible) count++;
+    });
+    groups.forEach((group) => {
+      group.hidden = !group.querySelector("[data-paper]:not([hidden])");
+    });
+    document.querySelector<HTMLElement>("#paper-empty")!.hidden = count > 0;
+    document.querySelector<HTMLElement>("#paper-results")!.textContent = `${count} ${count === 1 ? "paper" : "papers"} shown`;
+  }
+  if (filters) filters.hidden = false;
+  search?.addEventListener("input", filterPapers);
+  buttons.forEach((button) =>
+    button.addEventListener("click", () => {
+      selected = button.dataset.filter || "all";
+      buttons.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+      filterPapers();
+    })
+  );
+</script>
+<style>
+  .paper-year-group {
+    display: grid;
+    grid-template-columns: 100px minmax(0, 1fr);
+    gap: 2.2rem;
+  }
+  .paper-year-group:not([hidden]) ~ .paper-year-group:not([hidden]) {
+    border-top: 1px solid var(--line);
+  }
+  .paper-row {
+    padding: 2.4rem 0;
+  }
+  .paper-year {
+    margin: 0;
+    padding: 2.4rem 0;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+  .paper-venue {
+    margin: 0 0 0.75rem;
+    max-width: 65ch;
+    line-height: 1.6;
+  }
+  .paper-title {
+    font-size: clamp(1.35rem, 2.3vw, 1.85rem);
+    line-height: 1.25;
+    font-weight: 500;
+    max-width: 34ch;
+    margin: 0 0 0.85rem;
+  }
+  .paper-authors {
+    max-width: 85ch;
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    margin: 0 0 1.2rem;
+  }
+  .paper-actions {
+    display: flex;
+    gap: 1.8rem;
+    flex-wrap: wrap;
+    align-items: start;
+    font-size: 0.8rem;
+  }
+  .citation {
+    min-width: 100px;
+  }
+  .citation[open] {
+    flex-basis: 100%;
+  }
+  .citation summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    width: max-content;
+    color: var(--ink);
+  }
+  .citation summary::-webkit-details-marker {
+    display: none;
+  }
+  .citation pre {
+    background: var(--soft);
+    border-left: 1px solid var(--ink);
+    padding: 1.2rem;
+    overflow: auto;
+    max-width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: 0.75rem;
+    line-height: 1.65;
+  }
+  .filter-options {
+    display: flex;
+    gap: 0.4rem;
+  }
+  @media (max-width: 650px) {
+    .paper-year-group {
+      grid-template-columns: 45px minmax(0, 1fr);
+      gap: 1rem;
+    }
+    .paper-year {
+      font-size: 0.75rem;
+    }
+  }
+</style>

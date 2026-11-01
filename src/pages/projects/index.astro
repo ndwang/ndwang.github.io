@@ -1,0 +1,158 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getProjects, formatDate } from "../../lib/content.js";
+const projects = await getProjects();
+const labels = {
+  "spacecharge.jl": { name: "SpaceCharge.jl", image: "spacecharge-editorial.png" },
+  "Bmad-bot": { name: "Bmad-bot", image: "Bmad-bot-red.png" },
+  Bmad2Scibmad: { name: "Bmad → SciBmad", image: "bmad2scibmad.png" },
+};
+const ordered = [...projects].sort((a, b) => Number(b.slug === "spacecharge.jl") - Number(a.slug === "spacecharge.jl"));
+---
+
+<Base title="Projects" description="Software, open tools, and experiments by Ningdong Wang." section="projects">
+  <header class="page-intro">
+    <h1 class="display-title" id="projects-heading">
+      Projects
+    </h1>
+    <a class="text-link" href="https://github.com/ndwang">
+      GitHub
+    </a>
+  </header>
+  <section aria-labelledby="projects-heading">
+    <div class="project-grid">
+      {ordered.map((project, index) => {
+        const label = labels[project.slug] || { name: project.title, image: "" };
+        return (
+          <article class:list={["project-card", { "project-featured": index === 0 }]}>
+            <a class="project-link" href={project.url} aria-labelledby={`project-${project.slug}`}>
+              <div class="project-image">
+                {label.image && (
+                  <img
+                    src={`/assets/img/${label.image}`}
+                    alt={
+                      label.name === "SpaceCharge.jl"
+                        ? "SpaceCharge.jl poster showing a charged particle bunch inside a computational mesh"
+                        : label.name === "Bmad-bot"
+                          ? "Bmad-bot illustrated character"
+                          : "Bmad and SciBmad logos connected by a cloud download symbol"
+                    }
+                    loading="lazy"
+                  />
+                )}
+              </div>
+              <div class="project-info">
+                {project.date && (
+                  <p class="eyebrow project-date">
+                    <time datetime={new Date(project.date).toISOString()}>{formatDate(project.date)}</time>
+                  </p>
+                )}
+                <h2 class="content-link" id={`project-${project.slug}`}>
+                  {label.name}
+                </h2>
+                <p class="project-description">{project.description}</p>
+              </div>
+            </a>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+</Base>
+<style>
+  .project-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3.5rem 2.3rem;
+  }
+  .project-card {
+    min-width: 0;
+    border: 0;
+    padding-bottom: 2.3rem;
+    background: transparent;
+    overflow: visible;
+  }
+  .project-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+  .project-featured {
+    grid-column: 1/-1;
+    padding-bottom: 3.3rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .project-featured .project-link {
+    display: grid;
+    grid-template-columns: minmax(0, 25rem) minmax(0, 1fr);
+    gap: 3.3rem;
+    align-items: center;
+  }
+  .project-image {
+    display: block;
+    color: var(--ink);
+    background: var(--soft);
+    aspect-ratio: 1.65;
+    overflow: hidden;
+  }
+  .project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 2rem;
+    transition: transform 0.3s ease;
+  }
+  .project-featured .project-image {
+    aspect-ratio: 3/4;
+  }
+  .project-featured .project-image img {
+    padding: 0;
+  }
+  .project-card:nth-child(2) .project-image img {
+    padding: 2rem 4rem;
+  }
+  .project-link:hover .project-image img {
+    transform: scale(1.025);
+  }
+  .project-info {
+    padding-top: 1.6rem;
+  }
+  .project-featured .project-info {
+    padding: 0;
+  }
+  .project-date {
+    margin: 0 0 1rem;
+  }
+  .project-info h2 {
+    font-size: 2.2rem;
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    margin: 0 0 1rem;
+  }
+  .project-description {
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 48ch;
+  }
+  @media (max-width: 700px) {
+    .project-grid {
+      grid-template-columns: 1fr;
+    }
+    .project-featured {
+      grid-column: auto;
+      padding-bottom: 2.3rem;
+    }
+    .project-featured .project-link {
+      display: block;
+    }
+    .project-featured .project-info {
+      padding-top: 1.6rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .project-image img {
+      transition: none;
+    }
+  }
+</style>

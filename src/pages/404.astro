@@ -1,0 +1,21 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Page not found" description="The requested page could not be found.">
+  <header class="page-intro not-found">
+    <h1 class="display-title">Page not found</h1>
+    <p class="lede">This page has moved or does not exist.</p>
+    <a class="text-link" href="/">
+      Home
+    </a>
+  </header>
+</Base>
+<style>
+  .not-found {
+    padding-bottom: 6rem;
+  }
+  .not-found .text-link {
+    margin-top: 1.5rem;
+  }
+</style>

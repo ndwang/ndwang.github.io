@@ -1,0 +1,126 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getPosts, formatDate } from "../../lib/content.js";
+const posts = await getPosts();
+const topics = ["All", "AI", "physics", "programming", "gaming"];
+---
+
+<Base title="Blog" description="Articles about software, AI, and scientific computing by Ningdong Wang." section="blog">
+  <header class="page-intro">
+    <h1 class="display-title" id="writing-heading">
+      Blog
+    </h1>
+  </header>
+  <section aria-labelledby="writing-heading">
+    <div class="filter-bar" id="blog-filters" hidden>
+      <div class="filter-options" role="group" aria-label="Filter posts by topic">
+        {topics.map((topic) => (
+          <button class="filter-button" data-topic={topic} aria-pressed={String(topic === "All")}>
+            {topic === "physics" ? "Physics" : topic === "programming" ? "Code" : topic === "gaming" ? "Gaming" : topic}
+          </button>
+        ))}
+      </div>
+      <label class="search-field">
+        <span class="sr-only">Search blog posts</span>
+        <span aria-hidden="true">⌕</span>
+        <input type="search" id="blog-search" placeholder="Search posts…" />
+      </label>
+    </div>
+    <div class="post-list">
+      {posts.map((post, index) => (
+        <article
+          class="post-row"
+          data-post
+          data-tags={(post.tags || []).join("|").toLowerCase()}
+          data-search={`${post.title} ${post.description} ${(post.tags || []).join(" ")}`.toLowerCase()}
+        >
+          <a class="post-link" href={post.url} aria-labelledby={`post-${index}-title`}>
+            <div class="post-date">
+              <time datetime={new Date(post.date).toISOString()}>{formatDate(post.date)}</time>
+            </div>
+            <div class="post-copy">
+              <h2 class="content-link" id={`post-${index}-title`}>
+                {post.title}
+              </h2>
+              <p>{post.description}</p>
+            </div>
+          </a>
+        </article>
+      ))}
+    </div>
+    <p id="blog-empty" class="empty-state" role="status" hidden>
+      No posts match this search. Try another topic or phrase.
+    </p>
+    <p id="blog-results" class="sr-only" role="status" aria-live="polite"></p>
+  </section>
+</Base>
+<script>
+  const filters = document.querySelector<HTMLElement>("#blog-filters");
+  const search = document.querySelector<HTMLInputElement>("#blog-search");
+  const rows = [...document.querySelectorAll<HTMLElement>("[data-post]")];
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>("[data-topic]")];
+  let selected = "All";
+  function filterPosts() {
+    const query = search?.value.trim().toLowerCase() || "";
+    let count = 0;
+    rows.forEach((row) => {
+      const visible =
+        (selected === "All" || row.dataset.tags?.split("|").includes(selected.toLowerCase())) && (row.dataset.search || "").includes(query);
+      row.hidden = !visible;
+      if (visible) count++;
+    });
+    document.querySelector<HTMLElement>("#blog-empty")!.hidden = count > 0;
+    document.querySelector<HTMLElement>("#blog-results")!.textContent = `${count} ${count === 1 ? "post" : "posts"} shown`;
+  }
+  if (filters) filters.hidden = false;
+  search?.addEventListener("input", filterPosts);
+  buttons.forEach((button) =>
+    button.addEventListener("click", () => {
+      selected = button.dataset.topic || "All";
+      buttons.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+      filterPosts();
+    })
+  );
+</script>
+<style>
+  .filter-options {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+  }
+  .post-row {
+    padding: 0;
+  }
+  .post-link {
+    display: grid;
+    grid-template-columns: 145px 1fr;
+    gap: 2.2rem;
+    padding: 2.8rem 0;
+  }
+  .post-row[hidden] {
+    display: none;
+  }
+  .post-date time {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+  }
+  .post-copy h2 {
+    font-size: clamp(1.5rem, 2.8vw, 2.3rem);
+    font-weight: 500;
+    line-height: 1.2;
+    max-width: 28ch;
+    margin: 0 0 1rem;
+  }
+  .post-copy p {
+    color: var(--muted);
+    max-width: 57ch;
+    line-height: 1.7;
+  }
+  @media (max-width: 700px) {
+    .post-link {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+</style>

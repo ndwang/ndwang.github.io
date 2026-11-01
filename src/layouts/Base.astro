@@ -1,0 +1,79 @@
+---
+import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource/ibm-plex-mono/400.css";
+import "../styles/global.css";
+const { title = "Ningdong Wang", description = "Research, software, publications, and writing by Ningdong Wang.", section = "home" } = Astro.props;
+const navigation = [
+  ["home", "/", "Home"],
+  ["papers", "/papers/", "Papers"],
+  ["blog", "/blog/", "Blog"],
+  ["projects", "/projects/", "Projects"],
+  ["cv", "/cv/", "CV"],
+];
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const pageTitle = title.includes("Ningdong Wang") ? title : `${title} — Ningdong Wang`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#FAFAF7" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="data:," />
+    <link rel="alternate" type="application/rss+xml" title="Ningdong Wang — Blog" href="/feed.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL("/assets/img/ningdong_wang_pic.jpg", Astro.site)} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      Skip to content
+    </a>
+    <header class="site-header wrap">
+      <a class="identity" href="/" aria-label="Ningdong Wang home">
+        Ningdong Wang
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        {navigation.map(([key, url, label]) => (
+          <a href={url} aria-current={section === key ? "page" : undefined}>
+            {label}
+          </a>
+        ))}
+      </nav>
+    </header>
+    <main id="main" class="wrap">
+      <slot />
+    </main>
+    <footer class="site-footer wrap">
+      <div class="footer-top">
+        <div class="footer-links">
+          <a class="content-link" href="mailto:nw285@cornell.edu">
+            Email
+          </a>
+          <a class="content-link" href="https://github.com/ndwang">
+            GitHub
+          </a>
+          <a class="content-link" href="https://scholar.google.com/citations?user=bOLfUJQAAAAJ">
+            Google Scholar
+          </a>
+          <a class="content-link" href="/feed.xml">
+            RSS
+          </a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© {new Date().getFullYear()} Ningdong Wang</span>
+        <a class="content-link" href="#main">
+          Back to top
+        </a>
+      </div>
+    </footer>
+  </body>
+</html>

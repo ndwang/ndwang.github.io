@@ -1,0 +1,10 @@
+---
+import Article from "../../../components/Article.astro";
+import { getPosts } from "../../../lib/content.js";
+export async function getStaticPaths() {
+  return (await getPosts()).map((entry) => ({ params: { year: entry.url.split("/")[2], slug: entry.slug }, props: { entry } }));
+}
+const { entry } = Astro.props;
+---
+
+<Article entry={entry} kind="post" />

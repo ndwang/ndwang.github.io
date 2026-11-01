@@ -1,0 +1,374 @@
+---
+import Base from "../layouts/Base.astro";
+import PaperAuthors from "../components/PaperAuthors.astro";
+import { getPaperGroups, resume } from "../lib/content.js";
+const years = (start, end) => {
+  const first = start.slice(0, 4);
+  const last = end === "present" ? "Present" : end.slice(0, 4);
+  return first === last ? first : `${first} — ${last}`;
+};
+const awards = [...resume.awards].sort((a, b) => b.date.localeCompare(a.date));
+const paperGroups = getPaperGroups();
+---
+
+<Base title="CV" description="Ningdong Wang’s education, industry and research experience, awards, skills, and publications." section="cv">
+  <header class="page-intro cv-header">
+    <h1 id="cv-heading" class="display-title">
+      CV
+    </h1>
+    <button class="button button-secondary print-button" id="print-cv" hidden>
+      Print / save PDF
+    </button>
+  </header>
+  <div class="cv-intro">
+    <figure class="portrait">
+      <img src="/assets/img/ningdong_wang_pic.jpg" alt="Ningdong Wang" width="1706" height="1280" />
+    </figure>
+    <div class="cv-summary">
+      <p>
+        I’m a researcher and programmer working on scientific software and AI systems. My work includes GPU-accelerated solvers, learned simulation
+        models, and agents for technical workflows.
+      </p>
+      <p>I’m interested in AI reasoning, evaluation, and applications, with recent work on agent evaluation and real-time voice systems.</p>
+      <p>
+        I’m currently a physics PhD student at Cornell University, working with Professor Georg Hoffstaetter and collaborators at Brookhaven National
+        Laboratory. My research focuses on space charge simulation and optimization for the Electron-Ion Collider, particularly its Strong Hadron
+        Cooler and Low Energy Cooler.
+      </p>
+    </div>
+  </div>
+  <section id="cv" class="cv-section" aria-labelledby="cv-heading">
+    <p class="cv-contact">
+      Ningdong Wang ·{" "}
+      <a class="content-link" href="mailto:nw285@cornell.edu">
+        nw285@cornell.edu
+      </a>{" "}
+      ·{" "}
+      <a class="content-link" href="https://ndwang.github.io">
+        ndwang.github.io
+      </a>
+    </p>
+    <div class="cv-block">
+      <h2 class="eyebrow">Education</h2>
+      <div class="timeline">
+        {resume.education.map((item) => (
+          <div class="timeline-row">
+            <p class="timeline-date">{years(item.startDate, item.endDate)}</p>
+            <div>
+              <h3>{item.institution}</h3>
+              <p>
+                {item.studyType} · {item.area}
+              </p>
+              <p class="timeline-detail">{item.location}</p>
+              {item.summary && <p class="timeline-detail">{item.summary}</p>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div class="cv-block">
+      <h2 class="eyebrow">Experience</h2>
+      <div class="timeline">
+        {resume.experience.map((item) => (
+          <div class="timeline-row">
+            <p class="timeline-date">{years(item.startDate, item.endDate)}</p>
+            <div>
+              <h3>{item.name}</h3>
+              <p>{item.position}</p>
+              <p class="timeline-detail">{item.summary}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div class="cv-block">
+      <h2 class="eyebrow">Recognition</h2>
+      <div class="timeline">
+        {awards.map((item) => (
+          <div class="timeline-row">
+            <p class="timeline-date">{item.date.slice(0, 4)}</p>
+            <div>
+              <h3>
+                <a class="content-link" href={item.url}>
+                  {item.title}
+                </a>
+              </h3>
+              <p class="timeline-detail">{item.awarder}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div class="cv-block">
+      <h2 class="eyebrow">Skills</h2>
+      <div class="skills-list">
+        {resume.skills.map((item) => (
+          <div>
+            <h3>{item.name}</h3>
+            <p>{item.keywords.join(" · ")}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div class="cv-block">
+      <h2 class="eyebrow" id="cv-publications">
+        Publications
+      </h2>
+      <div class="cv-publications">
+        {paperGroups.map((group) => (
+          <section class="cv-publication-year" aria-labelledby={`cv-publications-${group.year}`}>
+            <h3 class="cv-publication-date" id={`cv-publications-${group.year}`}>
+              {group.year}
+            </h3>
+            <ul class="cv-publication-list">
+              {group.papers.map((paper) => (
+                <li class="cv-publication">
+                  <h4 class="cv-publication-title">
+                    {paper.doi || paper.url ? (
+                      <a class="content-link" href={paper.doi ? `https://doi.org/${paper.doi}` : paper.url}>
+                        {paper.title}
+                      </a>
+                    ) : (
+                      paper.title
+                    )}
+                  </h4>
+                  <p class="cv-publication-authors">
+                    <PaperAuthors author={paper.author} mla />
+                  </p>
+                  <p class="cv-publication-venue">{paper.booktitle.match(/\(([^)]+)\)$/)?.[1] || paper.booktitle}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+<script>
+  const button = document.querySelector<HTMLButtonElement>("#print-cv");
+  if (button) {
+    button.hidden = false;
+    button.addEventListener("click", () => window.print());
+  }
+</script>
+<style>
+  .cv-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .cv-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr);
+    gap: clamp(2rem, 7vw, 7rem);
+    align-items: start;
+    padding: 0 0 5rem;
+  }
+  .portrait {
+    margin: 0;
+  }
+  .portrait img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .cv-summary > p {
+    line-height: 1.8;
+    color: var(--muted);
+    font-size: 1.05rem;
+  }
+  .cv-section {
+    scroll-margin-top: 6rem;
+  }
+  .cv-contact {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 1rem;
+  }
+  .cv-summary > p + p {
+    margin-top: 1.2rem;
+  }
+  .cv-section .timeline {
+    margin: 0;
+  }
+  .cv-section .timeline-row {
+    border: 0;
+    padding: 0;
+  }
+  .cv-block {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 2rem;
+    padding: 2.6rem 0;
+  }
+  .cv-block + .cv-block {
+    border-top: 1px solid var(--line);
+  }
+  .cv-block > h2 {
+    margin: 0.25rem 0;
+  }
+  .timeline {
+    display: grid;
+    gap: 2.1rem;
+  }
+  .timeline-row {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 1.5rem;
+  }
+  .timeline-date {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    line-height: 1.7;
+    margin: 0.25rem 0;
+  }
+  .timeline-row h3,
+  .skills-list h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+  }
+  .timeline-row p {
+    margin: 0.4rem 0 0;
+    line-height: 1.65;
+    font-size: 0.85rem;
+  }
+  .timeline-row .timeline-detail {
+    color: var(--muted);
+    max-width: 68ch;
+  }
+  .skills-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  .skills-list p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin: 0;
+  }
+  .cv-publications {
+    min-width: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  .cv-publication-year {
+    display: grid;
+    grid-template-columns: 60px minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+  .cv-publication-date {
+    margin: 0.15rem 0 0;
+    font: 400 0.7rem/1.6 var(--font-mono);
+    letter-spacing: 0;
+  }
+  .cv-publication-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.1rem;
+  }
+  .cv-publication-title {
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
+    line-height: 1.4;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
+  }
+  .cv-publication-authors,
+  .cv-publication-venue {
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+  .cv-publication-venue {
+    margin-top: 0.2rem;
+  }
+  .print-button {
+    white-space: nowrap;
+  }
+  @media (max-width: 800px) {
+    .cv-intro {
+      gap: 2rem;
+    }
+    .cv-block {
+      grid-template-columns: 130px 1fr;
+    }
+    .timeline-row {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+  }
+  @media (max-width: 600px) {
+    .cv-intro {
+      grid-template-columns: 1fr;
+    }
+    .portrait {
+      max-width: 360px;
+    }
+    .cv-block {
+      grid-template-columns: 1fr;
+      gap: 1.4rem;
+    }
+    .skills-list {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 600px) {
+    .cv-publication-year {
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+    }
+  }
+  @media print {
+    .page-intro {
+      padding: 0 0 1rem !important;
+    }
+    .display-title {
+      font-size: 3rem !important;
+    }
+    .cv-intro {
+      padding-bottom: 1rem;
+      grid-template-columns: 140px 1fr;
+      gap: 2rem;
+    }
+    .cv-summary p {
+      font-size: 10pt !important;
+    }
+    .print-button {
+      display: none !important;
+    }
+    .cv-block {
+      padding: 1rem 0;
+      grid-template-columns: 130px 1fr;
+    }
+    .timeline-row {
+      break-inside: avoid;
+    }
+    .timeline {
+      gap: 1rem;
+    }
+    .skills-list {
+      gap: 1rem;
+    }
+  }
+  @media print {
+    .cv-publication {
+      break-inside: avoid;
+    }
+    .cv-publication-date {
+      break-after: avoid;
+    }
+    .cv-publications {
+      gap: 1rem;
+    }
+    .cv-publication-list {
+      gap: 0.75rem;
+    }
+  }
+</style>

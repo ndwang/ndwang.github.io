@@ -1,0 +1,356 @@
+{
+  "basics": {
+    "name": "Ningdong Wang",
+    "label": "Researcher and programmer",
+    "image": "",
+    "email": "nw285@cornell.edu",
+    "url": "https://ndwang.github.io/",
+    "summary": "Researcher and programmer working on scientific software and AI systems, including GPU-accelerated simulation, learned models, and agents for technical workflows. Physics PhD student at Cornell University."
+  },
+  "education": [
+    {
+      "institution": "Cornell University",
+      "location": "Ithaca, NY",
+      "url": "https://www.cornell.edu/",
+      "area": "Physics",
+      "studyType": "PhD",
+      "startDate": "2021-05",
+      "endDate": "present",
+      "summary": "Expected May 2027"
+    },
+    {
+      "institution": "University of Illinois at Urbana-Champaign",
+      "location": "Urbana, IL",
+      "url": "https://www.illinois.edu/",
+      "area": "Electrical Engineering and Engineering Physics",
+      "studyType": "B.S.",
+      "startDate": "2016-08",
+      "endDate": "2020-05"
+    }
+  ],
+  "experience": [
+    {
+      "name": "Cornell University",
+      "position": "Research Assistant",
+      "startDate": "2021-05",
+      "endDate": "present",
+      "summary": "Implemented cathode space-charge tracking in Bmad and studied RF cavity coupler effects on beam quality. Develop GPU-accelerated simulation tools in Julia and machine learning surrogates for beam dynamics and electric-field prediction. Develop MCP-connected agents for accelerator simulations and control systems, with evaluations of correctness and reliability on operational tasks. Contribute to Osprey, a multi-institution framework for agentic AI in accelerator control systems. Supervised by Georg Hoffstaetter."
+    },
+    {
+      "name": "Shizuku AI",
+      "position": "Creative Engineer (Summer Intern)",
+      "startDate": "2026-05",
+      "endDate": "2026-08",
+      "summary": "Built a text-to-speech data pipeline that generated 25,000 hours of training audio. Optimized TTS inference, reducing time to first audio from 600 ms to 180 ms. Developed a real-time multimodal agent harness integrating audio, vision, audience comments, tool calls, and speech output."
+    },
+    {
+      "name": "Brookhaven National Laboratory",
+      "position": "Research Assistant",
+      "startDate": "2023-06",
+      "endDate": "2024",
+      "summary": "Modeled space charge and collective effects for Electron-Ion Collider cooling systems. Optimized the Strong Hadron Cooler injector and merger in Bmad and Xopt, reducing simulated normalized transverse emittance by 62% and RMS energy spread by 85% relative to the original configuration."
+    },
+    {
+      "name": "Argonne National Laboratory",
+      "position": "Lee Teng Intern",
+      "startDate": "2019-06",
+      "endDate": "2019-08",
+      "summary": "Modeled and optimized a spin-rotator solenoid array for the SuperKEKB electron storage ring. Supervised by Uli Wienands."
+    },
+    {
+      "name": "University of Illinois at Urbana-Champaign",
+      "position": "Research Assistant",
+      "startDate": "2018-08",
+      "endDate": "2020-05",
+      "summary": "Studied electron spin polarization in quantum point contacts and its effect on conductance. Supervised by Jean-Pierre Leburton."
+    }
+  ],
+  "awards": [
+    {
+      "title": "Office of Science Graduate Student Research (SCGSR) Program",
+      "date": "2023-06",
+      "awarder": "Department of Energy, Office of Science",
+      "url": "https://science.osti.gov/wdts/scgsr",
+      "summary": "The SCGSR program provides supplemental funds for U.S. graduate awardees to conduct part of their PhD thesis research at a host DOE laboratory/facility in collaboration with a DOE National Laboratory scientist within a defined award period."
+    },
+    {
+      "title": "DOE Tigner Traineeship in Accelerator Science",
+      "date": "2025-01",
+      "awarder": "Department of Energy, Office of Science",
+      "url": "https://www.classe.cornell.edu/research/accelerator-rd/srf/accelerator-traineeship-program",
+      "summary": "The program aims to address the workforce needs of DOE accelerator laboratories by increasing the number of Ph.D. graduates in critical areas of accelerator science."
+    }
+  ],
+  "publications": [
+    {
+      "name": "Design of a Microbunched Electron Cooler Energy Recovery Linac",
+      "publisher": "Proceedings of the 15th International Workshop on Beam Cooling and Related Topics (COOL'25)",
+      "releaseDate": "2026",
+      "url": "https://doi.org/10.18429/JACoW-COOL2025-THB1"
+    },
+    {
+      "name": "Status of Osprey: A Framework for Agentic AI in Control Systems",
+      "publisher": "Proceedings of the 17th International Particle Accelerator Conference (IPAC'26)",
+      "releaseDate": "2026",
+      "url": "https://doi.org/10.18429/JACoW-IPAC2026-MOP6322"
+    },
+    {
+      "name": "Learning Beam Dynamics in the Latent Space of Beam Distributions",
+      "publisher": "Proceedings of the 17th International Particle Accelerator Conference (IPAC'26)",
+      "releaseDate": "2026",
+      "url": "https://doi.org/10.18429/JACoW-IPAC2026-THP5347"
+    },
+    {
+      "name": "Electron Ion Collider Strong Hadron Cooling design Summary",
+      "publisher": "Brookhaven National Laboratory",
+      "releaseDate": "2025",
+      "url": "https://technotes.bnl.gov/PDF?publicationId=228488"
+    },
+    {
+      "name": "Multi-objective optimization of Strong Hadron Cooler Energy Recovery Linac injector",
+      "publisher": "Proceedings of the North American Particle Accelerator Conference (NAPAC2025)",
+      "releaseDate": "2025",
+      "url": "https://doi.org/10.18429/JACoW-NAPAC2025-TUP069",
+      "summary": "The Strong Hadron Cooler (SHC) proposed for the Electron-Ion Collider (EIC) requires high-current, low-emittance electron bunches with minimal energy spread. The Energy Recovery Linac (ERL) injector plays a critical role in shaping the beam before acceleration. We present a multi-objective optimization study of the SHC ERL injector and merger using space charge tracking in Bmad and parallel genetic algorithm. The optimized configuration reduces the normalized transverse emittance by 62% and energy spread by 85% from the original configuration."
+    },
+    {
+      "name": "Beam halo formation with different cathode distributions",
+      "publisher": "Proceedings of the North American Particle Accelerator Conference (NAPAC2025)",
+      "releaseDate": "2025",
+      "url": "https://doi.org/10.18429/JACoW-NAPAC2025-TUP015"
+    },
+    {
+      "name": "Space charge studies on strong hadron cooler energy recovery linac",
+      "publisher": "Proceedings of the North American Particle Accelerator Conference (NAPAC2025)",
+      "releaseDate": "2025",
+      "url": "https://doi.org/10.18429/JACoW-NAPAC2025-TUP091"
+    },
+    {
+      "name": "Design of a microbunched electron cooler energy recovery linac",
+      "publisher": "Proceedings of the North American Particle Accelerator Conference (NAPAC2025)",
+      "releaseDate": "2025",
+      "url": "https://doi.org/10.18429/JACoW-NAPAC2025-THP022"
+    },
+    {
+      "name": "Development of an ERL for Coherent Electron Cooling at the Electron-Ion Collider",
+      "publisher": "Proceedings of the 14th International Workshop on Beam Cooling and Related Topics (COOL'23)",
+      "releaseDate": "2024",
+      "url": "https://doi.org/10.18429/JACoW-COOL2023-THPOSRP17"
+    },
+    {
+      "name": "Optimization of cooling distribution of the EIC SHC cooler ERL",
+      "publisher": "Proceedings of the 15th International Particle Accelerator Conference (IPAC'24)",
+      "releaseDate": "2024",
+      "url": "https://doi.org/10.18429/JACoW-IPAC2024-TUPC43",
+      "summary": "The Electron-Ion Collider (EIC) Hadron Storage Ring (HSR) will use strong hadron cooling to maintain the beam brightness and high luminosity during long collision experiments. An Energy Recovery Linac is used to deliver the high-current high-brightness electron beam for cooling. For the best cooling effect, the electron beam requires low emittance, small energy spread, and uniform longitudinal distribution. In this work, we simulate and optimize the longitudinal laser-beam distribution shaping at the photocathode, modeling space charge forces accurately. Machine parameters such as RF cavity phases are optimized in conjunction with the beam distribution using a genetic optimizer. We demonstrate improvement of the cooling distribution in key parameters."
+    },
+    {
+      "name": "Coherent electron cooling physics for the EIC",
+      "publisher": "Proceedings of the 15th International Particle Accelerator Conference (IPAC'24)",
+      "releaseDate": "2024",
+      "url": "https://doi.org/10.18429/JACoW-IPAC2024-THYD1"
+    },
+    {
+      "name": "Development of an ERL for coherent electron cooling at the Electron-Ion Collider",
+      "publisher": "Proceedings of the 15th International Particle Accelerator Conference (IPAC'24)",
+      "releaseDate": "2024",
+      "url": "https://doi.org/10.18429/JACoW-IPAC2024-THPC40"
+    },
+    {
+      "name": "EIC cooler injector space charge benchmark",
+      "publisher": "Proceedings of the 14th International Particle Accelerator Conference (IPAC'23)",
+      "releaseDate": "2023",
+      "url": "https://doi.org/10.18429/JACoW-IPAC2023-TUPL157",
+      "summary": "In this paper, we present the benchmark results of Bmad space charge tracking on the Electron-Ion Collider cooler injector lattice. Bmad, GPT, and Impact-T are compared in terms of accuracy and performance. We highlight the importance of space charge algorithm and demonstrate that the adaptive step size control improves the performance of Bmad space charge tracking."
+    },
+    {
+      "name": "Longitudinal laser shaping at the EIC cooler injector",
+      "publisher": "Proceedings of the 14th International Particle Accelerator Conference (IPAC'23)",
+      "releaseDate": "2023",
+      "url": "https://doi.org/10.18429/JACoW-IPAC2023-TUPL158"
+    },
+    {
+      "name": "Design and optimization of an ERL for cooling EIC hadron beams",
+      "publisher": "Proceedings of the 14th International Particle Accelerator Conference (IPAC'23)",
+      "releaseDate": "2023",
+      "url": "https://doi.org/10.18429/JACoW-IPAC2023-MOPA016"
+    },
+    {
+      "name": "Cathode Space Charge in Bmad",
+      "publisher": "Proceedings of the 13th International Particle Accelerator Conference (IPAC'22)",
+      "releaseDate": "2022",
+      "url": "https://doi.org/10.18429/JACoW-IPAC2022-WEPOMS055",
+      "summary": "We present an implementation of charged particle tracking with the cathode space charge effect included which is now openly available in the Bmad toolkit for charged particle simulations. Adaptive step size control is incorporated to improve the computational efficiency. We demonstrate its capability with a simulation of a DC gun and compare it with the well-established space charge code Impact-T."
+    }
+  ],
+  "skills": [
+    {
+      "name": "Programming",
+      "keywords": [
+        "Python",
+        "Julia",
+        "C",
+        "C++",
+        "CUDA",
+        "Fortran"
+      ]
+    },
+    {
+      "name": "Machine learning",
+      "keywords": [
+        "PyTorch",
+        "Transformers",
+        "VAEs",
+        "3D U-Net",
+        "Physics-informed neural networks"
+      ]
+    },
+    {
+      "name": "AI agents",
+      "keywords": [
+        "Agent harnesses",
+        "MCP",
+        "Tool calling",
+        "Agent evaluation",
+        "RAG"
+      ]
+    },
+    {
+      "name": "Inference",
+      "keywords": [
+        "vLLM",
+        "TensorRT",
+        "Streaming inference"
+      ]
+    },
+    {
+      "name": "HPC",
+      "keywords": [
+        "Custom GPU kernels",
+        "NVIDIA Nsight",
+        "MPI",
+        "OpenMP",
+        "Slurm"
+      ]
+    },
+    {
+      "name": "Numerical methods",
+      "keywords": [
+        "Multi-objective genetic optimization",
+        "Bayesian optimization",
+        "Numerical analysis",
+        "Linear algebra"
+      ]
+    },
+    {
+      "name": "Systems & tools",
+      "keywords": [
+        "FastAPI",
+        "Asyncio",
+        "WebSockets",
+        "Docker",
+        "Linux",
+        "Git"
+      ]
+    },
+    {
+      "name": "Accelerator modeling",
+      "keywords": [
+        "Bmad",
+        "Beam dynamics",
+        "Space charge",
+        "Particle tracking",
+        "Injector and ERL simulation"
+      ]
+    }
+  ],
+  "languages": [
+    {
+      "language": "Chinese",
+      "fluency": "Native speaker",
+      "icon": ""
+    },
+    {
+      "language": "English",
+      "fluency": "Fluent",
+      "icon": ""
+    }
+  ],
+  "PhD Advisor": [
+    {
+      "name": "Professor Georg Hoffstaetter",
+      "icon": "fa-solid fa-thumbtack",
+      "reference": ""
+    }
+  ],
+  "projects": [
+    {
+      "name": "Osprey",
+      "description": "Contribute to an agent framework for accelerator control systems, combining MCP tools and hardware connectors with code screening and operator approval for machine writes.",
+      "url": "https://als-apg.github.io/osprey/",
+      "startDate": "2026",
+      "endDate": "present"
+    },
+    {
+      "name": "Real-time voice agent",
+      "description": "Built a local voice agent with concurrent reasoning and speech generation, streaming speech recognition and synthesis, and interruption handling.",
+      "url": "https://github.com/ndwang/voice_agent",
+      "startDate": "2025-12",
+      "endDate": "present"
+    },
+    {
+      "name": "Learning beam dynamics",
+      "description": "Built a VAE and causal transformer that encode six-dimensional beam distributions and predict their evolution through sequences of accelerator elements.",
+      "url": "https://github.com/ndwang/beam_vae",
+      "startDate": "2025-06",
+      "endDate": "present"
+    },
+    {
+      "name": "Physics-informed field prediction",
+      "description": "Develop a 3D U-Net to predict electric fields from particle-density grids, with a loss function constrained by Poisson’s equation.",
+      "startDate": "2025-05",
+      "endDate": "present"
+    },
+    {
+      "name": "AcceleratorGym",
+      "description": "Build agents and MCP tools for simulation and accelerator workflows, with evaluations of correctness and reliability on operational tasks.",
+      "url": "https://github.com/ndwang/AcceleratorGym",
+      "startDate": "2025-02",
+      "endDate": "present"
+    },
+    {
+      "name": "SpaceCharge.jl",
+      "description": "Developed a Julia particle-in-cell solver with FFT-based field calculations and custom CUDA kernels. Used profiling, benchmarks, and AI-assisted iteration to optimize performance and memory use.",
+      "url": "https://github.com/bmad-sim/SpaceCharge.jl",
+      "startDate": "2025",
+      "endDate": "2025"
+    },
+    {
+      "name": "Bmad-bot",
+      "description": "Built a technical documentation assistant with hybrid vector and keyword retrieval, source citations, and feedback collection. Deployed on Slack and Matrix.",
+      "url": "https://ndwang.github.io/projects/Bmad-bot/",
+      "startDate": "2025",
+      "endDate": "2025"
+    },
+    {
+      "name": "BeamTracking.jl",
+      "description": "Contribute to the Julia accelerator simulation framework, including integration of SpaceCharge.jl for space-charge calculations.",
+      "url": "https://github.com/bmad-sim/BeamTracking.jl"
+    },
+    {
+      "name": "BeamPhysics.jl",
+      "description": "Developed tools for particle-beam statistics, phase-space analysis, visualization, and file I/O using the openPMD-beamphysics standard.",
+      "url": "https://github.com/ndwang/BeamPhysics.jl"
+    },
+    {
+      "name": "AtomicAndPhysicalConstants.jl",
+      "description": "Julia tools for particle identification and physical-constant queries in accelerator simulations.",
+      "url": "https://github.com/bmad-sim/AtomicAndPhysicalConstants.jl"
+    },
+    {
+      "name": "Bmad to SciBmad",
+      "description": "Built a web service for converting Bmad lattice files to SciBmad without compiling the full Bmad distribution locally.",
+      "url": "https://ndwang.github.io/projects/Bmad2Scibmad/"
+    }
+  ]
+}

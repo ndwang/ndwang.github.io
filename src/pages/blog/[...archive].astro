@@ -1,0 +1,30 @@
+---
+import { getPosts } from "../../lib/content.js";
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const archives = new Set();
+  for (const post of posts) {
+    archives.add(String(post.date.getUTCFullYear()));
+    for (const tag of post.tags) archives.add(`tag/${tag.toLowerCase().replace(/[^a-z0-9_-]+/g, "-")}`);
+    for (const category of post.categories || []) archives.add(`category/${category.toLowerCase().replace(/[^a-z0-9_-]+/g, "-")}`);
+  }
+  return [...archives].map((archive) => ({ params: { archive } }));
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="refresh" content="0;url=/blog/" />
+    <link rel="canonical" href="https://ndwang.github.io/blog/" />
+    <meta name="robots" content="noindex" />
+    <title>Blog — Ningdong Wang</title>
+  </head>
+  <body>
+    <p>
+      The archive is now part of the <a href="/blog/">blog</a>.
+    </p>
+  </body>
+</html>

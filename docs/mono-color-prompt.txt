@@ -1,0 +1,25 @@
+Current asset: public/assets/img/open-possibilities-print.png
+Created and edited with the built-in imagegen tool.
+
+Transparent hero variant: public/assets/img/ribbon-cutout.png
+Edit target: the text-free public/assets/img/open-possibilities-print.png above. Built-in imagegen, transparent_background: true.
+
+Transparent cutout edit prompt:
+
+Use case: background-extraction. The supplied image is the EDIT TARGET, not a style reference. Create a transparent PNG cutout of precisely the same folded cobalt and terracotta ribbon. Remove ONLY the neutral white paper background outside the ribbon and inside its central open-loop hole, replacing those areas with genuine alpha transparency. Preserve the exact existing ribbon shape, its broad strip and sharp fold, large central opening, diagonal lower-left to upper-right orientation, crop at the canvas edges, cobalt blue and terracotta orange ink colors, and mechanical halftone grain. Preserve the tiny light paper gaps within the halftone as transparent gaps where feasible, so the cutout can sit directly on a web page background without an opaque rectangular canvas. Keep the same portrait composition and scale. No new design, no shape changes, no text, no lettering, no labels, no numbers, no registration marks, no symbols, no shadow, no glow, no outline, no white background, no checkerboard baked into the image. The output must have real transparency.
+
+Final edit prompt (removes all lettering and annotations):
+
+Use case: precise-object-edit. Edit the supplied image only. Remove ALL lettering and annotation from this artwork: remove the words “Open possibilities”, the small number “01”, and the registration cross in the lower right. Reconstruct the cobalt ribbon's natural continuous outer contour and halftone texture where the removed lettering and its paper knockout interrupted it. Fill the rest of the erased text and marks with the same clean neutral white paper. Keep the large folded open-loop ribbon, its exact scale and diagonal composition, the central opening, the terracotta underside, the crop, cobalt/terracotta colors, and contemporary mechanical halftone texture unchanged. Preserve the overall 3:4 portrait composition. No added objects, no added lettering, no captions, no numerals, no symbols, no signature, no watermark. Final artwork must contain only the abstract cobalt and terracotta ribbon on clean white paper.
+
+Original generation prompt (provenance; its wording and marks were removed by the edit above):
+
+Create an original 3:4 vertical editorial artwork for a personal research-and-software notebook. Flat front-facing composition on clean Neutral White paper #FAFAF7, chosen for a crisp contemporary feel. Use exactly two printing inks: dominant Cobalt #2148B8 for approximately 80% of printed area and Terracotta Orange #C65F38 for approximately 20%. Complementary duotone; cobalt carries the main object and lettering, terracotta carries one narrow crossing strip on its folded underside. No third ink; dark overlaps may result only from the two plates.
+
+Use an editorial-cover composition with relaxed tension and ONE focal event: a dramatically enlarged, cropped folded paper ribbon that twists diagonally from the lower left to the upper right, continuing beyond the right edge. The ribbon occupies roughly 60% of the canvas. Leave 40% exposed neutral paper, concentrated in a very quiet upper-left region and an open shape through the ribbon. Asymmetric placement; 7% margins for type. A single tiny registration cross near the lower edge is the only manual gesture. Do not create a balanced headline-left/object-right split.
+
+The subject is a tangible folded strip becoming an open loop, an abstract symbol of following an idea. Preserve three identity anchors: a broad ribbon, one sharp fold, and a large irregular opening. Construct it from one dominant cobalt mass, a crisp broken contour, and a rhythm of fine-to-medium halftone dots with clipped highlights exposing paper. One terracotta strip passes behind the fold. Keep the object graphic and mechanically reproduced, with no realistic shadows, glossy materials, or rendered 3D lighting. No physics, atomic, neural-network, brain, or AI symbols.
+
+Set the exact words “Open possibilities” in bold characterful grotesk type, sentence case, on two short lines near the lower-right edge. The words tightly intersect the cropped ribbon contour, with paper knockouts preserving complete legibility. One much smaller monospaced “01” sits near the registration cross, with at least an 8:1 type-size jump. This is the only wording. No masthead, logo, website address, signature, navigation, UI, or marketing copy.
+
+Use contemporary risograph-like plate separation with visible halftone at close range, restrained uneven ink density and slight dry-edge breakup. Stable restrained imperfections; clean unaged paper throughout. No gradients, extra colors, sepia, stains, torn paper, distressed frame, cast shadow, mockup, neon, stickers, scrapbook elements, smooth vector-flat fills, or decorative clutter. The result should feel direct, spacious, original, and tactile.
