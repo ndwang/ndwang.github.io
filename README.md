@@ -28,6 +28,7 @@ The build writes to `.site-output/`, which is ignored by Git. Astro serves `publ
 | Content                                   | Source                                        |
 | ----------------------------------------- | --------------------------------------------- |
 | Blog posts                                | `content/posts/*.md`                          |
+| Unpublished drafts and diagrams           | `content/drafts/`                             |
 | Project write-ups                         | `content/projects/*.md`                       |
 | Papers and citations                      | `content/papers.bib`                          |
 | Education, experience, awards, and skills | `src/data/resume.json`                        |
@@ -46,6 +47,8 @@ Skills wording follows the AI/ML Research Engineer, ML Systems Engineer, Quant R
 The CV’s **Download résumé** link serves `public/assets/pdf/Ningdong_Wang_Resume.pdf` directly, without JavaScript or a Space sign-in. It is an unchanged copy of `Ningdong Wang - AI ML Research Engineer Resume.pdf`, the local PDF of the AI/ML résumé version listed on the résumé Page. Replace this file to update the download while keeping its URL stable. The PDF currently retains its original Brookhaven end date of “Present”; the web CV records Ningdong’s corrected 2024 end date.
 
 Posts use YAML frontmatter with `title`, `description`, `date`, and `tags`, followed by Markdown. Name new posts `YYYY-MM-DD-slug.md`. The frontmatter date determines the URL year, preserving the existing `/blog/2025/AI_space_charge/` address despite its older filename. Project filenames determine `/projects/<filename>/` routes.
+
+Keep unpublished writing and its supporting files in `content/drafts/`. This directory is not read by the content loader or copied into the built site. “A Brief History of LLM Agents” and its six HTML diagrams were recovered unchanged from the earlier redesign at `114fe42` (original content commit `42493a0`); the post retains `draft: true`.
 
 Project write-ups also use a `date: "YYYY-MM-DD"` frontmatter field, displayed on the project card and page header. The three original project dates come from their first file-addition commits: SpaceCharge.jl on July 17, 2025 (`648c1dd`), Bmad-bot on July 28, 2025 (`5d6f7d2`), and Bmad to SciBmad on December 11, 2025 (`72a2e32`). These record page creation, not when development of the software began.
 

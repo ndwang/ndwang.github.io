@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LangChain-era pipeline vs modern ReAct</title>
+<style>
+  :root {
+    --bg:#ffffff;--bg2:#f6f5f2;--bg3:#eeecea;
+    --text:#1a1a18;--text2:#5a5a56;--text3:#9a9994;
+    --border:rgba(0,0,0,0.10);--border2:rgba(0,0,0,0.18);
+    --purple-fill:#EEEDFE;--purple-stroke:#534AB7;--purple-text:#3C3489;
+    --teal-fill:#E1F5EE;--teal-stroke:#0F6E56;--teal-text:#085041;
+    --amber-fill:#FAEEDA;--amber-stroke:#854F0B;--amber-text:#633806;
+    --coral-fill:#FAECE7;--coral-stroke:#993C1D;--coral-text:#712B13;
+    --gray-fill:#F1EFE8;--gray-stroke:#5F5E5A;--gray-text:#444441;
+    --blue-fill:#E6F1FB;--blue-stroke:#185FA5;--blue-text:#0C447C;
+    --red-fill:#FCEBEB;--red-stroke:#A32D2D;--red-text:#791F1F;
+    --green-fill:#EAF3DE;--green-stroke:#3B6D11;--green-text:#27500A;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#1c1c1a;--bg2:#252523;--bg3:#2e2e2b;
+      --text:#e8e6df;--text2:#a0a09a;--text3:#606059;
+      --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);
+      --purple-fill:#26215C;--purple-stroke:#AFA9EC;--purple-text:#CECBF6;
+      --teal-fill:#04342C;--teal-stroke:#5DCAA5;--teal-text:#9FE1CB;
+      --amber-fill:#412402;--amber-stroke:#EF9F27;--amber-text:#FAC775;
+      --coral-fill:#4A1B0C;--coral-stroke:#F0997B;--coral-text:#F5C4B3;
+      --gray-fill:#2C2C2A;--gray-stroke:#B4B2A9;--gray-text:#D3D1C7;
+      --blue-fill:#042C53;--blue-stroke:#85B7EB;--blue-text:#B5D4F4;
+      --red-fill:#501313;--red-stroke:#F09595;--red-text:#F7C1C1;
+      --green-fill:#173404;--green-stroke:#97C459;--green-text:#C0DD97;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Georgia,serif;background:var(--bg);color:var(--text);padding:2rem 1.5rem 3rem;max-width:780px;margin:0 auto;}
+  .diagram-header{margin-bottom:1.75rem;}
+  .diagram-header h1{font-size:1.25rem;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:-0.01em;color:var(--text);margin-bottom:0.35rem;}
+  .diagram-header p{font-size:0.875rem;color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55;}
+  .toggle-row{display:flex;align-items:center;gap:0;margin-bottom:1.5rem;border:0.5px solid var(--border2);border-radius:7px;overflow:hidden;width:fit-content;}
+  .toggle-btn{font-size:13px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text2);background:none;border:none;padding:7px 18px;cursor:pointer;transition:background 0.15s,color 0.15s;}
+  .toggle-btn.active{background:var(--text);color:var(--bg);}
+  .toggle-btn:not(.active):hover{background:var(--bg2);}
+  .panel{display:none;}
+  .panel.active{display:block;animation:fadeIn 0.2s ease;}
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  svg{width:100%;display:block;}
+  .caption{font-size:0.875rem;color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin-top:0.85rem;line-height:1.65;padding:0 0.25rem;}
+  .c-purple rect{fill:var(--purple-fill);stroke:var(--purple-stroke);stroke-width:0.5;}
+  .c-purple .th{fill:var(--purple-text);}.c-purple .ts{fill:var(--purple-stroke);}
+  .c-teal rect{fill:var(--teal-fill);stroke:var(--teal-stroke);stroke-width:0.5;}
+  .c-teal .th{fill:var(--teal-text);}.c-teal .ts{fill:var(--teal-stroke);}
+  .c-amber rect{fill:var(--amber-fill);stroke:var(--amber-stroke);stroke-width:0.5;}
+  .c-amber .th{fill:var(--amber-text);}.c-amber .ts{fill:var(--amber-stroke);}
+  .c-coral rect{fill:var(--coral-fill);stroke:var(--coral-stroke);stroke-width:0.5;}
+  .c-coral .th{fill:var(--coral-text);}.c-coral .ts{fill:var(--coral-stroke);}
+  .c-blue rect{fill:var(--blue-fill);stroke:var(--blue-stroke);stroke-width:0.5;}
+  .c-blue .th{fill:var(--blue-text);}.c-blue .ts{fill:var(--blue-stroke);}
+  .c-gray rect{fill:var(--gray-fill);stroke:var(--gray-stroke);stroke-width:0.5;}
+  .c-gray .th{fill:var(--gray-text);}.c-gray .ts{fill:var(--gray-stroke);}
+  .c-red rect{fill:var(--red-fill);stroke:var(--red-stroke);stroke-width:0.5;}
+  .c-red .th{fill:var(--red-text);}.c-red .ts{fill:var(--red-stroke);}
+  .c-green rect{fill:var(--green-fill);stroke:var(--green-stroke);stroke-width:0.5;}
+  .c-green .th{fill:var(--green-text);}.c-green .ts{fill:var(--green-stroke);}
+  text.th{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;font-weight:500;}
+  text.ts{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;fill:var(--text2);}
+  text.lm{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:10.5px;font-style:italic;fill:var(--text3);}
+  text.mono{font-family:'Courier New',monospace;font-size:11px;fill:var(--text2);}
+  text.monosm{font-family:'Courier New',monospace;font-size:10px;fill:var(--text2);}
+  line.arr,path.arr{stroke:var(--border2);stroke-width:1;fill:none;}
+  .code-bg{fill:var(--bg2);stroke:var(--border);stroke-width:0.5;}
+  .badge-red rect{fill:var(--red-fill);stroke:none;}
+  .badge-red text{fill:var(--red-stroke);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:10px;font-weight:600;}
+  .badge-blue rect{fill:var(--blue-fill);stroke:none;}
+  .badge-blue text{fill:var(--blue-stroke);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:10px;font-weight:600;}
+  .hardcoded rect{fill:var(--red-fill);stroke:var(--red-stroke);stroke-width:0.5;}
+  .hardcoded text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:9.5px;fill:var(--red-text);}
+</style>
+</head>
+<body>
+
+<div class="diagram-header">
+  <h1>LangChain-era pipeline vs modern ReAct</h1>
+  <p>Task: a customer asks "My order hasn't arrived — where is it?"</p>
+</div>
+
+<div class="toggle-row">
+  <button class="toggle-btn active" id="btn-old" onclick="show('old')">2023 — LangChain pipeline</button>
+  <button class="toggle-btn"        id="btn-new" onclick="show('new')">2024–25 — ReAct loop</button>
+</div>
+
+<!-- OLD PANEL -->
+<div class="panel active" id="panel-old">
+<svg viewBox="0 0 680 570" role="img" aria-label="LangChain 2023 customer support pipeline: four chained LLM calls, each doing one minimal task">
+  <defs>
+    <marker id="ao" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- user message -->
+  <rect x="150" y="14" width="380" height="36" rx="7" class="code-bg"/>
+  <text class="mono" x="340" y="32" text-anchor="middle" dominant-baseline="central" style="fill:var(--text)">"My order hasn't arrived — where is it?"</text>
+  <line x1="340" y1="50" x2="340" y2="70" stroke="var(--gray-stroke)" stroke-width="1" marker-end="url(#ao)" fill="none"/>
+
+  <!-- STEP 1: Router -->
+  <g class="badge-red"><rect x="10" y="70" width="68" height="17" rx="4"/><text x="44" y="79" text-anchor="middle" dominant-baseline="central">LLM call 1</text></g>
+  <g class="c-blue">
+    <rect x="84" y="70" width="440" height="56" rx="8"/>
+    <text class="th" x="304" y="92" text-anchor="middle" dominant-baseline="central">RouterChain — intent classifier</text>
+    <text class="ts" x="304" y="111" text-anchor="middle" dominant-baseline="central">Prompt: "Classify as one of: SHIPPING | REFUND | PRODUCT | OTHER"</text>
+  </g>
+  <line x1="340" y1="126" x2="340" y2="138" stroke="var(--blue-stroke)" stroke-width="1" marker-end="url(#ao)" fill="none"/>
+  <!-- typed output -->
+  <rect x="196" y="138" width="288" height="20" rx="5" fill="var(--blue-fill)" stroke="var(--blue-stroke)" stroke-width="0.5"/>
+  <text class="ts" x="340" y="148" text-anchor="middle" dominant-baseline="central" style="fill:var(--blue-text)">output: "SHIPPING" — any other string crashes the router</text>
+  <line x1="340" y1="158" x2="340" y2="178" stroke="var(--blue-stroke)" stroke-width="1" marker-end="url(#ao)" fill="none"/>
+
+  <!-- STEP 2: Context -->
+  <g class="badge-red"><rect x="10" y="178" width="68" height="17" rx="4"/><text x="44" y="187" text-anchor="middle" dominant-baseline="central">LLM call 2</text></g>
+  <g class="c-teal">
+    <rect x="84" y="178" width="440" height="56" rx="8"/>
+    <text class="th" x="304" y="200" text-anchor="middle" dominant-baseline="central">Context chain — extract order details</text>
+    <text class="ts" x="304" y="218" text-anchor="middle" dominant-baseline="central">Prompt: "Extract: order_id, customer_email from the message"</text>
+  </g>
+  <line x1="340" y1="234" x2="340" y2="246" stroke="var(--teal-stroke)" stroke-width="1" marker-end="url(#ao)" fill="none"/>
+  <rect x="176" y="246" width="328" height="20" rx="5" fill="var(--teal-fill)" stroke="var(--teal-stroke)" stroke-width="0.5"/>
+  <text class="ts" x="340" y="256" text-anchor="middle" dominant-baseline="central" style="fill:var(--teal-text)">output typed: {"order_id": str, "customer_email": str}</text>
+  <line x1="340" y1="266" x2="340" y2="286" stroke="var(--teal-stroke)" stroke-width="1" marker-end="url(#ao)" fill="none"/>
+
+  <!-- STEP 3: Draft -->
+  <g class="badge-red"><rect x="10" y="286" width="68" height="17" rx="4"/><text x="44" y="295" text-anchor="middle" dominant-baseline="central">LLM call 3</text></g>
+  <g class="c-amber">
+    <rect x="84" y="286" width="440" height="56" rx="8"/>
+    <text class="th" x="304" y="308" text-anchor="middle" dominant-baseline="central">Response chain — draft reply</text>
+    <text class="ts" x="304" y="326" text-anchor="middle" dominant-baseline="central">Prompt: "Write a support reply for order {order_id} with status {status}"</text>
+  </g>
+  <line x1="340" y1="342" x2="340" y2="362" stroke="var(--amber-stroke)" stroke-width="1" marker-end="url(#ao)" fill="none"/>
+
+  <!-- STEP 4: Tone -->
+  <g class="badge-red"><rect x="10" y="362" width="68" height="17" rx="4"/><text x="44" y="371" text-anchor="middle" dominant-baseline="central">LLM call 4</text></g>
+  <g class="c-coral">
+    <rect x="84" y="362" width="440" height="56" rx="8"/>
+    <text class="th" x="304" y="384" text-anchor="middle" dominant-baseline="central">Tone chain — rewrite for brand voice</text>
+    <text class="ts" x="304" y="402" text-anchor="middle" dominant-baseline="central">Prompt: "Rewrite this reply to be warm, brief, and on-brand."</text>
+  </g>
+  <line x1="340" y1="418" x2="340" y2="438" stroke="var(--green-stroke)" stroke-width="1.5" marker-end="url(#ao)" fill="none"/>
+
+  <!-- final response -->
+  <rect x="160" y="438" width="360" height="36" rx="8" fill="var(--green-fill)" stroke="var(--green-stroke)" stroke-width="0.5"/>
+  <text class="th" x="340" y="456" text-anchor="middle" dominant-baseline="central" style="fill:var(--green-text)">Response to customer</text>
+
+  <!-- summary strip -->
+  <rect x="10" y="490" width="660" height="36" rx="7" fill="var(--red-fill)" stroke="var(--red-stroke)" stroke-width="0.5"/>
+  <text class="ts" x="340" y="508" text-anchor="middle" dominant-baseline="central" style="fill:var(--red-text);font-weight:500">4 LLM calls per message. Each prompt, category list, and field name hardcoded by a developer.</text>
+  <text class="ts" x="340" y="524" text-anchor="middle" dominant-baseline="central" style="fill:var(--red-stroke)">Typed outputs passed between steps — one unexpected model value cascades into a crash.</text>
+</svg>
+<p class="caption">A typical 2023 LangChain customer support agent made four separate LLM calls to handle one message. Each step was hardcoded by a developer into the smallest possible task — exact category names, exact field names, exact template variables — because models at the time weren't reliable enough to do multi-step reasoning, produce consistent structured output, and maintain tone all in one shot. Outputs were strictly typed so the next chain could consume them, which meant one unexpected string from the model cascaded into a crash downstream. The framework was compensating for model limitations, not productivity on top of them.</p>
+</div>
+
+<!-- NEW PANEL -->
+<div class="panel" id="panel-new">
+<svg viewBox="0 0 680 530" role="img" aria-label="Modern ReAct loop: system prompt sets tone, model handles the rest in one generation">
+  <defs>
+    <marker id="an" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- system prompt — set once at top -->
+  <rect x="84" y="14" width="440" height="36" rx="7" fill="var(--gray-fill)" stroke="var(--gray-stroke)" stroke-width="0.5"/>
+  <text class="ts"   x="100" y="28" dominant-baseline="central" style="fill:var(--gray-text);font-weight:500">System prompt (set once):</text>
+  <text class="mono" x="100" y="44" dominant-baseline="central">"You are a warm, concise support agent. Always check orders before answering."</text>
+  <line x1="340" y1="50" x2="340" y2="70" stroke="var(--gray-stroke)" stroke-width="1" marker-end="url(#an)" fill="none"/>
+
+  <!-- user message -->
+  <rect x="150" y="70" width="380" height="30" rx="7" class="code-bg"/>
+  <text class="mono" x="340" y="85" text-anchor="middle" dominant-baseline="central" style="fill:var(--text)">"My order hasn't arrived — where is it?"</text>
+  <line x1="340" y1="100" x2="340" y2="120" stroke="var(--gray-stroke)" stroke-width="1" marker-end="url(#an)" fill="none"/>
+
+  <!-- model box -->
+  <g class="c-purple">
+    <rect x="60" y="120" width="520" height="222" rx="10" stroke-width="1"/>
+    <text class="th" x="340" y="146" text-anchor="middle" dominant-baseline="central">Model — single generation</text>
+  </g>
+  <g class="badge-blue"><rect x="538" y="128" width="62" height="17" rx="4"/><text x="569" y="137" text-anchor="middle" dominant-baseline="central">1 LLM call</text></g>
+
+  <!-- thought -->
+  <rect x="80" y="160" width="460" height="34" rx="6" fill="var(--bg2)" stroke="var(--border)" stroke-width="0.5"/>
+  <text class="ts" x="96" y="177" dominant-baseline="central" style="fill:var(--purple-stroke);font-weight:500">Thought:</text>
+  <text class="ts" x="166" y="177" dominant-baseline="central">Shipping question. I need the order status before I can reply.</text>
+  <line x1="340" y1="194" x2="340" y2="206" stroke="var(--purple-stroke)" stroke-width="0.75" marker-end="url(#an)" fill="none" stroke-dasharray="3 2"/>
+
+  <!-- action -->
+  <rect x="80" y="206" width="460" height="34" rx="6" fill="var(--amber-fill)" stroke="var(--amber-stroke)" stroke-width="0.5"/>
+  <text class="ts" x="96" y="223" dominant-baseline="central" style="fill:var(--amber-text);font-weight:500">Action:</text>
+  <text class="ts" x="156" y="223" dominant-baseline="central" style="font-family:monospace">lookup_order(customer_id="C-8821")</text>
+  <line x1="340" y1="240" x2="340" y2="252" stroke="var(--amber-stroke)" stroke-width="0.75" marker-end="url(#an)" fill="none"/>
+
+  <!-- observation -->
+  <rect x="80" y="252" width="460" height="34" rx="6" fill="var(--teal-fill)" stroke="var(--teal-stroke)" stroke-width="0.5"/>
+  <text class="ts" x="96" y="269" dominant-baseline="central" style="fill:var(--teal-text);font-weight:500">Observation:</text>
+  <text class="ts" x="192" y="269" dominant-baseline="central">"Order #8821 in transit — arriving Thu 18 Apr"</text>
+  <line x1="340" y1="286" x2="340" y2="298" stroke="var(--teal-stroke)" stroke-width="0.75" marker-end="url(#an)" fill="none" stroke-dasharray="3 2"/>
+
+  <!-- thought 2 -->
+  <rect x="80" y="298" width="460" height="34" rx="6" fill="var(--bg2)" stroke="var(--border)" stroke-width="0.5"/>
+  <text class="ts" x="96" y="315" dominant-baseline="central" style="fill:var(--purple-stroke);font-weight:500">Thought:</text>
+  <text class="ts" x="166" y="315" dominant-baseline="central">I have the status. I'll reply warmly and concisely, as per system prompt.</text>
+
+  <!-- arrow out -->
+  <line x1="340" y1="342" x2="340" y2="366" stroke="var(--green-stroke)" stroke-width="1.5" marker-end="url(#an)" fill="none"/>
+
+  <!-- final response -->
+  <rect x="140" y="366" width="400" height="36" rx="8" fill="var(--green-fill)" stroke="var(--green-stroke)" stroke-width="0.5"/>
+  <text class="th" x="340" y="384" text-anchor="middle" dominant-baseline="central" style="fill:var(--green-text)">Response to customer</text>
+
+  <!-- loop-back for tool result -->
+  <path d="M580 258 Q628 258 628 190 Q628 155 580 150" fill="none" stroke="var(--border2)" stroke-width="0.75" stroke-dasharray="4 3" marker-end="url(#an)"/>
+  <text class="lm" x="635" y="202" dominant-baseline="central" style="font-size:10px">result</text>
+  <text class="lm" x="635" y="214" dominant-baseline="central" style="font-size:10px">fed back</text>
+
+  <!-- comparison notes -->
+  <rect x="10" y="418" width="660" height="96" rx="7" fill="var(--blue-fill)" stroke="var(--blue-stroke)" stroke-width="0.5"/>
+  <text class="ts" x="26" y="438" dominant-baseline="central" style="fill:var(--blue-text);font-weight:500">What replaced each chain:</text>
+  <text class="lm" x="26" y="458" dominant-baseline="central" style="fill:var(--blue-stroke)">Intent classification → model reads the message and knows; no dedicated call needed.</text>
+  <text class="lm" x="26" y="476" dominant-baseline="central" style="fill:var(--blue-stroke)">Field extraction → model decides what to pass to the tool; no typed schema required.</text>
+  <text class="lm" x="26" y="494" dominant-baseline="central" style="fill:var(--blue-stroke)">Tone chain → system prompt. One line, set once. The model applies it throughout.</text>
+  <text class="lm" x="26" y="512" dominant-baseline="central" style="fill:var(--blue-stroke)">Output parser → gone. The model produces readable text; there's nothing to parse.</text>
+</svg>
+<p class="caption">The same task in 2024 runs in a single generation. Tone is handled by one line in the system prompt — set once, applied throughout, no dedicated chain. Intent classification, field extraction, and response formatting happen inside the model's reasoning; they're not separate LLM calls. The only external step is the actual order lookup, because that genuinely needs live data. Everything the 2023 pipeline delegated to hand-coded stages is now a capability the model brings on its own.</p>
+</div>
+
+<script>
+  function show(w){
+    document.getElementById('panel-old').classList.toggle('active',w==='old');
+    document.getElementById('panel-new').classList.toggle('active',w==='new');
+    document.getElementById('btn-old').classList.toggle('active',w==='old');
+    document.getElementById('btn-new').classList.toggle('active',w==='new');
+  }
+</script>
+</body>
+</html>

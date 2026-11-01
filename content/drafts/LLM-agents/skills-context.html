@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Skills — progressive disclosure</title>
+<style>
+  :root {
+    --bg:#ffffff;--bg2:#f6f5f2;--bg3:#eeecea;
+    --text:#1a1a18;--text2:#5a5a56;--text3:#9a9994;
+    --border:rgba(0,0,0,0.10);--border2:rgba(0,0,0,0.18);
+    --purple-fill:#EEEDFE;--purple-stroke:#534AB7;--purple-text:#3C3489;
+    --teal-fill:#E1F5EE;--teal-stroke:#0F6E56;--teal-text:#085041;
+    --amber-fill:#FAEEDA;--amber-stroke:#854F0B;--amber-text:#633806;
+    --gray-fill:#F1EFE8;--gray-stroke:#5F5E5A;--gray-text:#444441;
+    --blue-fill:#E6F1FB;--blue-stroke:#185FA5;--blue-text:#0C447C;
+    --red-fill:#FCEBEB;--red-stroke:#A32D2D;--red-text:#791F1F;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#1c1c1a;--bg2:#252523;--bg3:#2e2e2b;
+      --text:#e8e6df;--text2:#a0a09a;--text3:#606059;
+      --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);
+      --purple-fill:#26215C;--purple-stroke:#AFA9EC;--purple-text:#CECBF6;
+      --teal-fill:#04342C;--teal-stroke:#5DCAA5;--teal-text:#9FE1CB;
+      --amber-fill:#412402;--amber-stroke:#EF9F27;--amber-text:#FAC775;
+      --gray-fill:#2C2C2A;--gray-stroke:#B4B2A9;--gray-text:#D3D1C7;
+      --blue-fill:#042C53;--blue-stroke:#85B7EB;--blue-text:#B5D4F4;
+      --red-fill:#501313;--red-stroke:#F09595;--red-text:#F7C1C1;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Georgia,serif;background:var(--bg);color:var(--text);padding:2rem 1.5rem 3rem;max-width:780px;margin:0 auto;}
+  .diagram-header{margin-bottom:1.75rem;}
+  .diagram-header h1{font-size:1.25rem;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:-0.01em;color:var(--text);margin-bottom:0.35rem;}
+  .diagram-header p{font-size:0.875rem;color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55;}
+  .controls{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;}
+  .step-label{font-size:12px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-width:64px;}
+  .dots{display:flex;gap:6px;}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--border2);cursor:pointer;transition:background 0.2s;border:none;padding:0;}
+  .dot.active{background:var(--text);}
+  .dot:hover{background:var(--text2);}
+  .nav-buttons{margin-left:auto;display:flex;gap:8px;}
+  button.nav{font-size:12px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text2);background:none;border:0.5px solid var(--border2);border-radius:5px;padding:5px 12px;cursor:pointer;transition:background 0.15s;}
+  button.nav:hover{background:var(--bg2);color:var(--text);}
+  button.nav:disabled{opacity:0.35;pointer-events:none;}
+  .step-panel{display:none;}
+  .step-panel.active{display:block;animation:fadeUp 0.2s ease;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+  svg{width:100%;display:block;}
+  .caption{font-size:0.875rem;color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin-top:0.85rem;line-height:1.65;padding:0 0.25rem;}
+  .c-purple rect{fill:var(--purple-fill);stroke:var(--purple-stroke);stroke-width:0.5;}
+  .c-purple .th{fill:var(--purple-text);}.c-purple .ts{fill:var(--purple-stroke);}
+  .c-teal rect{fill:var(--teal-fill);stroke:var(--teal-stroke);stroke-width:0.5;}
+  .c-teal .th{fill:var(--teal-text);}.c-teal .ts{fill:var(--teal-stroke);}
+  .c-amber rect{fill:var(--amber-fill);stroke:var(--amber-stroke);stroke-width:0.5;}
+  .c-amber .th{fill:var(--amber-text);}.c-amber .ts{fill:var(--amber-stroke);}
+  .c-red rect{fill:var(--red-fill);stroke:var(--red-stroke);stroke-width:0.5;}
+  .c-red .th{fill:var(--red-text);}.c-red .ts{fill:var(--red-stroke);}
+  text.th{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;font-weight:500;}
+  text.ts{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;fill:var(--text2);}
+  text.lm{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;font-style:italic;fill:var(--text3);}
+  text.mono{font-family:'Courier New',monospace;font-size:10.5px;fill:var(--text2);}
+  line.arr,path.arr{stroke:var(--border2);stroke-width:1;fill:none;}
+  .code-bg{fill:var(--bg2);stroke:var(--border);stroke-width:0.5;}
+  .sfolder rect{fill:var(--bg2);stroke:var(--border2);stroke-width:0.5;}
+  .sfolder .lbl{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;fill:var(--text2);}
+  .sfolder.loaded rect{fill:var(--teal-fill);stroke:var(--teal-stroke);stroke-width:1;}
+  .sfolder.loaded .lbl{fill:var(--teal-text);font-weight:500;}
+  .sfolder.loaded-amber rect{fill:var(--amber-fill);stroke:var(--amber-stroke);stroke-width:1;}
+  .sfolder.loaded-amber .lbl{fill:var(--amber-text);font-weight:500;}
+  .sfolder.dim rect{opacity:0.3;}
+  .sfolder.dim .lbl{opacity:0.3;}
+</style>
+</head>
+<body>
+<div class="diagram-header">
+  <h1>Agent Skills — progressive disclosure</h1>
+  <p>Skills are modular folders loaded on demand. The alternative — stuffing everything in upfront — wastes most of the context window on irrelevant instructions.</p>
+</div>
+<div class="controls">
+  <span class="step-label" id="step-label">Step 1 of 5</span>
+  <div class="dots">
+    <button class="dot active" onclick="goTo(0)" aria-label="Step 1 — no skills loaded"></button>
+    <button class="dot" onclick="goTo(1)" aria-label="Step 2 — naive approach"></button>
+    <button class="dot" onclick="goTo(2)" aria-label="Step 3 — task arrives"></button>
+    <button class="dot" onclick="goTo(3)" aria-label="Step 4 — correct skill loaded"></button>
+    <button class="dot" onclick="goTo(4)" aria-label="Step 5 — next task"></button>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav" id="btn-prev" onclick="prev()" disabled>← Prev</button>
+    <button class="nav" id="btn-next" onclick="next()">Next →</button>
+  </div>
+</div>
+
+<!-- ── STEP 0: empty context, library on disk ── -->
+<div class="step-panel active" id="panel-0">
+<svg viewBox="0 0 680 330" role="img" aria-label="Context window is empty. Skill folders sit on disk, none loaded.">
+  <defs><marker id="s0" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <rect x="30" y="30" width="240" height="270" rx="10" fill="var(--bg2)" stroke="var(--border2)" stroke-width="0.5" stroke-dasharray="6 3"/>
+  <text class="th" x="150" y="56" text-anchor="middle" dominant-baseline="central">Context window</text>
+  <text class="lm" x="150" y="170" text-anchor="middle">empty</text>
+
+  <text class="th" x="490" y="42" text-anchor="middle" dominant-baseline="central">Skills library (on disk)</text>
+  <g class="sfolder"><rect x="390" y="60" width="200" height="30" rx="5"/><text class="lbl" x="490" y="75" text-anchor="middle" dominant-baseline="central">📁 docx/SKILL.md</text></g>
+  <g class="sfolder"><rect x="390" y="100" width="200" height="30" rx="5"/><text class="lbl" x="490" y="115" text-anchor="middle" dominant-baseline="central">📁 pdf/SKILL.md</text></g>
+  <g class="sfolder"><rect x="390" y="140" width="200" height="30" rx="5"/><text class="lbl" x="490" y="155" text-anchor="middle" dominant-baseline="central">📁 pptx/SKILL.md</text></g>
+  <g class="sfolder"><rect x="390" y="180" width="200" height="30" rx="5"/><text class="lbl" x="490" y="195" text-anchor="middle" dominant-baseline="central">📁 xlsx/SKILL.md</text></g>
+  <g class="sfolder"><rect x="390" y="220" width="200" height="30" rx="5"/><text class="lbl" x="490" y="235" text-anchor="middle" dominant-baseline="central">📁 charts/SKILL.md</text></g>
+  <g class="sfolder"><rect x="390" y="260" width="200" height="30" rx="5"/><text class="lbl" x="490" y="275" text-anchor="middle" dominant-baseline="central">📁 data/SKILL.md</text></g>
+  <text class="lm" x="490" y="308" text-anchor="middle">+ dozens more…</text>
+</svg>
+<p class="caption">The skills library can hold dozens of capability folders — each with full instructions, scripts, and examples. None are loaded yet. The context window starts empty, waiting for a task.</p>
+</div>
+
+<!-- ── STEP 1: naive approach — everything crammed in ── -->
+<div class="step-panel" id="panel-1">
+<svg viewBox="0 0 680 370" role="img" aria-label="Naive approach: all skill instructions crammed into context at startup, wasting most of the window">
+  <defs><marker id="s1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+
+  <!-- context window crammed full -->
+  <rect x="30" y="30" width="240" height="300" rx="10" fill="var(--red-fill)" stroke="var(--red-stroke)" stroke-width="1"/>
+  <text class="th" x="150" y="54" text-anchor="middle" dominant-baseline="central" style="fill:var(--red-text)">Context window</text>
+  <text class="ts" x="150" y="72" text-anchor="middle" dominant-baseline="central" style="fill:var(--red-stroke)">(128k tokens)</text>
+
+  <!-- crammed skill rows — faded/small to show bulk -->
+  <rect x="46" y="86" width="208" height="18" rx="3" fill="var(--bg2)" stroke="var(--border)" stroke-width="0.5"/>
+  <text class="mono" x="52" y="95" dominant-baseline="central" style="font-size:9px">docx SKILL.md — full text — 2 400 tokens</text>
+  <rect x="46" y="110" width="208" height="18" rx="3" fill="var(--bg2)" stroke="var(--border)" stroke-width="0.5"/>
+  <text class="mono" x="52" y="119" dominant-baseline="central" style="font-size:9px">pdf SKILL.md — full text — 1 900 tokens</text>
+  <rect x="46" y="134" width="208" height="18" rx="3" fill="var(--bg2)" stroke="var(--border)" stroke-width="0.5"/>
+  <text class="mono" x="52" y="143" dominant-baseline="central" style="font-size:9px">pptx SKILL.md — full text — 3 100 tokens</text>
+  <rect x="46" y="158" width="208" height="18" rx="3" fill="var(--bg2)" stroke="var(--border)" stroke-width="0.5"/>
+  <text class="mono" x="52" y="167" dominant-baseline="central" style="font-size:9px">xlsx SKILL.md — full text — 2 200 tokens</text>
+  <rect x="46" y="182" width="208" height="18" rx="3" fill="var(--bg2)" stroke="var(--border)" stroke-width="0.5"/>
+  <text class="mono" x="52" y="191" dominant-baseline="central" style="font-size:9px">charts SKILL.md — full text — 1 700 tokens</text>
+  <rect x="46" y="206" width="208" height="18" rx="3" fill="var(--bg2)" stroke="var(--border)" stroke-width="0.5"/>
+  <text class="mono" x="52" y="215" dominant-baseline="central" style="font-size:9px">data SKILL.md — full text — 2 800 tokens</text>
+  <!-- dots indicating more -->
+  <text class="lm" x="150" y="236" text-anchor="middle" style="fill:var(--red-stroke)">· · · 18 more skills · · ·</text>
+  <!-- task message, tiny at bottom -->
+  <rect x="46" y="252" width="208" height="34" rx="4" fill="var(--purple-fill)" stroke="var(--purple-stroke)" stroke-width="0.5"/>
+  <text class="ts" x="150" y="263" text-anchor="middle" dominant-baseline="central" style="fill:var(--purple-text);font-weight:500">User task</text>
+  <text class="ts" x="150" y="278" text-anchor="middle" dominant-baseline="central" style="fill:var(--purple-stroke)">"make me a Word doc"</text>
+  <!-- overflow indicator -->
+  <text class="lm" x="150" y="316" text-anchor="middle" style="fill:var(--red-stroke)">↑ task squashed to the bottom</text>
+
+  <!-- annotation right side -->
+  <rect x="300" y="86" width="360" height="196" rx="8" fill="var(--red-fill)" stroke="var(--red-stroke)" stroke-width="0.5"/>
+  <text class="th" x="480" y="108" text-anchor="middle" dominant-baseline="central" style="fill:var(--red-text)">Problems with this approach</text>
+  <text class="lm" x="316" y="132" dominant-baseline="central" style="fill:var(--red-stroke)">~50 000 tokens of irrelevant instructions</text>
+  <text class="lm" x="316" y="150" dominant-baseline="central" style="fill:var(--red-stroke)">loaded on every single call.</text>
+  <text class="lm" x="316" y="176" dominant-baseline="central" style="fill:var(--red-stroke)">Higher cost per query. Slower responses.</text>
+  <text class="lm" x="316" y="200" dominant-baseline="central" style="fill:var(--red-stroke)">Model attends to all of it — pdf/pptx/xlsx</text>
+  <text class="lm" x="316" y="218" dominant-baseline="central" style="fill:var(--red-stroke)">instructions dilute the relevant guidance.</text>
+  <text class="lm" x="316" y="244" dominant-baseline="central" style="fill:var(--red-stroke)">Adding a new skill bloats every request,</text>
+  <text class="lm" x="316" y="262" dominant-baseline="central" style="fill:var(--red-stroke)">even if that skill is never used.</text>
+</svg>
+<p class="caption">The naive alternative: load all skills upfront on every call. With even a modest library this fills most of the context window with irrelevant instructions — the model is attending to pdf, pptx, and database instructions when someone just asked for a Word doc. Cost scales with library size, not task complexity. This is the problem progressive disclosure solves.</p>
+</div>
+
+<!-- ── STEP 2: task arrives, agent reads short descriptions ── -->
+<div class="step-panel" id="panel-2">
+<svg viewBox="0 0 680 330" role="img" aria-label="A task arrives. The agent reads short one-line descriptions to decide which skill to load.">
+  <defs><marker id="s2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <rect x="30" y="30" width="240" height="270" rx="10" fill="var(--bg2)" stroke="var(--border2)" stroke-width="0.5" stroke-dasharray="6 3"/>
+  <text class="th" x="150" y="56" text-anchor="middle" dominant-baseline="central">Context window</text>
+  <!-- task -->
+  <rect x="46" y="72" width="208" height="34" rx="6" fill="var(--purple-fill)" stroke="var(--purple-stroke)" stroke-width="0.5"/>
+  <text class="th" x="150" y="83" text-anchor="middle" dominant-baseline="central" style="fill:var(--purple-text)">User task</text>
+  <text class="ts" x="150" y="98" text-anchor="middle" dominant-baseline="central" style="fill:var(--purple-stroke)">"make me a Word doc report"</text>
+  <!-- short descriptions only -->
+  <rect x="46" y="118" width="208" height="22" rx="4" fill="var(--bg3)" stroke="var(--border)" stroke-width="0.5"/>
+  <text class="mono" x="54" y="129" dominant-baseline="central">docx: create Word documents</text>
+  <rect x="46" y="146" width="208" height="22" rx="4" fill="var(--bg3)" stroke="var(--border)" stroke-width="0.5"/>
+  <text class="mono" x="54" y="157" dominant-baseline="central">pdf: PDF generation &amp; editing</text>
+  <rect x="46" y="174" width="208" height="22" rx="4" fill="var(--bg3)" stroke="var(--border)" stroke-width="0.5"/>
+  <text class="mono" x="54" y="185" dominant-baseline="central">pptx: PowerPoint slidedeck</text>
+  <rect x="46" y="202" width="208" height="22" rx="4" fill="var(--bg3)" stroke="var(--border)" stroke-width="0.5"/>
+  <text class="mono" x="54" y="213" dominant-baseline="central">xlsx: Excel spreadsheets</text>
+  <text class="lm" x="150" y="240" text-anchor="middle">one line each — ~10 tokens per skill</text>
+  <text class="lm" x="150" y="258" text-anchor="middle">agent reads to decide what to load</text>
+
+  <text class="th" x="490" y="42" text-anchor="middle" dominant-baseline="central">Skills library</text>
+  <g class="sfolder"><rect x="390" y="60" width="200" height="30" rx="5"/><text class="lbl" x="490" y="75" text-anchor="middle" dominant-baseline="central">📁 docx/SKILL.md</text></g>
+  <g class="sfolder dim"><rect x="390" y="100" width="200" height="30" rx="5"/><text class="lbl" x="490" y="115" text-anchor="middle" dominant-baseline="central">📁 pdf/SKILL.md</text></g>
+  <g class="sfolder dim"><rect x="390" y="140" width="200" height="30" rx="5"/><text class="lbl" x="490" y="155" text-anchor="middle" dominant-baseline="central">📁 pptx/SKILL.md</text></g>
+  <g class="sfolder dim"><rect x="390" y="180" width="200" height="30" rx="5"/><text class="lbl" x="490" y="195" text-anchor="middle" dominant-baseline="central">📁 xlsx/SKILL.md</text></g>
+  <g class="sfolder dim"><rect x="390" y="220" width="200" height="30" rx="5"/><text class="lbl" x="490" y="235" text-anchor="middle" dominant-baseline="central">📁 charts/SKILL.md</text></g>
+  <g class="sfolder dim"><rect x="390" y="260" width="200" height="30" rx="5"/><text class="lbl" x="490" y="275" text-anchor="middle" dominant-baseline="central">📁 data/SKILL.md</text></g>
+  <line x1="256" y1="90" x2="388" y2="75" stroke="var(--purple-stroke)" stroke-width="1" marker-end="url(#s2)" fill="none"/>
+  <text class="lm" x="322" y="68">"I need docx"</text>
+</svg>
+<p class="caption">When a task arrives, only short one-line descriptions of each skill are in context — around 10 tokens each. The agent reads them to decide which skill to load. This is the first level of disclosure: tiny summaries rather than full instructions.</p>
+</div>
+
+<!-- ── STEP 3: correct skill loaded ── -->
+<div class="step-panel" id="panel-3">
+<svg viewBox="0 0 680 370" role="img" aria-label="Only the docx skill is loaded into the context window. All other skills stay on disk.">
+  <defs><marker id="s3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <rect x="30" y="30" width="240" height="310" rx="10" fill="var(--bg2)" stroke="var(--border2)" stroke-width="0.5" stroke-dasharray="6 3"/>
+  <text class="th" x="150" y="56" text-anchor="middle" dominant-baseline="central">Context window</text>
+  <!-- task -->
+  <rect x="46" y="72" width="208" height="28" rx="6" fill="var(--purple-fill)" stroke="var(--purple-stroke)" stroke-width="0.5"/>
+  <text class="ts" x="150" y="86" text-anchor="middle" dominant-baseline="central" style="fill:var(--purple-stroke)">"make me a Word doc report"</text>
+  <!-- loaded skill -->
+  <rect x="46" y="110" width="208" height="210" rx="6" fill="var(--teal-fill)" stroke="var(--teal-stroke)" stroke-width="1"/>
+  <text class="th" x="150" y="130" text-anchor="middle" dominant-baseline="central" style="fill:var(--teal-text)">docx/SKILL.md — loaded</text>
+  <text class="ts" x="60" y="152" dominant-baseline="central" style="fill:var(--teal-stroke)">Step 1: install python-docx</text>
+  <text class="ts" x="60" y="170" dominant-baseline="central" style="fill:var(--teal-stroke)">Step 2: set up document styles</text>
+  <text class="ts" x="60" y="188" dominant-baseline="central" style="fill:var(--teal-stroke)">Step 3: add headings &amp; body text</text>
+  <text class="ts" x="60" y="206" dominant-baseline="central" style="fill:var(--teal-stroke)">Step 4: generate tables…</text>
+  <text class="ts" x="60" y="224" dominant-baseline="central" style="fill:var(--teal-stroke)">Step 5: save to /outputs/</text>
+  <text class="lm"  x="150" y="298" text-anchor="middle" style="fill:var(--teal-stroke)">full instructions now in context</text>
+
+  <text class="th" x="490" y="42" text-anchor="middle" dominant-baseline="central">Skills library</text>
+  <g class="sfolder loaded"><rect x="390" y="60" width="200" height="30" rx="5"/><text class="lbl" x="490" y="75" text-anchor="middle" dominant-baseline="central">📁 docx/SKILL.md ✓</text></g>
+  <g class="sfolder dim"><rect x="390" y="100" width="200" height="30" rx="5"/><text class="lbl" x="490" y="115" text-anchor="middle" dominant-baseline="central">📁 pdf/SKILL.md</text></g>
+  <g class="sfolder dim"><rect x="390" y="140" width="200" height="30" rx="5"/><text class="lbl" x="490" y="155" text-anchor="middle" dominant-baseline="central">📁 pptx/SKILL.md</text></g>
+  <g class="sfolder dim"><rect x="390" y="180" width="200" height="30" rx="5"/><text class="lbl" x="490" y="195" text-anchor="middle" dominant-baseline="central">📁 xlsx/SKILL.md</text></g>
+  <g class="sfolder dim"><rect x="390" y="220" width="200" height="30" rx="5"/><text class="lbl" x="490" y="235" text-anchor="middle" dominant-baseline="central">📁 charts/SKILL.md</text></g>
+  <g class="sfolder dim"><rect x="390" y="260" width="200" height="30" rx="5"/><text class="lbl" x="490" y="275" text-anchor="middle" dominant-baseline="central">📁 data/SKILL.md</text></g>
+  <path d="M390 75 L272 150" fill="none" stroke="var(--teal-stroke)" stroke-width="1.5" marker-end="url(#s3)"/>
+  <text class="lm" x="490" y="310" text-anchor="middle">5 skills stay on disk — not wasting tokens</text>
+</svg>
+<p class="caption">Only the relevant skill is loaded — its full instructions flow into the context window. Everything else stays on disk. The window stays lean regardless of how large the library grows.</p>
+</div>
+
+<!-- ── STEP 4: next task, different skill ── -->
+<div class="step-panel" id="panel-4">
+<svg viewBox="0 0 680 370" role="img" aria-label="A different task arrives. The xlsx skill loads instead. Context window stays the same size.">
+  <defs><marker id="s4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <rect x="30" y="30" width="240" height="310" rx="10" fill="var(--bg2)" stroke="var(--border2)" stroke-width="0.5" stroke-dasharray="6 3"/>
+  <text class="th" x="150" y="56" text-anchor="middle" dominant-baseline="central">Context window</text>
+  <rect x="46" y="72" width="208" height="28" rx="6" fill="var(--purple-fill)" stroke="var(--purple-stroke)" stroke-width="0.5"/>
+  <text class="ts" x="150" y="86" text-anchor="middle" dominant-baseline="central" style="fill:var(--purple-stroke)">"build me a chart in Excel"</text>
+  <rect x="46" y="110" width="208" height="210" rx="6" fill="var(--amber-fill)" stroke="var(--amber-stroke)" stroke-width="1"/>
+  <text class="th" x="150" y="130" text-anchor="middle" dominant-baseline="central" style="fill:var(--amber-text)">xlsx/SKILL.md — loaded</text>
+  <text class="ts" x="60" y="152" dominant-baseline="central" style="fill:var(--amber-stroke)">Step 1: install openpyxl</text>
+  <text class="ts" x="60" y="170" dominant-baseline="central" style="fill:var(--amber-stroke)">Step 2: create workbook</text>
+  <text class="ts" x="60" y="188" dominant-baseline="central" style="fill:var(--amber-stroke)">Step 3: write data rows</text>
+  <text class="ts" x="60" y="206" dominant-baseline="central" style="fill:var(--amber-stroke)">Step 4: add chart object</text>
+  <text class="ts" x="60" y="224" dominant-baseline="central" style="fill:var(--amber-stroke)">Step 5: save to /outputs/</text>
+  <text class="lm"  x="150" y="298" text-anchor="middle" style="fill:var(--amber-stroke)">same window size — different skill</text>
+
+  <text class="th" x="490" y="42" text-anchor="middle" dominant-baseline="central">Skills library</text>
+  <g class="sfolder dim"><rect x="390" y="60" width="200" height="30" rx="5"/><text class="lbl" x="490" y="75" text-anchor="middle" dominant-baseline="central">📁 docx/SKILL.md</text></g>
+  <g class="sfolder dim"><rect x="390" y="100" width="200" height="30" rx="5"/><text class="lbl" x="490" y="115" text-anchor="middle" dominant-baseline="central">📁 pdf/SKILL.md</text></g>
+  <g class="sfolder dim"><rect x="390" y="140" width="200" height="30" rx="5"/><text class="lbl" x="490" y="155" text-anchor="middle" dominant-baseline="central">📁 pptx/SKILL.md</text></g>
+  <g class="sfolder loaded-amber"><rect x="390" y="180" width="200" height="30" rx="5"/><text class="lbl" x="490" y="195" text-anchor="middle" dominant-baseline="central">📁 xlsx/SKILL.md ✓</text></g>
+  <g class="sfolder dim"><rect x="390" y="220" width="200" height="30" rx="5"/><text class="lbl" x="490" y="235" text-anchor="middle" dominant-baseline="central">📁 charts/SKILL.md</text></g>
+  <g class="sfolder dim"><rect x="390" y="260" width="200" height="30" rx="5"/><text class="lbl" x="490" y="275" text-anchor="middle" dominant-baseline="central">📁 data/SKILL.md</text></g>
+  <path d="M390 195 L272 180" fill="none" stroke="var(--amber-stroke)" stroke-width="1.5" marker-end="url(#s4)"/>
+  <text class="lm" x="490" y="310" text-anchor="middle">context window stays same size — library can grow freely</text>
+</svg>
+<p class="caption">The next task loads a completely different skill. The context window is roughly the same size as before. You can add a hundred skills to the library without making any individual request larger or more expensive. The bottleneck shifts from model intelligence to knowledge organisation.</p>
+</div>
+
+<script>
+  let cur=0;const total=5;
+  function goTo(n){
+    document.getElementById('panel-'+cur).classList.remove('active');
+    document.querySelectorAll('.dot')[cur].classList.remove('active');
+    cur=n;
+    document.getElementById('panel-'+cur).classList.add('active');
+    document.querySelectorAll('.dot')[cur].classList.add('active');
+    document.getElementById('step-label').textContent='Step '+(cur+1)+' of '+total;
+    document.getElementById('btn-prev').disabled=cur===0;
+    document.getElementById('btn-next').disabled=cur===total-1;
+  }
+  function next(){if(cur<total-1)goTo(cur+1);}
+  function prev(){if(cur>0)goTo(cur-1);}
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev();});
+</script>
+</body>
+</html>
