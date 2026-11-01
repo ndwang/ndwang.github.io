@@ -43,6 +43,8 @@ CV and Papers publications are grouped by year, newest first, with Ningdong's fi
 
 Skills wording follows the AI/ML Research Engineer, ML Systems Engineer, Quant Researcher, Accelerator Physics, and LBNL Agentic AI résumés linked from [Ningdong Wang resume versions](https://chatgpt.com/space/page_7610b481dbc481918a6c5cea4a5937f1), including the revised AI/ML upload. Direct corrections from Ningdong take precedence over résumé versions for employment dates and attribution.
 
+The CV’s **Download résumé** link serves `public/assets/pdf/Ningdong_Wang_Resume.pdf` directly, without JavaScript or a Space sign-in. It is an unchanged copy of `Ningdong Wang - AI ML Research Engineer Resume.pdf`, the local PDF of the AI/ML résumé version listed on the résumé Page. Replace this file to update the download while keeping its URL stable. The PDF currently retains its original Brookhaven end date of “Present”; the web CV records Ningdong’s corrected 2024 end date.
+
 Posts use YAML frontmatter with `title`, `description`, `date`, and `tags`, followed by Markdown. Name new posts `YYYY-MM-DD-slug.md`. The frontmatter date determines the URL year, preserving the existing `/blog/2025/AI_space_charge/` address despite its older filename. Project filenames determine `/projects/<filename>/` routes.
 
 Project write-ups also use a `date: "YYYY-MM-DD"` frontmatter field, displayed on the project card and page header. The three original project dates come from their first file-addition commits: SpaceCharge.jl on July 17, 2025 (`648c1dd`), Bmad-bot on July 28, 2025 (`5d6f7d2`), and Bmad to SciBmad on December 11, 2025 (`72a2e32`). These record page creation, not when development of the software began.
@@ -67,7 +69,7 @@ Existing posts, project write-ups, and personal media retain their original URLs
 - `docs/reference/`: historical source material, excluded from the deployed site.
 - `docs/design/shots/`: preserved screenshots from design review, excluded from the deployed site.
 
-See [the design system](docs/design-system.md) for visual principles, copy guidance, image treatment, and components. Bricolage Grotesque and IBM Plex Mono are bundled locally. The landing page combines Ningdong Wang’s name and role with a generated [transparent ribbon cutout](public/assets/img/ribbon-cutout.png) that overlaps the typography and extends to the hero boundaries; its [generation and edit instructions](docs/mono-color-prompt.txt) are preserved. Useful dates, publication metadata, and CV headings remain. The pages render as static HTML; JavaScript enhances filters and printing.
+See [the design system](docs/design-system.md) for visual principles, copy guidance, image treatment, and components. Bricolage Grotesque and IBM Plex Mono are bundled locally. The landing page combines Ningdong Wang’s name and role with a generated [transparent ribbon cutout](public/assets/img/ribbon-cutout.png) that overlaps the typography and extends to the hero boundaries; its [generation and edit instructions](docs/mono-color-prompt.txt) are preserved. Useful dates, publication metadata, and CV headings remain. The pages render as static HTML; JavaScript enhances filters.
 
 ## Deploy
 

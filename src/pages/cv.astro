@@ -16,9 +16,9 @@ const paperGroups = getPaperGroups();
     <h1 id="cv-heading" class="display-title">
       CV
     </h1>
-    <button class="button button-secondary print-button" id="print-cv" hidden>
-      Print / save PDF
-    </button>
+    <a class="button button-secondary resume-download" href="/assets/pdf/Ningdong_Wang_Resume.pdf" download>
+      Download résumé
+    </a>
   </header>
   <div class="cv-intro">
     <figure class="portrait">
@@ -147,13 +147,6 @@ const paperGroups = getPaperGroups();
     </div>
   </section>
 </Base>
-<script>
-  const button = document.querySelector<HTMLButtonElement>("#print-cv");
-  if (button) {
-    button.hidden = false;
-    button.addEventListener("click", () => window.print());
-  }
-</script>
 <style>
   .cv-header {
     display: flex;
@@ -291,7 +284,7 @@ const paperGroups = getPaperGroups();
   .cv-publication-venue {
     margin-top: 0.2rem;
   }
-  .print-button {
+  .resume-download {
     white-space: nowrap;
   }
   @media (max-width: 800px) {
@@ -342,7 +335,7 @@ const paperGroups = getPaperGroups();
     .cv-summary p {
       font-size: 10pt !important;
     }
-    .print-button {
+    .resume-download {
       display: none !important;
     }
     .cv-block {
