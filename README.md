@@ -75,6 +75,8 @@ See [the design system](docs/design-system.md) for visual principles, copy guida
 
 The `Deploy site` GitHub Actions workflow installs dependencies, runs tests, builds Astro, and checks local links. Pushes to `main` or `master` publish `.site-output/` using the existing GitHub Pages deployment action. Pull requests run the same checks without publishing.
 
+Keep `public/.nojekyll` in the deployed output. It tells GitHub Pages to serve Astro’s generated files directly, including the `_astro/` styles, scripts, fonts, and images that Jekyll would otherwise omit.
+
 Separate workflows check formatting and analyze JavaScript/TypeScript with CodeQL. The manually triggered Axe workflow builds Astro and checks the five main pages, or one supplied relative path, for accessibility issues.
 
 The canonical URL is configured in `astro.config.mjs`. If the site moves, also update the feed, redirect pages, and public robots file. No Ruby installation is needed for the active build.
