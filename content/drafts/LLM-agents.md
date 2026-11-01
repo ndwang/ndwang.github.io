@@ -1,82 +1,129 @@
 ---
 title: "A Brief History of LLM Agents"
-description: "How agentic AI evolved from 2023 to 2025"
-date: 2026-04-13
+description: "How model capabilities and agent harnesses evolved from 2022 to 2026"
+date: 2026-11-01
 tags: [AI, agents, LLM]
 draft: true
 ---
 
-**Intro** *(2–3 paragraphs)*
-- Frame the post: a tour of how agent harnesses evolved alongside model capabilities
+## Working thesis
 
----
+As models became better at following instructions and using tools, developers could delegate more decisions to them—including decisions about what information to retrieve. The surrounding software increasingly focused on organizing knowledge, connecting capabilities, and maintaining continuity across tasks.
 
-**1. From text completion to AI agents**
+Write for readers unfamiliar with agents. Explain each problem before naming the mechanism. Use general examples and brief product histories. Target roughly 2,000–2,400 words. Approaches overlap historically; use dates as anchors rather than presenting complete replacements.
 
-A language model does one thing: given a sequence of tokens, predict the next one. This was all it took to power a chatbot. When ChatGPT launched in November 2022, it was specifically trained to engage in conversations. The user asks, the model answers, the conversation grows. It became the fastest-growing app of all time, reaching 100 million monthly active users in just over two months. The responses were shockingly good. For a moment, it seemed like the hard problem of AI was mostly solved.
+Diagrams show mechanisms with short labels. Dates, qualifications, and explanations belong in the article or captions, not inside the graphics.
 
-But as people adopted LLMs for real tasks, the limitation became apparent. A chatbot has no memory beyond the current conversation, no access to external information, and no ability to take action in the world. Its world ends at the edge of the context window.
+## 1. The human runs the loop
 
-In the same way that a human brain is useless without eyes and hands, an LLM on its own can only influence the world through the person reading its output. An agent changes this by giving the model eyes and hands. The model still only writes tokens, but some of those tokens can now read a file, run a command, query a database, or browse the web. And what comes back from those actions shapes what the model writes next. The boundary between the model and the world becomes permeable. This is what people refer to as agentic AI: a model that can perceive its environment and act on it.
+**Main message:** People initially used models as assistants while supplying the coordination themselves.
 
-**2. Early scaffolding: making unreliable models useful**
+- Open with the ChatGPT workflow: describe a problem, paste relevant material, read the suggestion, apply it, check the result, and return with another message. Anchor ChatGPT's launch in November 2022.
+- Introduce early Aider in 2023 as an intermediate step. It read files and applied edits, removing much of the copying and pasting. In this interactive workflow, the developer still largely directed the task. Do not reduce all of Aider's capabilities to this interaction style.
+- Define the parts briefly: the **model** generates output from its current input; **tools** perform operations such as reading a file or running a command; the **harness** supplies input, executes requested operations, and returns results. The **context window** is the bounded amount of information available to the model at a particular moment.
+- Distinguish automating the mechanics of an action from delegating the decision about what happens next.
 
-Getting useful work out of an early LLM required a lot of handholding. The models were brilliant but undisciplined. When you ask one to follow a multi-step procedure, it might skip steps, invent ones that weren't requested, or simply forget what it was doing partway through. To address this, developers built scaffolding that carefully broke down the task, parsed the model's output, and tried to recover when the output wasn't what was expected. The model was the engine; the scaffolding was the business logic.
+**Figure:** [ChatGPT and Aider](./LLM-agents/aider.html), after the Aider paragraph. Compare the same person, model, and files; show how Aider removes manual handoffs. No code listing or reliability comparison.
 
-LangChain, released in late 2022, became the dominant framework in this era. Rather than ask a model to handle a complex request in one shot, LangChain decomposed the task into a chain of small steps, each doing the minimum amount of work the model can handle reliably. A customer support agent, for example, might pass through four sequential LLM calls: one to classify intent, one to extract relevant fields, one to draft a response, one to adjust the tone. Each step's output was typed and validated before going to the next. It worked but was severely limited. Every category, every output format, every workflow was hardcoded by developers.
+**Transition:** Developers could automate more of the surrounding procedure, but early models needed considerable help.
 
-A different idea was developing in parallel. Shunyu Yao et al. proposed an alternative approach in 2022: ReAct. Instead of a developer pre-defining every step, the model itself would reason about what to do next, take an action, observe the results, and reason again. The loop has three parts: a Thought, the model's internal reasoning; an Action, a call to an external tool; an Observation, the result fed back in. The appeal was clear. A model running a ReAct loop could handle tasks the developer hadn't anticipated, recover from partial failures by reasoning about them, and use external tools to ground its answers rather than relying on training data alone. 
+## 2. Making unreliable models useful
 
-ReAct was not widely adopted at first because LLMs weren't capable enough to follow the pattern consistently. They struggled with following instructions and planning long-horizon tasks, which is why LangChain dominated at the time. But as model became more and more capable with the release of GPT-4 and GPT-4o, ReAct clearly pointed toward where agents were going.
+**Main message:** Developers made early models useful by prescribing workflows, constraining individual steps, and supplying relevant information.
 
-**3. Native tool calling**
+- Explain skipped instructions, inconsistent formats, invented steps, and poor recovery. Developers responded with decomposition, parsing, validation, retries, and explicit control flow.
+- Use **LangChain chains** as the representative developer-defined workflow: classify a request, extract information, generate a response, and validate it. The application determines the sequence. LangChain also supported agents; the contrast concerns the workflow pattern, not an exclusive property of the framework.
+- Introduce **RAG** through an early customer-service application: customer question → retrieve relevant documentation → inject passages into the prompt → generate an answer. In this example, retrieval runs automatically before each response; the model does not decide whether to invoke a search tool.
+- The application controls both the procedure and the supplied context. RAG addresses missing information as well as supporting useful responses; it is not merely a workaround for weak instruction following.
 
-On June 13, 2023, OpenAI released function calling. The announcement was brief but its consequences were large. For the first time, developers could describe a set of functions to GPT-4 using JSON schema, and the model would decide when to call them, returning structured JSON arguments rather than free text. The model had been fine-tuned to recognize when a tool should be invoked and to produce output that matched the function signature reliably.
+**Figure:** [Who chooses the next step?](./LLM-agents/langchain-vs-react.html), at the transition into section 3. Show a prescribed sequence and a model-directed loop solving the same task with the same information sources. Avoid comparing a framework with a pattern or presenting autonomy as fewer model calls.
 
-This was not a new idea. ReAct had been doing this through prompt engineering and string parsing. The difference was reliability. A prompt-based ReAct agent might follow the Thought/Action/Observation 80% of the time. A fine-tuned function-calling model followed it essentially always. The need for scaffolding shrank dramatically. Code that previously spent dozens of lines parsing model output and recovering from format errors could now be replaced with a straightforward API call and a JSON parse.
+**Transition:** Could the model take responsibility for choosing those steps?
 
-Function calling made the ReAct loop viable, but not obviously sufficient. A working loop for three tool calls doesn't mean a working loop for thirty. Two responses emerged. One doubled down on structure: LangGraph, released by the LangChain team in January 2024, replaced the linear "chain" abstraction with graphs, allowing conditional state transitions and human-in-the-loop. Developers drew the workflow and the model filled in the decisions inside each node. This is the right answer for a real but narrow set of problems: regulated pipelines where an auditor needs proof that step A ran before step B. Plenty of business processes look like this, and did long before LLMs. But it was the wrong answer for the open question: how far could a single loop go if yoou just let it run? The bet was on the growing intrinsic capabilities of base models. If the scaling law were true, the models would get better every few months and take off. Just give the model better tools and more room and see what it could do. The proving ground turned out to be code.
+## 3. Letting models decide
 
-**4. Coding agents as the first real-world stress test (early 2025)**
-- Aider, Cursor, Claude Code (3 different approaches)
-- What they exposed: context management, multi-file planning, test-debug loops, failure recovery
-- The proving ground for harness design
-In the dark age before coding agents, a programmer would hit a tricky bug, open ChatGPT in their browser, describe the problem, maybe paste in the relevant code and error messages, read the suggestion, and copy the edit back into their IDE, run the tests, and repeat the process if they failed.
+**Main message:** Improving model capabilities made it increasingly practical to delegate the procedure to the model.
 
-Coding is a unique proving grounds for AI agents because of the complexity and, perhaps more importantly, the variability of programming. A customer support agent can be built around a list of intents, but code has no such regularity. Every codebase has its own structure and undocumented conventions. Tasks range from "fix this one-line bug" to "refactor the whole functionality." Criteria for success aren't always specified in advance, and even when they are, the path to them requires syntactically correct output, reading across multiple files, reasoning about dependencies, and often discovering mid-task that the original plan needs revision. This stresses on every aspect of an agent's design: context management, structured output, multi-file state, long-horizon planning, and the ability the recover from partial failures. I'll go into details on three tools that emerged to tackle this challenge. They represent how things evolved in the past couple years and three distinct points on a spectrum of autonomy.
+- Introduce **tool use**: the model requests an action, software executes it, and the result returns in a subsequent model input.
+- Explain **ReAct** (October 2022) as incremental decision-making: reason about the situation, take an action, observe the result, and decide again. Its original prompted form used an explicit generated reasoning trace. The model does not need to plan the entire task correctly in advance.
+- Describe prompted action formats and text parsing, followed by **native function calling** (OpenAI, June 2023), supported by model training and a structured API. Improved format reliability does not guarantee correct decisions or successful execution.
+- Preserve the long-horizon question: “A working loop for three tool calls doesn't mean a working loop for thirty.” Discuss changing plans, partial failures, and recovery. Explicit workflows and checkpoints remain useful alongside model-selected actions; LangGraph can be a brief example.
+- Use **coding agents** as the concrete demonstration: inspect files, edit code, run tests, and respond to failures. Mention Cursor and Claude Code selectively; Claude Code's research preview in February 2025 is a useful date. Avoid separate product histories.
+- Context gathering also becomes a delegated decision: identify missing information, search files, inspect results, and follow references.
 
-Aider sat at the minimal end. Released in 2023, it automated exactly what developers were doing by hand. Instead of manually copying file contents into ChatGPT, Aider injects them into the prompt directly. You add files to the message with an `/add` command and their full text appears in context. The model's output is a structured `SEARCH/REPALCE` block: a verbatim snippet to find and the new text to substitute in, resembling git diffs. Aider's job is to parse that block and apply it to disk. No human copy-paste. The harness is thin. Its job is to extract strings and match diffs. This also exposed the harness's main fragility: models need to match exact strings or the change would fail. You do have to manage the context manually, which means more control but less autonomy.
+**Figure:** [One agent loop](./LLM-agents/tool-calling-loop.html), after explaining tool use and native calling. Prompted and native views share the model–harness–tool loop; only the action representation changes. Include an answer/stop exit.
 
-Cursor took a different bet. Rather than injecting full files, it used vector embeddings to retrieve relevant context automatically. The developer didn't need to specify which files mattered — the harness figured it out from the query. Edits 
+**Optional companion:** [ReAct](./LLM-agents/react-loop.html) provides the original conceptual view. Use it as an alternative to the prompted view, not a second full walkthrough.
 
-**5. MCP and tool standardization (late 2024–2025)**
-- The N×M integration problem
-- MCP as universal connector
-- Adoption by OpenAI, Google
-- Tool integration becomes write-once
+**Transition:** Greater autonomy makes useful tools and well-organized information increasingly important.
 
-**6. Agent Skills as a harness primitive (late 2025–2026)**
-- Modular folders of instructions, scripts, resources
-- Progressive disclosure: load on demand
-- Bottleneck shifts from model intelligence to knowledge organization
+## 4. Connecting tools
 
-**7. The always-on personal agent (late 2025–2026)**
-- OpenClaw: open-source, local-first, messaging-app interface
-- Architectural shift: single always-on instance vs. stateless sessions
-- Mainstream reach (247K stars in 60 days)
-- Security concerns surfaced at scale
+**Main message:** Agents need access to many systems, and those connections should be reusable.
 
-**8. Where complexity lives now**
-- The model is increasingly commoditized
-- Real design questions: protocols, knowledge organization, long-running state, evaluation
-- The harness didn't disappear — it evolved
+- Explain the many-applications-by-many-services integration problem before introducing a standard. Custom adapters can multiply as the ecosystem grows.
+- Introduce **MCP** (November 2024): a common protocol implemented by clients and servers that expose tools and data.
+- Distinguish the layers: tool calling expresses the model's requested action; MCP standardizes connections to systems providing capabilities and information.
+- Mention adoption across major providers, including OpenAI and Google, in one sentence with dated primary sources.
+- Describe reuse without promising that authentication, configuration, or service-specific behavior disappears.
 
-**Conclusion** *(2–3 paragraphs)*
-- Recap the arc: complexity migrated from harness into model
-- Practical takeaway: start thin, add scaffolding only when needed
-- Forward look: the interesting problems are now systems design problems
+**Figure:** [Connecting tools](./LLM-agents/mcp-diagram.html), after introducing the integration problem. Compare custom adapters with reusable MCP client/server implementations. MCP is a shared protocol, not a central service; adapter reuse is distinct from the number of live connections.
 
-**What I want the reader to walk away with**
-The arc of the post shows complexity migrating out of the harness and into the model. Early frameworks were necessary scaffolding around unreliable models. As models improved, the best agent systems got simpler — a thin harness, good knowledge organization (Skills), and standardized tool access (MCP) beat elaborate orchestration. But the harness didn't disappear; it evolved. The interesting problems shifted from "how do I make the model work" to "how do I organize knowledge, manage long-running state, and connect to the real world." Those are systems design problems, not model problems — and they're wide open.
+## 5. Knowledge on demand
 
----
+**Main message:** Useful knowledge extends beyond the current context window; the system must make it discoverable, relevant, and maintainable.
+
+- Recall the automatic RAG pipeline briefly. As models became more reliable at using file and search tools, agents could increasingly gather context during a task. In file-based workflows, retrieval decisions can move from the application into the model. Automatic retrieval and model-directed searches can coexist.
+- Introduce persistent documents: **AGENTS.md** for working instructions, **DESIGN.md** for design decisions, and **specs and product requirements documents (PRDs)** for intended behavior. These reduce repeated explanations; the documents serve different roles rather than constituting interchangeable standards.
+- As available material grows, selecting what enters context becomes an engineering problem. Name **context engineering** after explaining that need.
+- Explain **progressive disclosure**: supply enough information to identify relevant resources, load detailed instructions when needed, and consult supporting material selectively.
+- Introduce **Skills** (October 2025): reusable instructions, scripts, and resources. Show metadata → instructions → selected resources. Catalogs still occupy context; loading a new skill does not automatically erase earlier context.
+- Extend the filesystem from supplied documentation to **persistent memory**. The agent can record decisions, discoveries, preferences, and unfinished work, then retrieve and update them later.
+
+**Figure:** [Who selects the context?](./LLM-agents/context-retrieval.html), near the opening RAG callback. Contrast automatic retrieval before a response with model-directed searches during work.
+
+**Figure:** [Knowledge on demand](./LLM-agents/skills-context.html), after introducing Skills. Show a catalog, selection of a skill, and loading one supporting resource; unused material remains outside active context.
+
+**Transition:** Files can outlive a conversation. What happens when the agent's working relationship with the user does too?
+
+## 6. Beyond the session
+
+**Main message:** A continuing agent identity carries knowledge and responsibilities across tasks, conversations, and periods of inactivity.
+
+- Start with fragmented context, repeated explanations, and the user coordinating unfinished work across sessions.
+- Use **OpenClaw** to bring together filesystem memory, continuity across sessions, and one central point of contact reachable through several channels. Its role here is the combination and interaction model, not the invention of persistence or recovery.
+- Explain **automatic memory management**: record useful information, retrieve it when relevant, and update it as circumstances change. Continuing identity does not require one uninterrupted model invocation.
+- Briefly cover newer developments: **OpenAI dots** and **Grok Bot** as continuing personal agents; **Claude Tag** (June 2026) as shared interaction among people; **DeepSeek's super-agent research prototype** as a continuing coordinator for workers and events. Keep memory implementations distinct and date the examples when drafting.
+- One user-facing identity can coordinate several internal sessions or workers. Multiplayer adds multiple people interacting with that identity and appropriately scoped shared context.
+- Give asynchronous operation one short paragraph: work can arrive through messages, scheduled wake-ups, or completed background jobs while other tasks remain underway. Leave queues and concurrency mechanics for another article.
+
+**Figure:** [Beyond the session](./LLM-agents/beyond-the-session.html), after the OpenClaw explanation. Compare separate task sessions with a continuing point of contact and memory outside individual task contexts. No product logos or feature lists.
+
+## 7. Where complexity moved
+
+**Main message:** Better models changed what developers needed to build around them.
+
+- Recap: people coordinated responses; applications prescribed workflows and context; models took over decisions about actions and information gathering; surrounding systems supplied reusable capabilities, organized knowledge, and continuity.
+- Bring together **greater delegation within tasks** and **greater continuity across tasks**.
+- Mention checking results and defining what the agent may do in a sentence or two. Evaluation and security remain supporting considerations.
+- Close with the practical principle: begin with a simple agent loop, observe where it fails, and add the structure those failures justify. A simple decision loop can sit inside substantial infrastructure.
+
+**Figure:** None. Refer back to earlier figures.
+
+## Source anchors for drafting
+
+- [ReAct paper](https://arxiv.org/abs/2210.03629)
+- [LangChain's early tool support](https://www.langchain.com/blog/structured-tools)
+- [Original RAG paper](https://arxiv.org/abs/2005.11401)
+- [Function calling, June 2023](https://openai.com/index/function-calling-and-other-api-updates/)
+- [Structured Outputs, August 2024](https://openai.com/index/introducing-structured-outputs-in-the-api/)
+- [Aider's repository map](https://aider.chat/2023/10/22/repomap.html)
+- [Claude Code research preview](https://www.anthropic.com/news/claude-3-7-sonnet)
+- [MCP introduction](https://www.anthropic.com/news/model-context-protocol) and [architecture](https://modelcontextprotocol.io/docs/learn/architecture)
+- [AGENTS.md](https://agents.md/)
+- [Agent Skills introduction](https://www.anthropic.com/research/equipping-agents-for-the-real-world-with-agent-skills)
+- [OpenClaw memory](https://docs.openclaw.ai/concepts/memory) and [main session](https://docs.openclaw.ai/concepts/main-session)
+- [Dots: tasks and memory](https://learn.chatgpt.com/docs/dots/tasks-and-memory)
+- [Grok Bot](https://prod.cursor.com/docs/grok-bot)
+- [Claude Tag](https://www.anthropic.com/news/introducing-claude-tag)
+- [DeepSeek super-agent prototype](https://github.com/deepseek-ai/dsh-superagent-prototype)
