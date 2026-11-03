@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A customer support chain</title>
+    <link rel="stylesheet" href="./diagram.css" />
+    <style>
+      body {
+        max-width: 572px;
+      }
+      figure {
+        overflow-x: auto;
+      }
+      .visual {
+        min-width: 480px;
+        max-width: 540px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>A customer support chain</h1>
+      <figure>
+        <svg
+          class="visual"
+          viewBox="0 0 540 700"
+          role="img"
+          aria-labelledby="chain-title chain-desc"
+        >
+          <title id="chain-title">
+            A chain defined by a programmer before requests arrive
+          </title>
+          <desc id="chain-desc">
+            The programmer defines the sequence in advance. A customer asks,
+            "Where is order #42?" LLM call 1 identifies an order status
+            question. LLM call 2 extracts order number 42. Application code
+            queries the order database and receives the status "Shipped." LLM
+            call 3 writes the reply, "Order #42 has shipped." Each numbered LLM
+            box is a separate request to the model. The original customer
+            message remains available to the steps that need it. The database
+            query is an ordinary code step. The dashed arrow shows the
+            programmer defining the chain. Solid arrows show the sequence and
+            its results.
+          </desc>
+          <defs>
+            <marker
+              id="chain-arrow"
+              viewBox="0 0 8 8"
+              refX="7"
+              refY="4"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto"
+            >
+              <path class="arrow" d="M0 0 8 4 0 8Z" />
+            </marker>
+          </defs>
+
+          <g transform="translate(174 0)">
+            <rect
+              class="boundary"
+              x="12"
+              y="126"
+              width="336"
+              height="470"
+              rx="12"
+            />
+
+            <path class="edge" d="M130 78V150" marker-end="url(#chain-arrow)" />
+            <path
+              class="edge"
+              d="M130 226V266"
+              marker-end="url(#chain-arrow)"
+            />
+            <path
+              class="edge"
+              d="M130 342V382"
+              marker-end="url(#chain-arrow)"
+            />
+            <path
+              class="edge"
+              d="M130 458V498"
+              marker-end="url(#chain-arrow)"
+            />
+            <path
+              class="edge"
+              d="M130 574V638"
+              marker-end="url(#chain-arrow)"
+            />
+            <path
+              class="edge"
+              d="M232 188H260"
+              marker-end="url(#chain-arrow)"
+            />
+            <path
+              class="edge"
+              d="M232 304H260"
+              marker-end="url(#chain-arrow)"
+            />
+            <path
+              class="edge"
+              d="M232 420H260"
+              marker-end="url(#chain-arrow)"
+            />
+
+            <rect class="node" x="48" y="10" width="164" height="68" rx="9" />
+            <text
+              class="label"
+              x="130"
+              y="32"
+              text-anchor="middle"
+              dominant-baseline="central"
+            >
+              Where is
+            </text>
+            <text
+              class="label"
+              x="130"
+              y="56"
+              text-anchor="middle"
+              dominant-baseline="central"
+            >
+              order #42?
+            </text>
+
+            <rect
+              class="node model"
+              x="28"
+              y="150"
+              width="204"
+              height="76"
+              rx="9"
+            />
+            <text
+              class="label"
+              x="130"
+              y="174"
+              text-anchor="middle"
+              dominant-baseline="central"
+              style="font-weight: 600"
+            >
+              LLM call 1
+            </text>
+            <text
+              class="label"
+              x="130"
+              y="201"
+              text-anchor="middle"
+              dominant-baseline="central"
+            >
+              Intent classification
+            </text>
+            <rect class="node" x="260" y="166" width="76" height="44" rx="7" />
+            <text
+              class="label"
+              x="298"
+              y="179"
+              text-anchor="middle"
+              dominant-baseline="central"
+            >
+              Order
+            </text>
+            <text
+              class="label"
+              x="298"
+              y="198"
+              text-anchor="middle"
+              dominant-baseline="central"
+            >
+              status
+            </text>
+
+            <rect
+              class="node model"
+              x="28"
+              y="266"
+              width="204"
+              height="76"
+              rx="9"
+            />
+            <text
+              class="label"
+              x="130"
+              y="290"
+              text-anchor="middle"
+              dominant-baseline="central"
+              style="font-weight: 600"
+            >
+              LLM call 2
+            </text>
+            <text
+              class="label"
+              x="130"
+              y="317"
+              text-anchor="middle"
+              dominant-baseline="central"
+            >
+              Find order number
+            </text>
+            <rect class="node" x="260" y="282" width="76" height="44" rx="7" />
+            <text
+              class="label"
+              x="298"
+              y="304"
+              text-anchor="middle"
+              dominant-baseline="central"
+            >
+              42
+            </text>
+
+            <rect
+              class="node tool"
+              x="28"
+              y="382"
+              width="204"
+              height="76"
+              rx="9"
+            />
+            <text
+              class="label"
+              x="130"
+              y="406"
+              text-anchor="middle"
+              dominant-baseline="central"
+              style="font-weight: 600"
+            >
+              Database query
+            </text>
+            <text
+              class="label"
+              x="130"
+              y="433"
+              text-anchor="middle"
+              dominant-baseline="central"
+            >
+              Look up order 42
+            </text>
+            <rect class="node" x="260" y="398" width="76" height="44" rx="7" />
+            <text
+              class="label"
+              x="298"
+              y="420"
+              text-anchor="middle"
+              dominant-baseline="central"
+            >
+              Shipped
+            </text>
+
+            <rect
+              class="node model"
+              x="28"
+              y="498"
+              width="204"
+              height="76"
+              rx="9"
+            />
+            <text
+              class="label"
+              x="130"
+              y="522"
+              text-anchor="middle"
+              dominant-baseline="central"
+              style="font-weight: 600"
+            >
+              LLM call 3
+            </text>
+            <text
+              class="label"
+              x="130"
+              y="549"
+              text-anchor="middle"
+              dominant-baseline="central"
+            >
+              Write the reply
+            </text>
+
+            <rect class="node" x="-10" y="638" width="280" height="48" rx="9" />
+            <text
+              class="label"
+              x="130"
+              y="662"
+              text-anchor="middle"
+              dominant-baseline="central"
+            >
+              Order #42 has shipped.
+            </text>
+          </g>
+
+          <path
+            class="edge quiet"
+            d="M156 361H186"
+            marker-end="url(#chain-arrow)"
+          />
+          <rect
+            class="node harness"
+            x="16"
+            y="317"
+            width="140"
+            height="88"
+            rx="9"
+          />
+          <text
+            class="label"
+            x="86"
+            y="337"
+            text-anchor="middle"
+            dominant-baseline="central"
+          >
+            Programmer
+          </text>
+          <text
+            class="label"
+            x="86"
+            y="361"
+            text-anchor="middle"
+            dominant-baseline="central"
+          >
+            defines
+          </text>
+          <text
+            class="label"
+            x="86"
+            y="385"
+            text-anchor="middle"
+            dominant-baseline="central"
+          >
+            beforehand
+          </text>
+        </svg>
+      </figure>
+    </main>
+  </body>
+</html>

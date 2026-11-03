@@ -13,11 +13,11 @@
       <div class="controls" role="group" aria-label="Progressive disclosure">
         <button
           type="button"
-          data-view="catalog"
-          aria-controls="skills-catalog"
+          data-view="skill-list"
+          aria-controls="skills-list"
           aria-pressed="true"
         >
-          Catalog
+          Skill list
         </button>
         <button
           type="button"
@@ -37,17 +37,17 @@
         </button>
       </div>
       <figure>
-        <section id="skills-catalog" data-panel="catalog" aria-label="Catalog">
+        <section id="skills-list" data-panel="skill-list" aria-label="Skill list">
           <svg
             class="visual"
             viewBox="0 0 360 440"
             role="img"
             aria-labelledby="skills-0-title skills-0-desc"
           >
-            <title id="skills-0-title">Catalog available</title>
+            <title id="skills-0-title">Skill list available</title>
             <desc id="skills-0-desc">
-              Context already contains the task, general rules, and a catalog of
-              skill descriptions. Full instructions and resources remain in
+              Context already contains the task, general rules, and a list of
+              skill names and descriptions. Full instructions and resources remain in
               files outside the context.
             </desc>
             <text class="label" x="98" y="26" text-anchor="middle">
@@ -75,7 +75,7 @@
               rx="6"
             />
             <text class="label" x="98" y="149" text-anchor="middle">
-              Catalog
+              Skill list
             </text>
             <path class="edge" d="M42 166 H72 M83 166 H113 M124 166 H154" />
 
@@ -123,7 +123,7 @@
             <title id="skills-1-title">Skill instructions loaded</title>
             <desc id="skills-1-desc">
               The agent loads the docx SKILL.md instructions. The task, rules,
-              and catalog stay in context. Other resources remain on disk.
+              and skill list stay in context. Other resources remain on disk.
             </desc>
             <text class="label" x="98" y="26" text-anchor="middle">
               Context
@@ -150,7 +150,7 @@
               rx="6"
             />
             <text class="label" x="98" y="149" text-anchor="middle">
-              Catalog
+              Skill list
             </text>
             <path class="edge" d="M42 166 H72 M83 166 H113 M124 166 H154" />
             <rect
@@ -219,7 +219,7 @@
             <title id="skills-2-title">Supporting resource loaded</title>
             <desc id="skills-2-desc">
               The agent follows the skill's reference to forms.md. That resource
-              joins the existing context; the task, catalog, and skill
+              joins the existing context; the task, skill list, and skill
               instructions remain. The build script and other skills are not
               loaded.
             </desc>
@@ -248,7 +248,7 @@
               rx="6"
             />
             <text class="label" x="98" y="149" text-anchor="middle">
-              Catalog
+              Skill list
             </text>
             <path class="edge" d="M42 166 H72 M83 166 H113 M124 166 H154" />
             <rect
@@ -320,10 +320,6 @@
             <path class="arrow" d="M180 360 l7 -4 v8 z" />
           </svg>
         </section>
-        <figcaption>
-          Load relevant instructions, then only the supporting resources the
-          task needs.
-        </figcaption>
       </figure>
     </main>
   </body>

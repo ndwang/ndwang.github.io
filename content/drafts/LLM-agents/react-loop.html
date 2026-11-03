@@ -19,7 +19,7 @@
           <title id="react-title">The original ReAct pattern</title>
           <desc id="react-desc">
             The model generates a thought and an action. Outside the model, the
-            harness executes a tool and returns an observation. That observation
+            program executes a tool and returns an observation. That observation
             informs a subsequent model generation, which can continue the loop
             or answer. The thought is generated text, not direct access to the
             model's internal computation.
@@ -54,7 +54,7 @@
             height="202"
             rx="14"
           />
-          <text class="label" x="102" y="246">Harness</text>
+          <text class="label" x="102" y="246">Program</text>
 
           <path class="edge" d="M180 110 V132" marker-end="url(#react-arrow)" />
           <path class="edge" d="M180 182 V264" marker-end="url(#react-arrow)" />
@@ -100,10 +100,6 @@
           <rect class="node" x="272" y="66" width="80" height="40" rx="8" />
           <text class="label" x="312" y="92" text-anchor="middle">Answer</text>
         </svg>
-        <figcaption>
-          The original ReAct prompt alternates generated reasoning, actions, and
-          returned observations.
-        </figcaption>
       </figure>
     </main>
   </body>

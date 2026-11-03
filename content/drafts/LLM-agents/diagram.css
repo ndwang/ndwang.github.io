@@ -2,7 +2,6 @@
   color-scheme: light dark;
   --bg: #ffffff;
   --text: #242520;
-  --muted: #595e57;
   --line: #737b74;
   --border: #d5d9d3;
   --surface: #f4f5f1;
@@ -17,7 +16,6 @@
   :root {
     --bg: #1c1e1b;
     --text: #eceee8;
-    --muted: #bdc3b8;
     --line: #a1aa9e;
     --border: #4c5549;
     --surface: #292e27;
@@ -53,13 +51,6 @@ h2 {
 }
 figure {
   margin: 0;
-}
-figcaption {
-  margin: 16px auto 0;
-  max-width: 680px;
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--muted);
 }
 .comparison {
   display: grid;
