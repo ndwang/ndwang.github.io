@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Connecting tools</title>
+    <link rel="stylesheet" href="./diagram.css" />
+    <style>
+      .label {
+        font-size: 20px;
+      }
+
+      .protocol {
+        fill: var(--harness);
+        stroke: var(--harness-line);
+        stroke-width: 1.4;
+        stroke-linejoin: round;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Connecting tools</h1>
+      <div class="comparison">
+        <figure>
+          <h2>Custom adapters</h2>
+          <svg
+            class="visual"
+            viewBox="0 0 440 360"
+            role="img"
+            aria-labelledby="custom-title custom-desc"
+          >
+            <title id="custom-title">Custom adapters for each program</title>
+            <desc id="custom-desc">
+              Claude Code and Codex each connect to GitHub, Slack, and Gmail.
+              A separate adapter block on each connection illustrates the
+              integration work required for each program and service.
+            </desc>
+            <g class="edge">
+              <path d="M132 104 L328 90" />
+              <path d="M132 104 L328 180" />
+              <path d="M132 104 L328 270" />
+              <path d="M132 256 L328 90" />
+              <path d="M132 256 L328 180" />
+              <path d="M132 256 L328 270" />
+            </g>
+            <g class="node">
+              <rect x="218" y="88" width="24" height="18" rx="4" />
+              <rect x="187" y="121" width="24" height="18" rx="4" />
+              <rect x="260" y="214" width="24" height="18" rx="4" />
+              <rect x="260" y="128" width="24" height="18" rx="4" />
+              <rect x="187" y="221" width="24" height="18" rx="4" />
+              <rect x="218" y="254" width="24" height="18" rx="4" />
+            </g>
+            <rect
+              class="node model"
+              x="4"
+              y="72"
+              width="128"
+              height="64"
+              rx="8"
+            />
+            <rect
+              class="node model"
+              x="4"
+              y="224"
+              width="128"
+              height="64"
+              rx="8"
+            />
+            <rect
+              class="node tool"
+              x="328"
+              y="58"
+              width="108"
+              height="64"
+              rx="8"
+            />
+            <rect
+              class="node tool"
+              x="328"
+              y="148"
+              width="108"
+              height="64"
+              rx="8"
+            />
+            <rect
+              class="node tool"
+              x="328"
+              y="238"
+              width="108"
+              height="64"
+              rx="8"
+            />
+            <g class="label" text-anchor="middle">
+              <text x="68" y="26">Programs</text>
+              <text x="382" y="26">Services</text>
+              <text x="68" y="111">Claude Code</text>
+              <text x="68" y="263">Codex</text>
+              <text x="382" y="97">GitHub</text>
+              <text x="382" y="187">Slack</text>
+              <text x="382" y="277">Gmail</text>
+            </g>
+          </svg>
+        </figure>
+        <figure>
+          <h2>MCP</h2>
+          <svg
+            class="visual"
+            viewBox="0 0 440 360"
+            role="img"
+            aria-labelledby="mcp-title mcp-desc"
+          >
+            <title id="mcp-title">MCP clients and servers share a protocol</title>
+            <desc id="mcp-desc">
+              Claude Code and Codex contain MCP clients. MCP servers expose
+              tools for GitHub, Slack, and Gmail. A broad two-way arrow represents
+              the common protocol used by clients and servers to communicate.
+            </desc>
+            <polygon
+              class="protocol"
+              points="146,180 178,128 178,150 282,150 282,128 314,180 282,232 282,210 178,210 178,232"
+            />
+            <rect
+              class="node model"
+              x="4"
+              y="72"
+              width="128"
+              height="64"
+              rx="8"
+            />
+            <rect
+              class="node model"
+              x="4"
+              y="224"
+              width="128"
+              height="64"
+              rx="8"
+            />
+            <rect
+              class="node tool"
+              x="328"
+              y="58"
+              width="108"
+              height="64"
+              rx="8"
+            />
+            <rect
+              class="node tool"
+              x="328"
+              y="148"
+              width="108"
+              height="64"
+              rx="8"
+            />
+            <rect
+              class="node tool"
+              x="328"
+              y="238"
+              width="108"
+              height="64"
+              rx="8"
+            />
+            <g class="label" text-anchor="middle">
+              <text x="68" y="26">Clients</text>
+              <text x="382" y="26">Servers</text>
+              <text x="68" y="111">Claude Code</text>
+              <text x="68" y="263">Codex</text>
+              <text x="230" y="175">Shared</text>
+              <text x="230" y="198">protocol</text>
+              <text x="382" y="97">GitHub</text>
+              <text x="382" y="187">Slack</text>
+              <text x="382" y="277">Gmail</text>
+            </g>
+          </svg>
+        </figure>
+      </div>
+    </main>
+  </body>
+</html>

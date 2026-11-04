@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Knowledge on demand</title>
+    <link rel="stylesheet" href="./diagram.css" />
+    <script src="./diagram.js" defer></script>
+  </head>
+  <body>
+    <main data-diagram>
+      <h1>Knowledge on demand</h1>
+      <div class="controls" role="group" aria-label="Progressive disclosure">
+        <button
+          type="button"
+          data-view="skill-list"
+          aria-controls="skills-list"
+          aria-pressed="true"
+        >
+          Skill list
+        </button>
+        <button
+          type="button"
+          data-view="instructions"
+          aria-controls="skills-instructions"
+          aria-pressed="false"
+        >
+          Instructions
+        </button>
+        <button
+          type="button"
+          data-view="resource"
+          aria-controls="skills-resource"
+          aria-pressed="false"
+        >
+          Resource
+        </button>
+      </div>
+      <figure>
+        <section id="skills-list" data-panel="skill-list" aria-label="Skill list">
+          <svg
+            class="visual"
+            viewBox="0 0 360 440"
+            role="img"
+            aria-labelledby="skills-0-title skills-0-desc"
+          >
+            <title id="skills-0-title">Skill list available</title>
+            <desc id="skills-0-desc">
+              Context already contains the task, general rules, and a list of
+              skill names and descriptions. Full instructions and resources remain in
+              files outside the context.
+            </desc>
+            <text class="label" x="98" y="26" text-anchor="middle">
+              Context
+            </text>
+            <text class="label" x="282" y="26" text-anchor="middle">Files</text>
+            <rect
+              class="boundary"
+              x="8"
+              y="42"
+              width="180"
+              height="386"
+              rx="10"
+            />
+            <rect class="node" x="20" y="58" width="156" height="48" rx="6" />
+            <text class="label" x="98" y="88" text-anchor="middle">
+              Task + rules
+            </text>
+            <rect
+              class="node model"
+              x="20"
+              y="120"
+              width="156"
+              height="68"
+              rx="6"
+            />
+            <text class="label" x="98" y="149" text-anchor="middle">
+              Skill list
+            </text>
+            <path class="edge" d="M42 166 H72 M83 166 H113 M124 166 H154" />
+
+            <rect
+              class="boundary"
+              x="210"
+              y="42"
+              width="142"
+              height="246"
+              rx="10"
+            />
+            <text class="label" x="281" y="70" text-anchor="middle">docx/</text>
+            <rect class="node" x="218" y="86" width="126" height="48" rx="6" />
+            <text class="label" x="281" y="116" text-anchor="middle">
+              SKILL.md
+            </text>
+            <rect class="node" x="218" y="150" width="126" height="48" rx="6" />
+            <text class="label" x="281" y="180" text-anchor="middle">
+              forms.md
+            </text>
+            <rect class="node" x="218" y="214" width="126" height="48" rx="6" />
+            <text class="label" x="281" y="244" text-anchor="middle">
+              build.py
+            </text>
+            <rect class="node" x="210" y="310" width="142" height="48" rx="6" />
+            <text class="label" x="281" y="340" text-anchor="middle">pdf/</text>
+            <rect class="node" x="210" y="380" width="142" height="48" rx="6" />
+            <text class="label" x="281" y="410" text-anchor="middle">
+              xlsx/
+            </text>
+          </svg>
+        </section>
+        <section
+          id="skills-instructions"
+          data-panel="instructions"
+          aria-label="Instructions"
+          hidden
+        >
+          <svg
+            class="visual"
+            viewBox="0 0 360 440"
+            role="img"
+            aria-labelledby="skills-1-title skills-1-desc"
+          >
+            <title id="skills-1-title">Skill instructions loaded</title>
+            <desc id="skills-1-desc">
+              The agent loads the docx SKILL.md instructions. The task, rules,
+              and skill list stay in context. Other resources remain on disk.
+            </desc>
+            <text class="label" x="98" y="26" text-anchor="middle">
+              Context
+            </text>
+            <text class="label" x="282" y="26" text-anchor="middle">Files</text>
+            <rect
+              class="boundary"
+              x="8"
+              y="42"
+              width="180"
+              height="386"
+              rx="10"
+            />
+            <rect class="node" x="20" y="58" width="156" height="48" rx="6" />
+            <text class="label" x="98" y="88" text-anchor="middle">
+              Task + rules
+            </text>
+            <rect
+              class="node model"
+              x="20"
+              y="120"
+              width="156"
+              height="68"
+              rx="6"
+            />
+            <text class="label" x="98" y="149" text-anchor="middle">
+              Skill list
+            </text>
+            <path class="edge" d="M42 166 H72 M83 166 H113 M124 166 H154" />
+            <rect
+              class="node harness"
+              x="20"
+              y="212"
+              width="156"
+              height="82"
+              rx="6"
+            />
+            <text class="label" x="98" y="244" text-anchor="middle">
+              SKILL.md
+            </text>
+            <path class="edge" d="M42 263 H150 M42 277 H128" />
+
+            <rect
+              class="boundary"
+              x="210"
+              y="42"
+              width="142"
+              height="246"
+              rx="10"
+            />
+            <text class="label" x="281" y="70" text-anchor="middle">docx/</text>
+            <rect
+              class="node harness"
+              x="218"
+              y="86"
+              width="126"
+              height="48"
+              rx="6"
+            />
+            <text class="label" x="281" y="116" text-anchor="middle">
+              SKILL.md
+            </text>
+            <rect class="node" x="218" y="150" width="126" height="48" rx="6" />
+            <text class="label" x="281" y="180" text-anchor="middle">
+              forms.md
+            </text>
+            <rect class="node" x="218" y="214" width="126" height="48" rx="6" />
+            <text class="label" x="281" y="244" text-anchor="middle">
+              build.py
+            </text>
+            <rect class="node" x="210" y="310" width="142" height="48" rx="6" />
+            <text class="label" x="281" y="340" text-anchor="middle">pdf/</text>
+            <rect class="node" x="210" y="380" width="142" height="48" rx="6" />
+            <text class="label" x="281" y="410" text-anchor="middle">
+              xlsx/
+            </text>
+            <path class="edge" d="M218 110 H199 V253 H180" />
+            <path class="arrow" d="M180 253 l7 -4 v8 z" />
+          </svg>
+        </section>
+        <section
+          id="skills-resource"
+          data-panel="resource"
+          aria-label="Resource"
+          hidden
+        >
+          <svg
+            class="visual"
+            viewBox="0 0 360 440"
+            role="img"
+            aria-labelledby="skills-2-title skills-2-desc"
+          >
+            <title id="skills-2-title">Supporting resource loaded</title>
+            <desc id="skills-2-desc">
+              The agent follows the skill's reference to forms.md. That resource
+              joins the existing context; the task, skill list, and skill
+              instructions remain. The build script and other skills are not
+              loaded.
+            </desc>
+            <text class="label" x="98" y="26" text-anchor="middle">
+              Context
+            </text>
+            <text class="label" x="282" y="26" text-anchor="middle">Files</text>
+            <rect
+              class="boundary"
+              x="8"
+              y="42"
+              width="180"
+              height="386"
+              rx="10"
+            />
+            <rect class="node" x="20" y="58" width="156" height="48" rx="6" />
+            <text class="label" x="98" y="88" text-anchor="middle">
+              Task + rules
+            </text>
+            <rect
+              class="node model"
+              x="20"
+              y="120"
+              width="156"
+              height="68"
+              rx="6"
+            />
+            <text class="label" x="98" y="149" text-anchor="middle">
+              Skill list
+            </text>
+            <path class="edge" d="M42 166 H72 M83 166 H113 M124 166 H154" />
+            <rect
+              class="node harness"
+              x="20"
+              y="212"
+              width="156"
+              height="82"
+              rx="6"
+            />
+            <text class="label" x="98" y="244" text-anchor="middle">
+              SKILL.md
+            </text>
+            <path class="edge" d="M42 263 H150 M42 277 H128" />
+            <rect
+              class="node harness"
+              x="20"
+              y="316"
+              width="156"
+              height="88"
+              rx="6"
+            />
+            <text class="label" x="98" y="349" text-anchor="middle">
+              forms.md
+            </text>
+            <path class="edge" d="M42 369 H150 M42 384 H120" />
+            <rect
+              class="boundary"
+              x="210"
+              y="42"
+              width="142"
+              height="246"
+              rx="10"
+            />
+            <text class="label" x="281" y="70" text-anchor="middle">docx/</text>
+            <rect
+              class="node harness"
+              x="218"
+              y="86"
+              width="126"
+              height="48"
+              rx="6"
+            />
+            <text class="label" x="281" y="116" text-anchor="middle">
+              SKILL.md
+            </text>
+            <rect
+              class="node harness"
+              x="218"
+              y="150"
+              width="126"
+              height="48"
+              rx="6"
+            />
+            <text class="label" x="281" y="180" text-anchor="middle">
+              forms.md
+            </text>
+            <rect class="node" x="218" y="214" width="126" height="48" rx="6" />
+            <text class="label" x="281" y="244" text-anchor="middle">
+              build.py
+            </text>
+            <rect class="node" x="210" y="310" width="142" height="48" rx="6" />
+            <text class="label" x="281" y="340" text-anchor="middle">pdf/</text>
+            <rect class="node" x="210" y="380" width="142" height="48" rx="6" />
+            <text class="label" x="281" y="410" text-anchor="middle">
+              xlsx/
+            </text>
+            <path class="edge" d="M218 174 H199 V360 H180" />
+            <path class="arrow" d="M180 360 l7 -4 v8 z" />
+          </svg>
+        </section>
+      </figure>
+    </main>
+  </body>
+</html>

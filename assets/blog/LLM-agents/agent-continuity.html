@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Beyond the session</title>
+    <link rel="stylesheet" href="diagram.css" />
+    <script src="diagram.js" defer></script>
+  </head>
+  <body>
+    <main data-diagram>
+      <h1>Beyond the session</h1>
+      <div class="controls" role="group" aria-label="Agent organization">
+        <button
+          type="button"
+          data-view="sessions"
+          aria-controls="sessions-panel"
+          aria-pressed="true"
+        >
+          Separate sessions
+        </button>
+        <button
+          type="button"
+          data-view="continuity"
+          aria-controls="continuity-panel"
+          aria-pressed="false"
+        >
+          Continuing agent
+        </button>
+      </div>
+      <figure id="sessions-panel" data-panel="sessions">
+        <svg
+          class="visual"
+          viewBox="0 0 360 440"
+          role="img"
+          aria-labelledby="sessions-title sessions-desc"
+        >
+          <title id="sessions-title">
+            The user coordinates separate task sessions
+          </title>
+          <desc id="sessions-desc">
+            Three tasks each have their own agent conversation and notes.
+            Information can persist within each task, but the user is the common
+            point coordinating them.
+          </desc>
+          <defs>
+            <marker
+              id="sessions-arrow"
+              viewBox="0 0 10 10"
+              refX="8"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path class="arrow" d="M1 1 L9 5 L1 9 Z" />
+            </marker>
+          </defs>
+          <path class="edge" d="M180 68 V106" />
+          <path
+            class="edge"
+            d="M180 106 H60 V172"
+            marker-end="url(#sessions-arrow)"
+          />
+          <path
+            class="edge"
+            d="M180 106 V172"
+            marker-end="url(#sessions-arrow)"
+          />
+          <path
+            class="edge"
+            d="M180 106 H300 V172"
+            marker-end="url(#sessions-arrow)"
+          />
+          <rect class="node" x="130" y="20" width="100" height="48" rx="24" />
+          <text class="label" x="180" y="50" text-anchor="middle">You</text>
+          <rect
+            class="boundary"
+            x="8"
+            y="128"
+            width="104"
+            height="276"
+            rx="12"
+          />
+          <rect
+            class="boundary"
+            x="128"
+            y="128"
+            width="104"
+            height="276"
+            rx="12"
+          />
+          <rect
+            class="boundary"
+            x="248"
+            y="128"
+            width="104"
+            height="276"
+            rx="12"
+          />
+          <text class="label" x="60" y="388" text-anchor="middle">Task 1</text>
+          <text class="label" x="180" y="388" text-anchor="middle">Task 2</text>
+          <text class="label" x="300" y="388" text-anchor="middle">Task 3</text>
+          <rect
+            class="node model"
+            x="20"
+            y="174"
+            width="80"
+            height="54"
+            rx="8"
+          />
+          <rect
+            class="node model"
+            x="140"
+            y="174"
+            width="80"
+            height="54"
+            rx="8"
+          />
+          <rect
+            class="node model"
+            x="260"
+            y="174"
+            width="80"
+            height="54"
+            rx="8"
+          />
+          <text class="label" x="60" y="207" text-anchor="middle">Agent</text>
+          <text class="label" x="180" y="207" text-anchor="middle">Agent</text>
+          <text class="label" x="300" y="207" text-anchor="middle">Agent</text>
+          <path
+            class="edge"
+            d="M60 230 V294"
+            marker-start="url(#sessions-arrow)"
+            marker-end="url(#sessions-arrow)"
+          />
+          <path
+            class="edge"
+            d="M180 230 V294"
+            marker-start="url(#sessions-arrow)"
+            marker-end="url(#sessions-arrow)"
+          />
+          <path
+            class="edge"
+            d="M300 230 V294"
+            marker-start="url(#sessions-arrow)"
+            marker-end="url(#sessions-arrow)"
+          />
+          <path
+            class="node"
+            d="M22 296 H78 L98 316 V356 H22 Z M78 296 V316 H98"
+          />
+          <path
+            class="node"
+            d="M142 296 H198 L218 316 V356 H142 Z M198 296 V316 H218"
+          />
+          <path
+            class="node"
+            d="M262 296 H318 L338 316 V356 H262 Z M318 296 V316 H338"
+          />
+          <text class="label" x="60" y="337" text-anchor="middle">Notes</text>
+          <text class="label" x="180" y="337" text-anchor="middle">Notes</text>
+          <text class="label" x="300" y="337" text-anchor="middle">Notes</text>
+        </svg>
+      </figure>
+      <figure id="continuity-panel" data-panel="continuity" hidden>
+        <svg
+          class="visual"
+          viewBox="0 0 360 440"
+          role="img"
+          aria-labelledby="continuity-title continuity-desc"
+        >
+          <title id="continuity-title">
+            One continuing point of contact coordinates many tasks
+          </title>
+          <desc id="continuity-desc">
+            A user or team interacts with a continuing agent identity. Its
+            durable memory sits outside individual task contexts. It can
+            coordinate several tasks and retain relevant knowledge between them.
+            Shared access remains scoped; one identity does not imply one
+            running model process.
+          </desc>
+          <defs>
+            <marker
+              id="continuity-arrow"
+              viewBox="0 0 10 10"
+              refX="8"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path class="arrow" d="M1 1 L9 5 L1 9 Z" />
+            </marker>
+          </defs>
+          <path class="edge" d="M95 68 V98 H265 V68" />
+          <path
+            class="edge"
+            d="M180 98 V138"
+            marker-end="url(#continuity-arrow)"
+          />
+          <path class="edge" d="M180 196 V306" />
+          <path
+            class="edge"
+            d="M180 306 H60 V354"
+            marker-end="url(#continuity-arrow)"
+          />
+          <path
+            class="edge"
+            d="M180 306 V354"
+            marker-end="url(#continuity-arrow)"
+          />
+          <path
+            class="edge"
+            d="M180 306 H300 V354"
+            marker-end="url(#continuity-arrow)"
+          />
+          <path
+            class="edge"
+            d="M252 168 H284 V230"
+            marker-start="url(#continuity-arrow)"
+            marker-end="url(#continuity-arrow)"
+          />
+          <rect class="node" x="45" y="20" width="100" height="48" rx="24" />
+          <rect class="node" x="215" y="20" width="100" height="48" rx="24" />
+          <text class="label" x="95" y="50" text-anchor="middle">You</text>
+          <text class="label" x="265" y="50" text-anchor="middle">Team</text>
+          <rect
+            class="node model"
+            x="110"
+            y="140"
+            width="140"
+            height="56"
+            rx="8"
+          />
+          <text class="label" x="180" y="174" text-anchor="middle">Agent</text>
+          <path
+            class="node harness"
+            d="M226 232 H320 L342 254 V288 H226 Z M320 232 V254 H342"
+          />
+          <text class="label" x="284" y="269" text-anchor="middle">Memory</text>
+          <rect class="node" x="10" y="356" width="100" height="52" rx="8" />
+          <rect class="node" x="130" y="356" width="100" height="52" rx="8" />
+          <rect class="node" x="250" y="356" width="100" height="52" rx="8" />
+          <text class="label" x="60" y="388" text-anchor="middle">Task 1</text>
+          <text class="label" x="180" y="388" text-anchor="middle">Task 2</text>
+          <text class="label" x="300" y="388" text-anchor="middle">Task 3</text>
+        </svg>
+      </figure>
+    </main>
+  </body>
+</html>

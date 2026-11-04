@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ChatGPT and Aider</title>
+    <link rel="stylesheet" href="./diagram.css" />
+  </head>
+  <body>
+    <main>
+      <h1>The human runs the loop</h1>
+      <figure>
+        <div class="comparison">
+          <section aria-labelledby="chat-title">
+            <h2 id="chat-title">ChatGPT</h2>
+            <svg
+              class="visual"
+              viewBox="0 0 360 330"
+              role="img"
+              aria-labelledby="chat-svg-title chat-desc"
+            >
+              <title id="chat-svg-title">Manual handoffs</title>
+              <desc id="chat-desc">
+                The person transfers file contents into the model's input and
+                applies the model's suggested edits to the files. There is no
+                direct connection between the model and the files in this
+                interaction.
+              </desc>
+              <defs>
+                <marker
+                  id="chat-arrow"
+                  viewBox="0 0 8 8"
+                  refX="7"
+                  refY="4"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path class="arrow" d="M0 0 8 4 0 8Z" />
+                </marker>
+              </defs>
+              <path
+                class="edge"
+                d="M145 81 88 210"
+                marker-start="url(#chat-arrow)"
+                marker-end="url(#chat-arrow)"
+              />
+              <path
+                class="edge"
+                d="M215 81 272 210"
+                marker-start="url(#chat-arrow)"
+                marker-end="url(#chat-arrow)"
+              />
+              <rect
+                class="node"
+                x="120"
+                y="25"
+                width="120"
+                height="56"
+                rx="10"
+              />
+              <text
+                class="label"
+                x="180"
+                y="53"
+                text-anchor="middle"
+                dominant-baseline="central"
+              >
+                Person
+              </text>
+              <rect
+                class="node model"
+                x="20"
+                y="210"
+                width="135"
+                height="70"
+                rx="10"
+              />
+              <text
+                class="label"
+                x="87.5"
+                y="245"
+                text-anchor="middle"
+                dominant-baseline="central"
+              >
+                Model
+              </text>
+              <rect
+                class="node"
+                x="205"
+                y="210"
+                width="135"
+                height="70"
+                rx="10"
+              />
+              <text
+                class="label"
+                x="272.5"
+                y="245"
+                text-anchor="middle"
+                dominant-baseline="central"
+              >
+                Files
+              </text>
+            </svg>
+          </section>
+          <section aria-labelledby="aider-title">
+            <h2 id="aider-title">Aider</h2>
+            <svg
+              class="visual"
+              viewBox="0 0 360 330"
+              role="img"
+              aria-labelledby="aider-svg-title aider-desc"
+            >
+              <title id="aider-svg-title">Automated file handoffs</title>
+              <desc id="aider-desc">
+                The person directs an early interactive Aider workflow. Aider
+                reads files into the model's context and applies proposed edits,
+                removing manual copying and pasting while the person continues
+                to direct the task.
+              </desc>
+              <defs>
+                <marker
+                  id="aider-arrow"
+                  viewBox="0 0 8 8"
+                  refX="7"
+                  refY="4"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path class="arrow" d="M0 0 8 4 0 8Z" />
+                </marker>
+              </defs>
+              <path
+                class="edge"
+                d="M180 81V125"
+                marker-start="url(#aider-arrow)"
+                marker-end="url(#aider-arrow)"
+              />
+              <path
+                class="edge"
+                d="M145 181 88 210"
+                marker-start="url(#aider-arrow)"
+                marker-end="url(#aider-arrow)"
+              />
+              <path
+                class="edge"
+                d="M215 181 272 210"
+                marker-start="url(#aider-arrow)"
+                marker-end="url(#aider-arrow)"
+              />
+              <rect
+                class="node"
+                x="120"
+                y="25"
+                width="120"
+                height="56"
+                rx="10"
+              />
+              <text
+                class="label"
+                x="180"
+                y="53"
+                text-anchor="middle"
+                dominant-baseline="central"
+              >
+                Person
+              </text>
+              <rect
+                class="node harness"
+                x="120"
+                y="125"
+                width="120"
+                height="56"
+                rx="10"
+              />
+              <text
+                class="label"
+                x="180"
+                y="153"
+                text-anchor="middle"
+                dominant-baseline="central"
+              >
+                Aider
+              </text>
+              <rect
+                class="node model"
+                x="20"
+                y="210"
+                width="135"
+                height="70"
+                rx="10"
+              />
+              <text
+                class="label"
+                x="87.5"
+                y="245"
+                text-anchor="middle"
+                dominant-baseline="central"
+              >
+                Model
+              </text>
+              <rect
+                class="node"
+                x="205"
+                y="210"
+                width="135"
+                height="70"
+                rx="10"
+              />
+              <text
+                class="label"
+                x="272.5"
+                y="245"
+                text-anchor="middle"
+                dominant-baseline="central"
+              >
+                Files
+              </text>
+            </svg>
+          </section>
+        </div>
+      </figure>
+    </main>
+  </body>
+</html>

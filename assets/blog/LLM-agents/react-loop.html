@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReAct</title>
+    <link rel="stylesheet" href="./diagram.css" />
+  </head>
+  <body>
+    <main>
+      <h1>ReAct</h1>
+      <figure>
+        <svg
+          class="visual"
+          viewBox="0 0 500 320"
+          role="img"
+          aria-labelledby="react-title react-desc"
+        >
+          <title id="react-title">The original ReAct pattern</title>
+          <desc id="react-desc">
+            A task enters from the left. Think, act, and observe form a clockwise
+            loop, with an answer exiting to the right. The model reasons about the
+            next step and requests an action, the program executes the tool, and the
+            result returns to the model as an observation. The model can then
+            continue the loop or answer. Thinking here refers to generated
+            reasoning text, not direct access to the model's internal computation.
+          </desc>
+          <defs>
+            <marker
+              id="react-arrow"
+              markerWidth="7"
+              markerHeight="7"
+              refX="6"
+              refY="3.5"
+              orient="auto"
+            >
+              <path class="arrow" d="M0 0 L7 3.5 L0 7 Z" />
+            </marker>
+          </defs>
+
+          <path
+            class="edge"
+            d="M270 80 C326 92 354 142 348 210"
+            marker-end="url(#react-arrow)"
+          />
+          <path
+            class="edge"
+            d="M320 260 C272 300 208 300 160 262"
+            marker-end="url(#react-arrow)"
+          />
+          <path
+            class="edge"
+            d="M122 210 C104 148 142 98 208 82"
+            marker-end="url(#react-arrow)"
+          />
+          <path class="edge" d="M62 56 H182" marker-end="url(#react-arrow)" />
+          <path class="edge" d="M298 56 H410" marker-end="url(#react-arrow)" />
+
+          <rect
+            class="node model"
+            x="184"
+            y="32"
+            width="112"
+            height="48"
+            rx="24"
+          />
+          <text class="label" x="240" y="62" text-anchor="middle">Think</text>
+          <rect
+            class="node tool"
+            x="288"
+            y="212"
+            width="112"
+            height="48"
+            rx="24"
+          />
+          <text class="label" x="344" y="242" text-anchor="middle">Act</text>
+          <rect
+            class="node"
+            x="80"
+            y="212"
+            width="112"
+            height="48"
+            rx="24"
+          />
+          <text class="label" x="136" y="242" text-anchor="middle">Observe</text>
+          <text class="label" x="8" y="62">Task</text>
+          <text class="label" x="420" y="62">Answer</text>
+        </svg>
+      </figure>
+    </main>
+  </body>
+</html>

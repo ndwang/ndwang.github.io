@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Context window</title>
+    <link rel="stylesheet" href="./diagram.css" />
+    <style>
+      body {
+        max-width: 472px;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      .visual {
+        max-width: 400px;
+      }
+
+      .label {
+        font-size: 20px;
+      }
+
+      .window {
+        fill: none;
+        stroke: var(--line);
+        stroke-width: 2;
+      }
+
+      .conversation {
+        fill: none;
+        stroke: var(--border);
+        stroke-width: 1.4;
+      }
+
+      .available {
+        fill: none;
+        stroke: var(--line);
+        stroke-width: 1.4;
+        stroke-dasharray: 5 5;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Context window</h1>
+      <figure>
+        <svg
+          class="visual"
+          viewBox="0 0 400 500"
+          role="img"
+          aria-labelledby="context-title context-desc"
+        >
+          <title id="context-title">What fits inside a context window</title>
+          <desc id="context-desc">
+            A bounded window contains a system prompt, tool declarations, and
+            conversation messages. An example conversation contains a user
+            request, an assistant tool call, and the returned tool result.
+            A downward arrow shows new messages and tool results being appended
+            to the bottom of the conversation as the agent works.
+            The remaining space is available for the model's next response,
+            which also counts toward the token limit. This is a schematic
+            arrangement. The sizes and ordering of the contents vary between
+            programs and over the course of a task.
+          </desc>
+          <defs>
+            <marker
+              id="append-arrow"
+              viewBox="0 0 10 10"
+              refX="8"
+              refY="5"
+              markerWidth="8"
+              markerHeight="8"
+              orient="auto"
+            >
+              <path class="arrow" d="M1 1 L9 5 L1 9 Z" />
+            </marker>
+          </defs>
+
+          <rect class="window" x="12" y="8" width="310" height="480" rx="12" />
+
+          <rect class="node harness" x="24" y="20" width="286" height="48" rx="6" />
+          <rect class="node tool" x="24" y="76" width="286" height="48" rx="6" />
+
+          <rect class="conversation" x="24" y="132" width="286" height="222" rx="6" />
+          <rect class="node" x="40" y="174" width="254" height="44" rx="6" />
+          <rect class="node model" x="40" y="226" width="254" height="44" rx="6" />
+          <rect class="node tool" x="40" y="278" width="254" height="56" rx="6" />
+
+          <rect class="available" x="24" y="366" width="286" height="110" rx="6" />
+          <path
+            class="edge"
+            d="M346 174 V460"
+            marker-end="url(#append-arrow)"
+          />
+
+          <g class="label" text-anchor="middle">
+            <text x="167" y="51">System prompt</text>
+            <text x="167" y="107">Tool declarations</text>
+            <text x="167" y="160">Conversation</text>
+            <text x="167" y="203">User request</text>
+            <text x="167" y="255">Assistant tool call</text>
+            <text x="167" y="313">Tool result</text>
+            <text x="167" y="428">Room for response</text>
+            <text x="374" y="320" transform="rotate(90 374 320)">Append</text>
+          </g>
+        </svg>
+      </figure>
+    </main>
+  </body>
+</html>
