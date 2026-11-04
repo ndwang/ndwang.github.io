@@ -141,6 +141,10 @@ export async function getPosts() {
   return (await readCollection("posts")).sort((a, b) => b.date - a.date);
 }
 
+export async function getDrafts() {
+  return readCollection("drafts");
+}
+
 export async function getProjects() {
   return (await readCollection("projects")).sort((a, b) => (a.importance || 0) - (b.importance || 0) || a.title.localeCompare(b.title));
 }

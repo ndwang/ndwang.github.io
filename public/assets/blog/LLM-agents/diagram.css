@@ -1,6 +1,6 @@
 :root {
-  color-scheme: light dark;
-  --bg: #ffffff;
+  color-scheme: light;
+  --bg: #fafaf7;
   --text: #242520;
   --line: #737b74;
   --border: #d5d9d3;
@@ -11,21 +11,6 @@
   --harness-line: #39836d;
   --tool: #fbefdb;
   --tool-line: #a17b37;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1c1e1b;
-    --text: #eceee8;
-    --line: #a1aa9e;
-    --border: #4c5549;
-    --surface: #292e27;
-    --model: #352d4f;
-    --model-line: #b1a0e4;
-    --harness: #203e34;
-    --harness-line: #7bbda4;
-    --tool: #443922;
-    --tool-line: #d6b36f;
-  }
 }
 * {
   box-sizing: border-box;

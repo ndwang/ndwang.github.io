@@ -1,0 +1,14 @@
+---
+import Article from "../components/Article.astro";
+import { getDrafts } from "../lib/content.js";
+
+export async function getStaticPaths() {
+  return (await getDrafts()).map((entry) => ({ params: { slug: entry.slug } }));
+}
+
+const entry = (await getDrafts()).find((entry) => entry.slug === Astro.params.slug);
+// Drafts reference their diagrams relative to the Markdown file.
+entry.html = entry.html.replaceAll(`./${entry.slug}/`, `/drafts/${entry.slug}/`);
+---
+
+<Article entry={entry} kind="post" />

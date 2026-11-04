@@ -4,17 +4,17 @@ import { getPosts, getProjects, getPapers, formatDate, resume } from "../src/lib
 
 test("existing posts keep exact Jekyll URLs and frontmatter dates", async () => {
   const posts = await getPosts();
-  assert.equal(posts.length, 2);
+  assert.equal(posts.length, 3);
   assert.deepEqual(
     posts.map((post) => post.url),
-    ["/blog/2026/claude-plays-slay-the-spire/", "/blog/2025/AI_space_charge/"]
+    ["/blog/2026/LLM-agents/", "/blog/2026/claude-plays-slay-the-spire/", "/blog/2025/AI_space_charge/"]
   );
-  assert.equal(formatDate(posts[1].date), "July 30, 2025");
+  assert.equal(formatDate(posts[2].date), "July 30, 2025");
   assert.ok(posts.every((post) => post.headings.length > 0 && post.minutes > 0));
 });
 
 test("posts retain video embeds, expandable code, and benchmark tables", async () => {
-  const [gaming, physics] = await getPosts();
+  const [, gaming, physics] = await getPosts();
   for (const name of ["osty", "sandworm", "reward"]) {
     assert.ok(gaming.html.includes(`src="/assets/video/${name}.mp4"`));
   }

@@ -42,6 +42,23 @@ const headings = (entry.headings || []).filter((heading) => heading.depth === 2)
     </a>
   </footer>
 </Base>
+<script>
+  document.querySelectorAll<HTMLIFrameElement>("iframe[data-autosize]").forEach((frame) => {
+    let observer: ResizeObserver;
+    const fitContent = () => {
+      const body = frame.contentDocument?.body;
+      if (!body || !body.children.length) return;
+      observer?.disconnect();
+      // Measure the body rather than scrollHeight, which includes the old iframe height.
+      observer = new ResizeObserver(() => {
+        frame.style.height = `${Math.ceil(body.getBoundingClientRect().height)}px`;
+      });
+      observer.observe(body);
+    };
+    frame.addEventListener("load", fitContent);
+    if (frame.contentDocument?.readyState === "complete") fitContent();
+  });
+</script>
 <style>
   .article-header {
     padding: 3.5rem 0 3rem;

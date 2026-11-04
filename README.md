@@ -48,7 +48,9 @@ The CV’s **Download résumé** link serves `public/assets/pdf/Ningdong_Wang_Re
 
 Posts use YAML frontmatter with `title`, `description`, `date`, and `tags`, followed by Markdown. Name new posts `YYYY-MM-DD-slug.md`. The frontmatter date determines the URL year, preserving the existing `/blog/2025/AI_space_charge/` address despite its older filename. Project filenames determine `/projects/<filename>/` routes.
 
-Keep unpublished writing and its supporting files in `content/drafts/`. This directory is not read by the content loader or copied into the built site. “A Brief History of LLM Agents” and its six HTML diagrams were recovered unchanged from the earlier redesign at `114fe42` (original content commit `42493a0`); the post retains `draft: true`.
+Keep unpublished writing and its supporting files in `content/drafts/`. This directory is excluded from production builds. Published HTML diagrams and their shared CSS and JavaScript live in `public/assets/blog/`.
+
+During `npm run dev`, drafts are available at `/drafts/<filename-without-extension>/` using the website's article layout, including their HTML diagrams. These routes are excluded from production builds. “A Brief History of LLM Agents” is published at `/blog/2026/LLM-agents/`, dated November 4, 2026.
 
 Project write-ups also use a `date: "YYYY-MM-DD"` frontmatter field, displayed on the project card and page header. The three original project dates come from their first file-addition commits: SpaceCharge.jl on July 17, 2025 (`648c1dd`), Bmad-bot on July 28, 2025 (`5d6f7d2`), and Bmad to SciBmad on December 11, 2025 (`72a2e32`). These record page creation, not when development of the software began.
 
