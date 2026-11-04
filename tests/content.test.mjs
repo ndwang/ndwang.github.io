@@ -7,7 +7,7 @@ test("existing posts keep exact Jekyll URLs and frontmatter dates", async () => 
   assert.equal(posts.length, 3);
   assert.deepEqual(
     posts.map((post) => post.url),
-    ["/blog/2026/LLM-agents/", "/blog/2026/claude-plays-slay-the-spire/", "/blog/2025/AI_space_charge/"]
+    ["/blog/2026/a-brief-history-of-llm-agents/", "/blog/2026/claude-plays-slay-the-spire/", "/blog/2025/AI_space_charge/"]
   );
   assert.equal(formatDate(posts[2].date), "July 30, 2025");
   assert.ok(posts.every((post) => post.headings.length > 0 && post.minutes > 0));

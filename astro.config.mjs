@@ -8,6 +8,9 @@ export default defineConfig({
   outDir: "./.site-output",
   trailingSlash: "always",
   devToolbar: { enabled: false },
+  redirects: {
+    "/blog/2026/LLM-agents/": "/blog/2026/a-brief-history-of-llm-agents/",
+  },
   integrations: [
     {
       name: "local-drafts",
@@ -36,6 +39,9 @@ export default defineConfig({
         },
       },
     },
-    sitemap({ filter: (page) => !/\/(about|publications)\/$/.test(page) && !/\/blog\/(?:\d{4}\/|(?:tag|category)\/[^/]+\/)$/i.test(page) }),
+    sitemap({
+      filter: (page) =>
+        !/\/(about|publications|blog\/2026\/LLM-agents)\/$/.test(page) && !/\/blog\/(?:\d{4}\/|(?:tag|category)\/[^/]+\/)$/i.test(page),
+    }),
   ],
 });

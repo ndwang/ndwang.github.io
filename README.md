@@ -50,7 +50,7 @@ Posts use YAML frontmatter with `title`, `description`, `date`, and `tags`, foll
 
 Keep unpublished writing and its supporting files in `content/drafts/`. This directory is excluded from production builds. Published HTML diagrams and their shared CSS and JavaScript live in `public/assets/blog/`.
 
-During `npm run dev`, drafts are available at `/drafts/<filename-without-extension>/` using the website's article layout, including their HTML diagrams. These routes are excluded from production builds. “A Brief History of LLM Agents” is published at `/blog/2026/LLM-agents/`, dated November 4, 2026.
+During `npm run dev`, drafts are available at `/drafts/<filename-without-extension>/` using the website's article layout, including their HTML diagrams. These routes are excluded from production builds. “A Brief History of LLM Agents” is published at `/blog/2026/a-brief-history-of-llm-agents/`, dated November 4, 2026. Its original `/blog/2026/LLM-agents/` URL redirects to the full-title URL.
 
 Project write-ups also use a `date: "YYYY-MM-DD"` frontmatter field, displayed on the project card and page header. The three original project dates come from their first file-addition commits: SpaceCharge.jl on July 17, 2025 (`648c1dd`), Bmad-bot on July 28, 2025 (`5d6f7d2`), and Bmad to SciBmad on December 11, 2025 (`72a2e32`). These record page creation, not when development of the software began.
 
